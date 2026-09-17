@@ -1,0 +1,5 @@
+# Minimal dependencies for Google Cloud Financial Research Agent Platform
+# The core application relies on the Python standard library for maximum portability and zero-bloat.
+urllib3>=2.0.0
+google-auth>=2.20.0
+requests>=2.31.0

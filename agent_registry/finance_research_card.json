@@ -1,0 +1,38 @@
+{
+  "name": "projects/850196904392/locations/global/collections/default_collection/engines/aigents/assistants/default_assistant/agents/finance_research",
+  "displayName": "Financial Research Agent",
+  "description": "Turn days of complex capital markets & corporate banking research into board-ready analysis.",
+  "icon": {
+    "uri": "https://www.gstatic.com/agentis/finance_agent_icon.svg"
+  },
+  "agentType": "LOW_CODE",
+  "state": "ENABLED",
+  "a2aAgentDefinition": {
+    "managedAgentCard": {
+      "managedAgentType": "MANAGED_AGENT_ONE"
+    }
+  },
+  "longRunningOperationsEnabled": true,
+  "sharingConfig": {
+    "scope": "ALL_USERS"
+  },
+  "metadata": {
+    "domain": "financial-services",
+    "supported_personas": [
+      "PORTFOLIO_MANAGER",
+      "RESEARCH_ANALYST",
+      "QUANT_TRADER",
+      "BUSINESS_LINE_MGR",
+      "IB_ANALYST",
+      "COMPLIANCE_MGR"
+    ],
+    "capabilities": [
+      "capital_markets_synthesis",
+      "peer_comps_modeling",
+      "earnings_scramble",
+      "covenant_risk_analysis",
+      "m_and_a_due_diligence",
+      "regulatory_audit_trail"
+    ]
+  }
+}

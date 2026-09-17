@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Cloud | Financial Research Agent in Gemini Enterprise</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Google Sans', 'sans-serif'],
+            mono: ['Roboto Mono', 'monospace'],
+            google: ['Google Sans', 'sans-serif'],
+          },
+          colors: {
+            gcloud: {
+              blue: '#1A73E8',
+              hover: '#1557B0',
+              accent: '#8AB4F8',
+              purple: '#A142F4',
+              green: '#81C995',
+              yellow: '#FDD663',
+              red: '#F28B82'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bank-primary: #088177;
+      --bank-primary-hover: #06625B;
+      --bank-primary-text: #FFFFFF;
+      --bank-accent: #16A37F;
+      --bank-bg: #0D1318;
+      --bank-surface: #151D24;
+      --bank-surface-elevated: #1C242C;
+      --bank-surface-higher: #252E38;
+      --bank-border: #2E3D4D;
+      --bank-text-primary: #FFFFFF;
+      --bank-text-muted: #9AA0A6;
+      --bank-radius: 14px;
+      --bank-tag: "N26";
+      --bank-glow: rgba(8, 129, 119, 0.25);
+    }
+
+    body {
+      background-color: var(--bank-bg);
+      color: var(--bank-text-primary);
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .theme-transition {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .pulse-indicator {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
+
+    /* Dynamic Bank Theming Classes */
+    .bank-bg { background-color: var(--bank-bg) !important; }
+    .bank-surface { background-color: var(--bank-surface) !important; }
+    .bank-surface-elevated { background-color: var(--bank-surface-elevated) !important; }
+    .bank-surface-higher { background-color: var(--bank-surface-higher) !important; }
+    .bank-border { border-color: var(--bank-border) !important; }
+    .bank-radius { border-radius: var(--bank-radius) !important; }
+    .bank-text-primary { color: var(--bank-text-primary) !important; }
+    .bank-text-muted { color: var(--bank-text-muted) !important; }
+    .bank-accent-text { color: var(--bank-accent) !important; }
+    
+    .bank-btn-primary {
+      background-color: var(--bank-primary) !important;
+      color: var(--bank-primary-text) !important;
+      border-radius: var(--bank-radius) !important;
+      transition: all 0.2s ease;
+    }
+    .bank-btn-primary:hover {
+      background-color: var(--bank-primary-hover) !important;
+      transform: translateY(-1px);
+    }
+
+    /* Markdown prose for live outputs */
+    .markdown-prose table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.75rem;
+      font-family: 'Roboto Mono', monospace;
+    }
+    .markdown-prose th {
+      background: var(--bank-surface-higher);
+      border: 1px solid var(--bank-border);
+      padding: 0.5rem;
+      text-align: left;
+      color: var(--bank-accent);
+    }
+    .markdown-prose td {
+      border: 1px solid var(--bank-border);
+      padding: 0.5rem;
+      color: var(--bank-text-primary);
+    }
+    .markdown-prose h1, .markdown-prose h2, .markdown-prose h3 {
+      color: #FFFFFF;
+      font-weight: 700;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .markdown-prose ul {
+      list-style-type: disc;
+      padding-left: 1.25rem;
+      margin: 0.5rem 0;
+    }
+    .markdown-prose strong {
+      color: var(--bank-accent);
+    }
+
+    /* Print styling for PDF generation */
+    @media print {
+      body {
+        background: #FFFFFF !important;
+        color: #111827 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .pdf-dossier {
+        padding: 10mm;
+      }
+      .card-print {
+        border: 1px solid #D1D5DB !important;
+        background: #F9FAFB !important;
+        color: #111827 !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-[var(--bank-primary)] selection:text-[var(--bank-primary-text)]">
+
+  <!-- Top Bunq Rainbow Ribbon (Active for Bunq) -->
+  <div id="bunqRainbowBar" class="h-1.5 w-full hidden" style="background: linear-gradient(90deg, #FF1744 0%, #FF9100 17%, #FFEA00 33%, #00E676 50%, #00B0FF 67%, #651FFF 83%, #D500F9 100%);"></div>
+
+  <!-- Global Header Bar -->
+  <header class="sticky top-0 z-50 backdrop-blur-md border-b theme-transition no-print bank-surface bank-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-col lg:flex-row items-center justify-between gap-3">
+      
+      <!-- Brand Logo & Platform Title -->
+      <div class="flex items-center space-x-3 w-full lg:w-auto justify-between lg:justify-start">
+        <div class="flex items-center space-x-3">
+          <div id="bankBrandIconContainer" class="w-10 h-10 rounded-xl flex items-center justify-center p-2 shadow-md theme-transition" style="background-color: var(--bank-primary); color: var(--bank-primary-text);">
+            <!-- Dynamic SVG Logo -->
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span id="headerBankName" class="font-bold text-base tracking-tight text-white">N26 Bank</span>
+              <span id="headerBankTagline" class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-[var(--bank-border)] bg-[var(--bank-surface-higher)] text-[var(--bank-accent)]">
+                The Mobile Bank
+              </span>
+            </div>
+            <p class="text-[11px] text-[var(--bank-text-muted)] flex items-center space-x-1.5">
+              <span>Financial Research Agent in Gemini Enterprise</span>
+              <span>•</span>
+              <span class="text-emerald-400 font-mono">1P Boq Agent (finance_research)</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Live Server Status Indicator -->
+        <div id="serverHealthBadge" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-800 text-[11px] text-emerald-300 font-mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-indicator"></span>
+          <span class="hidden sm:inline">Discovery Engine Live</span>
+        </div>
+      </div>
+
+      <!-- Bank Selector Pills (Official Bank Brand Identity Switcher) -->
+      <div class="flex items-center space-x-1.5 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0 scrollbar-none border-t lg:border-t-0 pt-2 lg:pt-0 border-[var(--bank-border)]">
+        
+        <button onclick="changeBank('n26')" id="bankPill-n26" class="bank-pill px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition whitespace-nowrap border border-[var(--bank-border)]">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#088177]"></span>
+          <span>N26</span>
+        </button>
+
+        <button onclick="changeBank('revolut')" id="bankPill-revolut" class="bank-pill px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition whitespace-nowrap border border-[var(--bank-border)]">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#1326FD]"></span>
+          <span>Revolut</span>
+        </button>
+
+        <button onclick="changeBank('traderepublic')" id="bankPill-traderepublic" class="bank-pill px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition whitespace-nowrap border border-[var(--bank-border)]">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#FFFFFF]"></span>
+          <span>Trade Republic</span>
+        </button>
+
+        <button onclick="changeBank('deutschebank')" id="bankPill-deutschebank" class="bank-pill px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition whitespace-nowrap border border-[var(--bank-border)]">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#0018A8]"></span>
+          <span>Deutsche Bank</span>
+        </button>
+
+        <button onclick="changeBank('monzo')" id="bankPill-monzo" class="bank-pill px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition whitespace-nowrap border border-[var(--bank-border)]">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#FF4F40]"></span>
+          <span>Monzo</span>
+        </button>
+
+        <button onclick="changeBank('bunq')" id="bankPill-bunq" class="bank-pill px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition whitespace-nowrap border border-[var(--bank-border)]">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#00A86B]"></span>
+          <span>bunq</span>
+        </button>
+
+      </div>
+
+      <!-- Step Navigation (Schritt 1 vs Schritt 2) -->
+      <div class="flex items-center space-x-1 p-1 rounded-xl border bank-surface-higher bank-border">
+        <button id="stepBtn1" onclick="switchStep(1)" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 bank-btn-primary shadow-sm transition">
+          <span class="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-bold">1</span>
+          <span>Fachfunktionen</span>
+        </button>
+        <button id="stepBtn2" onclick="switchStep(2)" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 text-[var(--bank-text-muted)] hover:text-white transition">
+          <span class="w-4 h-4 rounded-full bg-gray-700 text-[10px] flex items-center justify-center font-bold">2</span>
+          <span>Ergebnisse & Artifacts</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6">
+
+    <!-- Active Bank Context Hero Card (Fully Customized Official Identity) -->
+    <section class="p-6 border shadow-xl relative overflow-hidden theme-transition bank-surface-elevated bank-border bank-radius">
+      <div class="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[var(--bank-primary)]/15 to-transparent pointer-events-none"></div>
+      
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div class="space-y-1.5">
+          <div class="flex items-center space-x-3">
+            <span id="bankBadge" class="px-3 py-1 text-xs font-extrabold uppercase font-mono shadow-sm bank-btn-primary">N26</span>
+            <h1 id="bankTitle" class="text-xl font-google font-bold text-white">N26 Bank European Multi-Agent Architecture</h1>
+          </div>
+          <p id="bankDesc" class="text-xs text-[var(--bank-text-muted)] max-w-2xl leading-relaxed">
+            Vollregulierte europäische Neobank mit BaFin-Vollbanklizenz. Spezialisiert auf mobiles Retail-Banking, Krypto-Vermögensverwaltung, Zinsportfolios und Konsumentenkredite für 8,5 Mio. Kunden.
+          </p>
+        </div>
+
+        <!-- Official Bank Profile Metrics -->
+        <div class="flex items-center space-x-5 text-xs font-mono border-t md:border-t-0 md:border-l border-[var(--bank-border)] pt-3 md:pt-0 md:pl-6">
+          <div>
+            <div class="text-[var(--bank-text-muted)] text-[10px]">Aufsicht / Lizenz</div>
+            <div id="statLicense" class="font-bold text-white">BaFin / EZB Vollbank</div>
+          </div>
+          <div>
+            <div class="text-[var(--bank-text-muted)] text-[10px]">Assets & Einlagen</div>
+            <div id="statAssets" class="font-bold text-emerald-400">€8.2 Mrd.</div>
+          </div>
+          <div>
+            <div class="text-[var(--bank-text-muted)] text-[10px]">Strategischer Fokus</div>
+            <div id="statFocus" class="font-bold text-[var(--bank-accent)]">Retail & Wealth</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- SCHRITT 1: FACHFUNKTIONEN AUSLÖSEN (AUS SICHT DER PERSONAS)               -->
+    <!-- ========================================================================= -->
+    <div id="containerStep1" class="space-y-6">
+      
+      <!-- Section Header -->
+      <div class="flex items-center justify-between border-b border-[var(--bank-border)] pb-3">
+        <div>
+          <h2 class="text-base font-google font-bold text-white flex items-center space-x-2">
+            <span class="w-6 h-6 rounded-full bank-btn-primary flex items-center justify-center text-xs">1</span>
+            <span>Schritt 1: Persona auswählen & Fachfunktionen auslösen</span>
+          </h2>
+          <p class="text-xs text-[var(--bank-text-muted)]">Wählen Sie die Fachrolle aus den Folien und lösen Sie den hochspezialisierten Research-Auftrag an den 1P Agenten aus.</p>
+        </div>
+        <div class="text-xs font-mono text-[var(--bank-accent)]">
+          6 Fach-Personas • 24 Enterprise CUJs
+        </div>
+      </div>
+
+      <!-- 6 Personas Grid (From Slides 3, 4, 11) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3" id="personaSelectorGrid">
+        
+        <!-- Persona 1: Portfolio Manager -->
+        <button onclick="selectPersona('PORTFOLIO_MANAGER')" id="pcard-PORTFOLIO_MANAGER" class="pcard text-left p-3.5 border transition bank-surface-elevated bank-border bank-radius ring-2 ring-[var(--bank-primary)]">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-lg">📊</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface bank-accent-text border bank-border">Buy-Side</span>
+          </div>
+          <div class="font-bold text-xs text-white leading-tight">Portfolio Manager</div>
+          <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Alpha-Generierung, Due Diligence, Memos & Risiko</div>
+        </button>
+
+        <!-- Persona 2: Research Analyst -->
+        <button onclick="selectPersona('RESEARCH_ANALYST')" id="pcard-RESEARCH_ANALYST" class="pcard text-left p-3.5 border transition bank-surface-elevated bank-border bank-radius hover:border-[var(--bank-accent)]">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-lg">📈</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface text-yellow-400 border bank-border">Sell-Side</span>
+          </div>
+          <div class="font-bold text-xs text-white leading-tight">Research Analyst</div>
+          <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Earnings Scramble, Konsensus, Buy/Sell Notes</div>
+        </button>
+
+        <!-- Persona 3: Sales / Quant Trader -->
+        <button onclick="selectPersona('QUANT_TRADER')" id="pcard-QUANT_TRADER" class="pcard text-left p-3.5 border transition bank-surface-elevated bank-border bank-radius hover:border-[var(--bank-accent)]">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-lg">⚡</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface text-purple-400 border bank-border">Trading</span>
+          </div>
+          <div class="font-bold text-xs text-white leading-tight">Sales & Quant Trader</div>
+          <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Pre-Market Briefing, Alpha Backtesting, Order Flow</div>
+        </button>
+
+        <!-- Persona 4: Business Line Manager -->
+        <button onclick="selectPersona('BUSINESS_LINE_MGR')" id="pcard-BUSINESS_LINE_MGR" class="pcard text-left p-3.5 border transition bank-surface-elevated bank-border bank-radius hover:border-[var(--bank-accent)]">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-lg">💼</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface text-emerald-400 border bank-border">P&L Strat</span>
+          </div>
+          <div class="font-bold text-xs text-white leading-tight">Business Line Mgr</div>
+          <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Wettbewerb, Zinsspannen, P&L-Sensitivität</div>
+        </button>
+
+        <!-- Persona 5: IB Analyst -->
+        <button onclick="selectPersona('IB_ANALYST')" id="pcard-IB_ANALYST" class="pcard text-left p-3.5 border transition bank-surface-elevated bank-border bank-radius hover:border-[var(--bank-accent)]">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-lg">🏛️</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface text-blue-400 border bank-border">M&A / ECM</span>
+          </div>
+          <div class="font-bold text-xs text-white leading-tight">IB Analyst</div>
+          <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Data Room Due Diligence, LBO & DCF Modelle</div>
+        </button>
+
+        <!-- Persona 6: Compliance Manager -->
+        <button onclick="selectPersona('COMPLIANCE_MGR')" id="pcard-COMPLIANCE_MGR" class="pcard text-left p-3.5 border transition bank-surface-elevated bank-border bank-radius hover:border-[var(--bank-accent)]">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-lg">🛡️</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface text-red-400 border bank-border">KYC / AML</span>
+          </div>
+          <div class="font-bold text-xs text-white leading-tight">Compliance / KYC</div>
+          <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Alert Fatigue Clearing, MiCA, Sanktionen & Audit</div>
+        </button>
+
+      </div>
+
+      <!-- Persona Detail & Fachfunktionen Selection Area -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left 7 cols: Fachfunktionen Grid -->
+        <div class="lg:col-span-7 space-y-4">
+          
+          <!-- Active Persona Summary Banner -->
+          <div class="p-4 border bank-surface-elevated bank-border bank-radius flex items-start justify-between">
+            <div class="space-y-1">
+              <div class="flex items-center space-x-2">
+                <span id="activePersonaBadge" class="text-xs font-bold font-mono px-2 py-0.5 bank-btn-primary">PORTFOLIO_MANAGER</span>
+                <h3 id="activePersonaTitle" class="text-sm font-bold text-white">Portfolio Manager & Investment Analyst (Buy Side)</h3>
+              </div>
+              <p id="activePersonaHeroCUJ" class="text-xs text-[var(--bank-accent)] font-medium">Hero CUJ: Accelerate due diligence by synthesizing large volumes of research materials and generating first drafts of investment memos.</p>
+              <p id="activePersonaDescription" class="text-xs text-[var(--bank-text-muted)]">Recherchiert Anlagechancen, führt Fundamentalanalysen durch und steuert das Portfolio mit dem Ziel kontinuierlicher Outperformance (Alpha).</p>
+            </div>
+          </div>
+
+          <!-- Fachfunktionen Cards -->
+          <div class="space-y-2">
+            <label class="text-xs font-bold text-white uppercase tracking-wider block">Verfügbare Fachfunktionen & Hero CUJs (Folie 4):</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="fachfunktionenList">
+              <!-- Populated dynamically via JS -->
+            </div>
+          </div>
+
+          <!-- Active Query Brief Editor -->
+          <div class="p-4 border bank-surface-elevated bank-border bank-radius space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-white flex items-center space-x-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>Research Brief an den 1P Financial Research Agent</span>
+              </span>
+              <span class="text-[10px] font-mono text-[var(--bank-text-muted)]">Gemini Enterprise Input</span>
+            </div>
+            <textarea id="queryInput" rows="3" class="w-full text-xs font-mono p-3 border bank-surface-higher bank-border bank-radius text-white focus:outline-none focus:border-[var(--bank-primary)] resize-none"></textarea>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-[11px] text-[var(--bank-text-muted)]">Der Prompt wird direkt an das 1P Boq-Backend von <code class="text-[var(--bank-accent)]">finance_research</code> übermittelt.</span>
+              <button onclick="triggerFachfunktion()" id="btnTrigger" class="px-5 py-2.5 text-xs font-bold shadow-lg flex items-center space-x-2 bank-btn-primary">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <span>Fachfunktion Ausführen</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right 5 cols: Configurability, Connectors & Digital Identity (Slides 6, 9, 10, 14) -->
+        <div class="lg:col-span-5 space-y-4">
+          
+          <!-- Digital Identity Panel (Folie 9 & 14) -->
+          <div class="p-4 border bank-surface-elevated bank-border bank-radius space-y-3">
+            <div class="flex items-center justify-between border-b border-[var(--bank-border)] pb-2">
+              <div class="flex items-center space-x-2">
+                <div class="w-6 h-6 rounded-full bg-purple-900/60 border border-purple-500 text-purple-300 flex items-center justify-center text-xs">🆔</div>
+                <span class="text-xs font-bold text-white">Agent Digital Identity</span>
+              </div>
+              <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">Onboarded & Verified</span>
+            </div>
+            <div class="text-[11px] space-y-1.5 font-mono text-[var(--bank-text-muted)]">
+              <div class="flex justify-between">
+                <span>Principal:</span>
+                <span class="text-white" id="digitalIdEmail">agent-fin-research@n26.corp</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Security Perimeter:</span>
+                <span class="text-white">VPC-SC • Regional DRZ • CMEK</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Harness Architecture:</span>
+                <span class="text-purple-300">DeepMind Managed Multi-Agent</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Curation & Connectors (Folie 6, 12, 18) -->
+          <div class="p-4 border bank-surface-elevated bank-border bank-radius space-y-3">
+            <div class="flex items-center justify-between border-b border-[var(--bank-border)] pb-2">
+              <span class="text-xs font-bold text-white">Data Curation Connectors</span>
+              <span class="text-[10px] font-mono text-[var(--bank-accent)]">8 Active Feeds</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+              <label class="flex items-center space-x-2 text-[var(--bank-text-muted)] cursor-pointer hover:text-white">
+                <input type="checkbox" checked class="rounded border-[var(--bank-border)] text-[var(--bank-primary)] focus:ring-0">
+                <span>SEC EDGAR (10-K/Q)</span>
+              </label>
+              <label class="flex items-center space-x-2 text-[var(--bank-text-muted)] cursor-pointer hover:text-white">
+                <input type="checkbox" checked class="rounded border-[var(--bank-border)] text-[var(--bank-primary)] focus:ring-0">
+                <span>FRED (Macro / Fed)</span>
+              </label>
+              <label class="flex items-center space-x-2 text-[var(--bank-text-muted)] cursor-pointer hover:text-white">
+                <input type="checkbox" checked class="rounded border-[var(--bank-border)] text-[var(--bank-primary)] focus:ring-0">
+                <span>FactSet & LSEG</span>
+              </label>
+              <label class="flex items-center space-x-2 text-[var(--bank-text-muted)] cursor-pointer hover:text-white">
+                <input type="checkbox" checked class="rounded border-[var(--bank-border)] text-[var(--bank-primary)] focus:ring-0">
+                <span>BigQuery Data Lake</span>
+              </label>
+              <label class="flex items-center space-x-2 text-[var(--bank-text-muted)] cursor-pointer hover:text-white">
+                <input type="checkbox" checked class="rounded border-[var(--bank-border)] text-[var(--bank-primary)] focus:ring-0">
+                <span id="labelLocalGazette">Bundesanzeiger DE</span>
+              </label>
+              <label class="flex items-center space-x-2 text-[var(--bank-text-muted)] cursor-pointer hover:text-white">
+                <input type="checkbox" checked class="rounded border-[var(--bank-border)] text-[var(--bank-primary)] focus:ring-0">
+                <span>BLS Inflation & CPI</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Configurability Toggles (Folie 10) -->
+          <div class="p-4 border bank-surface-elevated bank-border bank-radius space-y-3">
+            <span class="text-xs font-bold text-white block border-b border-[var(--bank-border)] pb-2">Agent Configurability (Folie 10)</span>
+            
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center justify-between">
+                <span class="text-[var(--bank-text-muted)]">Execution Mode:</span>
+                <select id="executionModeSelect" class="border border-[var(--bank-border)] bank-surface-higher text-[11px] rounded px-2 py-1 text-white">
+                  <option value="live" selected>Live 1P Discovery Engine Agent</option>
+                  <option value="simulated">High-Fidelity Multi-Agent Harness</option>
+                </select>
+              </div>
+
+              <div class="flex items-center justify-between pt-1">
+                <div>
+                  <div class="font-medium text-white">Explainability Toggle</div>
+                  <div class="text-[10px] text-[var(--bank-text-muted)]">SQL-Queries & Datenprovenienz anzeigen</div>
+                </div>
+                <input type="checkbox" id="explainabilityToggle" checked class="w-4 h-4 rounded border-[var(--bank-border)]">
+              </div>
+
+              <div class="flex items-center justify-between pt-1">
+                <div>
+                  <div class="font-medium text-white">Human-In-The-Loop (HITL)</div>
+                  <div class="text-[10px] text-[var(--bank-text-muted)]">Freigabeschranke bei Konfidenz &lt; 90%</div>
+                </div>
+                <input type="checkbox" checked class="w-4 h-4 rounded border-[var(--bank-border)]">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Real-Time Always-On Execution Monitor (Folie 8 & 13) -->
+      <div id="executionMonitorArea" class="hidden border p-5 space-y-4 bank-surface-elevated bank-border bank-radius">
+        
+        <div class="flex items-center justify-between border-b border-[var(--bank-border)] pb-3">
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-indicator"></span>
+            <h3 class="text-sm font-bold font-google text-white">Always-On Agent Runtime & Reasoning Monitor</h3>
+          </div>
+          <span id="runtimeStatusPill" class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-[var(--bank-primary)]/20 text-[var(--bank-accent)] border border-[var(--bank-primary)]/40">
+            Pipeline Active
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <!-- Box 1: Activity Timeline & Goals (Folie 8) -->
+          <div class="p-3.5 border space-y-2 bank-surface-higher bank-border bank-radius">
+            <div class="text-xs font-bold text-[var(--bank-accent)] flex items-center justify-between">
+              <span>Activity Timeline</span>
+              <span class="text-[10px] font-mono text-[var(--bank-text-muted)]">Since last visit</span>
+            </div>
+            <div class="space-y-1.5 text-[11px] font-mono" id="activityTimelineList">
+              <div class="text-emerald-400">✓ Ingested Balance Sheet & 10-K</div>
+              <div class="text-emerald-400">✓ Normalized FactSet Consensus Data</div>
+              <div class="text-yellow-400 flex items-center space-x-1">
+                <span class="animate-spin text-xs">⟳</span>
+                <span>Running DeepMind Multi-Agent Harness...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Box 2: Browser Use Sandbox Preview (Folie 8 & 13) -->
+          <div class="p-3.5 border space-y-2 bank-surface-higher bank-border bank-radius">
+            <div class="text-xs font-bold text-white flex items-center justify-between">
+              <span>Browser Use Preview</span>
+              <span class="text-[10px] font-mono text-emerald-400">● Active Sandbox</span>
+            </div>
+            <div class="p-2 rounded bg-black/60 border border-gray-800 text-[10px] font-mono text-gray-300 space-y-1">
+              <div class="text-gray-500" id="browserNavigatingText">&gt; Navigating to regulatory database...</div>
+              <div class="text-emerald-300" id="browserPreviewUrl">https://www.bundesanzeiger.de/ebanzwww/wexsservlet</div>
+              <div class="text-gray-400" id="browserPreviewAction">Status 200 OK • Extracting IFRS 9 Capital & Risk Disclosures</div>
+            </div>
+          </div>
+
+          <!-- Box 3: DeepMind Multi-Agent Harness Loop (Folie 5, 6, 15) -->
+          <div class="p-3.5 border space-y-2 bank-surface-higher bank-border bank-radius">
+            <div class="text-xs font-bold text-purple-300 flex items-center justify-between">
+              <span>DeepMind Reasoning Loop</span>
+              <span class="text-[10px] font-mono text-purple-400">Sequential Refinement</span>
+            </div>
+            <div class="space-y-1 text-[11px] font-mono">
+              <div class="flex justify-between text-gray-300">
+                <span>1. Base Analyst Draft:</span>
+                <span class="text-emerald-400 font-bold">Done</span>
+              </div>
+              <div class="flex justify-between text-gray-300">
+                <span>2. Critique Agent Verification:</span>
+                <span class="text-yellow-400 font-bold" id="critiqueStatus">In Progress</span>
+              </div>
+              <div class="flex justify-between text-gray-300">
+                <span>3. Refine Analyst Tuning:</span>
+                <span class="text-gray-500" id="refineStatus">Queued</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SCHRITT 2: ERGEBNISSE & FINANCIAL ARTIFACTS                               -->
+    <!-- ========================================================================= -->
+    <div id="containerStep2" class="hidden space-y-6">
+      
+      <!-- Section Header & Export Toolbar -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[var(--bank-border)] pb-3 gap-3">
+        <div>
+          <h2 class="text-base font-google font-bold text-white flex items-center space-x-2">
+            <span class="w-6 h-6 rounded-full bank-btn-primary flex items-center justify-center text-xs">2</span>
+            <span>Schritt 2: Ergebnisse & Institutional Financial Artifacts</span>
+          </h2>
+          <p class="text-xs text-[var(--bank-text-muted)]" id="resultSubtitle">Prüfen Sie die vom 1P Financial Research Agenten erstellten Artefakte, Modelle und Trust-Dossiers.</p>
+        </div>
+
+        <!-- Export Buttons -->
+        <div class="flex items-center space-x-2 no-print">
+          <button onclick="downloadPdf()" class="px-3.5 py-1.5 border hover:border-[var(--bank-accent)] text-xs font-semibold text-white flex items-center space-x-1.5 transition bank-surface-higher bank-border bank-radius">
+            <svg class="w-3.5 h-3.5 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/></svg>
+            <span>Download Board-Ready PDF</span>
+          </button>
+          <button onclick="exportExcelCsv()" class="px-3.5 py-1.5 border hover:border-[var(--bank-accent)] text-xs font-semibold text-white flex items-center space-x-1.5 transition bank-surface-higher bank-border bank-radius">
+            <svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h14a1 1 0 100-2H3zM3 11a1 1 0 100 2h7a1 1 0 100-2H3z"/></svg>
+            <span>Modell (.XLSX / CSV)</span>
+          </button>
+          <button onclick="switchStep(1)" class="px-3.5 py-1.5 text-xs font-semibold transition bank-btn-primary">
+            ← Neue Fachfunktion
+          </button>
+        </div>
+      </div>
+
+      <!-- Deliverable Tabs (Folie 6 & 15: Reports, Models, Charts, Trust & Compliance) -->
+      <div class="flex items-center border-b border-[var(--bank-border)] space-x-4 text-xs font-semibold no-print">
+        <button onclick="showDeliverableTab('report')" id="tabBtn-report" class="py-2.5 border-b-2 border-[var(--bank-primary)] text-white flex items-center space-x-1.5 font-bold">
+          <span>📄 Investment Memo & Analyst Report</span>
+        </button>
+        <button onclick="showDeliverableTab('model')" id="tabBtn-model" class="py-2.5 border-b-2 border-transparent text-[var(--bank-text-muted)] hover:text-white flex items-center space-x-1.5">
+          <span>📊 Interaktives Finanzmodell (XLSX)</span>
+        </button>
+        <button onclick="showDeliverableTab('charts')" id="tabBtn-charts" class="py-2.5 border-b-2 border-transparent text-[var(--bank-text-muted)] hover:text-white flex items-center space-x-1.5">
+          <span>📈 Financial Charts & Risikoprofil</span>
+        </button>
+        <button onclick="showDeliverableTab('trust')" id="tabBtn-trust" class="py-2.5 border-b-2 border-transparent text-[var(--bank-text-muted)] hover:text-white flex items-center space-x-1.5">
+          <span>🛡️ Trust, Explainability & Audit (Folie 6)</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: Investment Memo & Analyst Report -->
+      <div id="tabContent-report" class="space-y-4 pdf-dossier">
+        <div class="p-6 border space-y-5 card-print bank-surface-elevated bank-border bank-radius">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[var(--bank-border)] pb-4 gap-2">
+            <div>
+              <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bank-surface bank-accent-text border bank-border" id="memoMetaBadge">N26 • Buy-Side Due Diligence</span>
+              <h3 class="text-lg font-google font-bold text-white mt-1" id="memoHeadline">Comprehensive Investment & Operational Due Diligence Memo</h3>
+              <p class="text-xs text-[var(--bank-text-muted)]" id="memoMetaDate">Generiert durch Google Cloud 1P Financial Research Agent • Status: Institutional Grade</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-mono px-2.5 py-1 rounded bg-emerald-950/60 border border-emerald-800 text-emerald-300 font-bold">
+                AUDITED CITATIONS: 100%
+              </span>
+            </div>
+          </div>
+
+          <!-- Live Output Container (If live stream was executed) -->
+          <div id="liveOutputSection" class="hidden p-4 border border-emerald-600/50 space-y-3 bank-surface-higher bank-radius">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-400 font-mono flex items-center space-x-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>Live Grounded Answer von Discovery Engine (finance_research)</span>
+              </span>
+              <span class="text-[10px] font-mono text-gray-400" id="liveEventStats">Stream Events</span>
+            </div>
+            <div id="liveOutputContent" class="text-xs text-gray-200 font-sans leading-relaxed markdown-prose"></div>
+          </div>
+
+          <!-- Structured Analyst Memo Sections -->
+          <div class="space-y-4 text-xs leading-relaxed text-gray-200" id="memoStructuredContent">
+            <!-- Populated dynamically based on Bank & Persona -->
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 2: Interaktives Finanzmodell (Valuation Model / XLSX Simulator) -->
+      <div id="tabContent-model" class="hidden space-y-4 pdf-dossier">
+        <div class="p-6 border space-y-5 card-print bank-surface-elevated bank-border bank-radius">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[var(--bank-border)] pb-4 gap-3">
+            <div>
+              <h3 class="text-sm font-bold text-white font-google">Dynamisches DCF- & Bewertungsmodell (XLSX-Simulation)</h3>
+              <p class="text-xs text-[var(--bank-text-muted)]">Interaktive Sensitivitätsanalyse über diskontierten Free Cash Flow und Zinsmargen.</p>
+            </div>
+
+            <!-- Scenario Toggles: Bear / Base / Bull -->
+            <div class="flex items-center space-x-2 no-print">
+              <span class="text-[11px] text-[var(--bank-text-muted)] font-mono">Szenario:</span>
+              <button onclick="setScenario('bear')" id="scenBtn-bear" class="px-3 py-1 rounded text-xs font-mono border bank-surface-higher bank-border text-[var(--bank-text-muted)] hover:text-white transition">Bear (-15%)</button>
+              <button onclick="setScenario('base')" id="scenBtn-base" class="px-3 py-1 rounded text-xs font-mono bank-btn-primary transition">Base</button>
+              <button onclick="setScenario('bull')" id="scenBtn-bull" class="px-3 py-1 rounded text-xs font-mono border bank-surface-higher bank-border text-[var(--bank-text-muted)] hover:text-white transition">Bull (+25%)</button>
+            </div>
+          </div>
+
+          <!-- Key Financial Scorecards -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 font-mono">
+            <div class="p-3 border bank-surface-higher bank-border bank-radius">
+              <div class="text-[10px] text-[var(--bank-text-muted)]">Umsatz / Erträge (2026E)</div>
+              <div class="text-base font-bold text-white" id="valRevenue">€435.0 Mio.</div>
+              <div class="text-[10px] text-emerald-400" id="valRevGrowth">+28.5% YoY</div>
+            </div>
+            <div class="p-3 border bank-surface-higher bank-border bank-radius">
+              <div class="text-[10px] text-[var(--bank-text-muted)]">Bereinigtes EBITDA</div>
+              <div class="text-base font-bold text-white" id="valEbitda">€98.4 Mio.</div>
+              <div class="text-[10px] text-[var(--bank-accent)]" id="valEbitdaMargin">22.6% Marge</div>
+            </div>
+            <div class="p-3 border bank-surface-higher bank-border bank-radius">
+              <div class="text-[10px] text-[var(--bank-text-muted)]">WACC (Diskontsatz)</div>
+              <div class="text-base font-bold text-white" id="valWacc">8.75%</div>
+              <div class="text-[10px] text-[var(--bank-text-muted)]">Beta: 1.18 • Rf: 2.65%</div>
+            </div>
+            <div class="p-3 border border-emerald-800 bg-emerald-950/20 bank-radius">
+              <div class="text-[10px] text-emerald-300">Impliziter Unternehmenswert (EV)</div>
+              <div class="text-base font-bold text-emerald-400" id="valEv">€3.42 Mrd.</div>
+              <div class="text-[10px] text-emerald-300" id="valPerShare">Impliziert: €48.20 / Aktie</div>
+            </div>
+          </div>
+
+          <!-- Spreadsheet Table -->
+          <div class="overflow-x-auto border bank-border bank-radius">
+            <table class="w-full text-left text-xs font-mono">
+              <thead class="border-b bank-surface-higher bank-border text-[var(--bank-text-muted)]">
+                <tr>
+                  <th class="p-3">Kennzahl (€ Mio.)</th>
+                  <th class="p-3 text-right">2023A</th>
+                  <th class="p-3 text-right">2024A</th>
+                  <th class="p-3 text-right">2025E</th>
+                  <th class="p-3 text-right text-[var(--bank-accent)] font-bold">2026E (Modell)</th>
+                  <th class="p-3 text-right">2027E</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[var(--bank-border)] text-gray-200" id="modelSpreadsheetBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 3: Financial Charts & Risikoprofil -->
+      <div id="tabContent-charts" class="hidden space-y-4 pdf-dossier">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Chart 1: Revenue & EBITDA Trajectory -->
+          <div class="p-6 border space-y-4 card-print bank-surface-elevated bank-border bank-radius">
+            <div class="flex items-center justify-between border-b border-[var(--bank-border)] pb-3">
+              <div>
+                <h4 class="text-xs font-bold text-white font-google">Ertrags- & Margenentwicklung</h4>
+                <p class="text-[11px] text-[var(--bank-text-muted)]">Historische & prognostizierte Werte (€ Mio.)</p>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bank-surface-higher text-emerald-400">CAGR: +24.8%</span>
+            </div>
+            
+            <div class="h-64 flex items-end justify-between px-4 pt-6 pb-2 border bank-surface-higher bank-border bank-radius gap-3">
+              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                <div class="w-full bg-[var(--bank-primary)]/40 rounded-t" style="height: 35%;"></div>
+                <span class="text-[10px] font-mono text-[var(--bank-text-muted)]">2023</span>
+                <span class="text-[10px] font-mono text-white" id="chartY23">€180M</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                <div class="w-full bg-[var(--bank-primary)]/60 rounded-t" style="height: 52%;"></div>
+                <span class="text-[10px] font-mono text-[var(--bank-text-muted)]">2024</span>
+                <span class="text-[10px] font-mono text-white" id="chartY24">€270M</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                <div class="w-full bg-[var(--bank-primary)]/80 rounded-t" style="height: 68%;"></div>
+                <span class="text-[10px] font-mono text-[var(--bank-text-muted)]">2025</span>
+                <span class="text-[10px] font-mono text-white" id="chartY25">€340M</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                <div class="w-full rounded-t shadow-lg" id="chartBar26" style="height: 85%; background-color: var(--bank-primary);"></div>
+                <span class="text-[10px] font-mono font-bold text-[var(--bank-accent)]">2026E</span>
+                <span class="text-[10px] font-mono font-bold text-[var(--bank-accent)]" id="chartY26">€435M</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                <div class="w-full bg-[var(--bank-accent)]/70 rounded-t" style="height: 100%;"></div>
+                <span class="text-[10px] font-mono text-[var(--bank-text-muted)]">2027E</span>
+                <span class="text-[10px] font-mono text-white" id="chartY27">€520M</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart 2: Peer Valuation Multiples -->
+          <div class="p-6 border space-y-4 card-print bank-surface-elevated bank-border bank-radius">
+            <div class="flex items-center justify-between border-b border-[var(--bank-border)] pb-3">
+              <div>
+                <h4 class="text-xs font-bold text-white font-google">Peer Group Bewertung (EV / Sales Multiples)</h4>
+                <p class="text-[11px] text-[var(--bank-text-muted)]">Vergleich im europäischen Banken- & FinTech-Sektor</p>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bank-surface-higher text-[var(--bank-accent)]">Median: 7.4x</span>
+            </div>
+
+            <div class="h-64 flex flex-col justify-around px-4 py-2 border bank-surface-higher bank-border bank-radius">
+              <div class="space-y-1">
+                <div class="flex justify-between text-[11px] font-mono">
+                  <span>Revolut (UK / Global)</span>
+                  <span class="font-bold text-white">9.2x</span>
+                </div>
+                <div class="w-full bg-black/40 rounded-full h-2">
+                  <div class="bg-[#1326FD] h-2 rounded-full" style="width: 78%;"></div>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <div class="flex justify-between text-[11px] font-mono">
+                  <span>Trade Republic (DE)</span>
+                  <span class="font-bold text-white">8.5x</span>
+                </div>
+                <div class="w-full bg-black/40 rounded-full h-2">
+                  <div class="bg-white h-2 rounded-full" style="width: 72%;"></div>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <div class="flex justify-between text-[11px] font-mono">
+                  <span id="labelPeerActiveBank">N26 Bank (DE)</span>
+                  <span class="font-bold text-[var(--bank-accent)]" id="valPeerActiveMultiple">7.8x (Zielbewertung)</span>
+                </div>
+                <div class="w-full bg-black/40 rounded-full h-2">
+                  <div id="barPeerActiveMultiple" class="h-2 rounded-full shadow-sm" style="width: 66%; background-color: var(--bank-primary);"></div>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <div class="flex justify-between text-[11px] font-mono">
+                  <span>Monzo Bank (UK)</span>
+                  <span class="font-bold text-white">6.9x</span>
+                </div>
+                <div class="w-full bg-black/40 rounded-full h-2">
+                  <div class="bg-[#FF4F40] h-2 rounded-full" style="width: 58%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 4: Trust, Explainability & Audit (Folie 6) -->
+      <div id="tabContent-trust" class="hidden space-y-4 pdf-dossier">
+        <div class="p-6 border space-y-6 card-print bank-surface-elevated bank-border bank-radius">
+          
+          <div class="border-b border-[var(--bank-border)] pb-4">
+            <h3 class="text-sm font-bold text-white font-google">Enterprise Trust & Compliance Dossier (Folie 6)</h3>
+            <p class="text-xs text-[var(--bank-text-muted)]">Lückenlose Nachvollziehbarkeit, algorithmische Transparenz und forensische Prüfpfade.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs font-mono">
+            <!-- Pillar 1: Explainability -->
+            <div class="p-4 border space-y-2 bank-surface-higher bank-border bank-radius">
+              <div class="font-bold text-emerald-400">EXPLAINABILITY</div>
+              <p class="text-[11px] text-[var(--bank-text-muted)]">Herleitung über offizielle Rechnungslegungsstandards (IFRS 9, MaRisk) und offengelegte SQL-Abfragen.</p>
+              <div class="text-[10px] text-white bg-black/50 p-2 rounded border border-gray-800" id="trustSqlSnippet">
+                SELECT capital_tier1, rwa, lcr FROM bq_reg_lake.de_n26_prudential WHERE report_date = '2025-12-31'
+              </div>
+            </div>
+
+            <!-- Pillar 2: Transparency -->
+            <div class="p-4 border space-y-2 bank-surface-higher bank-border bank-radius">
+              <div class="font-bold text-gcloud-blue">TRANSPARENCY</div>
+              <div class="text-xl font-bold text-white">98.4%</div>
+              <p class="text-[11px] text-[var(--bank-text-muted)]">Aggregierter Konfidenz-Score aus Data Freshness (99%), Formula Verifiability (98%) und Multi-Source Konsens.</p>
+            </div>
+
+            <!-- Pillar 3: Auditability -->
+            <div class="p-4 border space-y-2 bank-surface-higher bank-border bank-radius">
+              <div class="font-bold text-purple-400">AUDITABILITY</div>
+              <div class="text-[10px] text-purple-300 break-all font-mono" id="trustSnapshotHash">SHA-256: 4f9e1d88b723ac108f51270b2069e223</div>
+              <p class="text-[11px] text-[var(--bank-text-muted)]">Unveränderlicher Daten-Snapshot im Google Cloud Regional DRZ Storage für Wirtschaftsprüfer.</p>
+            </div>
+
+            <!-- Pillar 4: Verifiability -->
+            <div class="p-4 border space-y-2 bank-surface-higher bank-border bank-radius">
+              <div class="font-bold text-yellow-400">VERIFIABILITY</div>
+              <div class="space-y-1 text-[10px] text-[var(--bank-text-muted)]" id="trustCitationsList">
+                <div class="text-white">✓ Bundesanzeiger Jahresabschluss 2024</div>
+                <div class="text-white">✓ BaFin Rundschreiben 10/2021</div>
+                <div class="text-white">✓ FactSet Consolidated Consensus</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Application Logic -->
+  <script>
+    // Official Bank Design System & Domain Configurations
+    const BANKS = {
+      n26: {
+        name: "N26 Bank",
+        tag: "N26",
+        badge: "N26",
+        tagline: "The Mobile Bank",
+        title: "N26 Bank European Multi-Agent Architecture",
+        desc: "Vollregulierte europäische Neobank mit BaFin-Vollbanklizenz. Spezialisiert auf mobiles Retail-Banking, Krypto-Vermögensverwaltung, Zinsportfolios und Konsumentenkredite für 8,5 Mio. Kunden.",
+        license: "BaFin / EZB Vollbank",
+        assets: "€8.2 Mrd.",
+        focus: "Retail & Wealth",
+        emailDomain: "n26.corp",
+        localGazette: "Bundesanzeiger DE",
+        browserPreviewUrl: "https://www.bundesanzeiger.de/ebanzwww/wexsservlet",
+        browserPreviewAction: "Status 200 OK • Extrahiere N26 AG IFRS 9 Risikovorsorge & CET-1",
+        sqlTable: "bq_reg_lake.de_n26_prudential",
+        rainbow: false,
+        // Official Brand Design Tokens
+        primary: "#088177",       // N26 Official Signature Teal
+        primaryHover: "#06625B",
+        primaryText: "#FFFFFF",
+        accent: "#16A37F",        // N26 Light Mint
+        bg: "#0D1318",            // N26 Official Dark Slate
+        surface: "#151D24",
+        surfaceElevated: "#1C242C",
+        surfaceHigher: "#252E38",
+        border: "#2E3D4D",
+        radius: "14px",
+        logoSvg: `<svg viewBox="0 0 24 24" class="w-6 h-6 fill-current"><path d="M4 4h3.5v9.8L16.5 4H20v16h-3.5v-9.8L7.5 20H4V4zM4 22h16v2H4v-2z"/></svg>`
+      },
+
+      revolut: {
+        name: "Revolut",
+        tag: "REV",
+        badge: "Revolut",
+        tagline: "Change the way you money",
+        title: "Revolut Global Multi-Currency & Treasury Agent Suite",
+        desc: "Globale Finanz-Super-App mit UK PRA-Lizenz und europäischer Banklizenz (Bank of Lithuania). Über 45 Mio. Privat- und Geschäftskunden mit starkem Fokus auf FX-Arbitrage, Wealth und Multi-Currency.",
+        license: "UK PRA & Bank of Lithuania",
+        assets: "€21.5 Mrd.",
+        focus: "FX & Global Treasury",
+        emailDomain: "revolut.corp",
+        localGazette: "UK Companies House / PRA",
+        browserPreviewUrl: "https://find-and-update.company-information.service.gov.uk/company/08804411",
+        browserPreviewAction: "Status 200 OK • Extrahiere Revolut Ltd Annual Report & PRA Buffer",
+        sqlTable: "bq_treasury_lake.uk_revolut_prudential",
+        rainbow: false,
+        // Official Brand Design Tokens
+        primary: "#1326FD",       // Revolut Official Deep Blue
+        primaryHover: "#0D1BD9",
+        primaryText: "#FFFFFF",
+        accent: "#00D2FF",        // Revolut Cyan Accent
+        bg: "#080B10",            // Revolut Obsidian Black
+        surface: "#10141D",
+        surfaceElevated: "#161B26",
+        surfaceHigher: "#1E2535",
+        border: "#263246",
+        radius: "12px",
+        logoSvg: `<svg viewBox="0 0 24 24" class="w-6 h-6 fill-current"><path d="M14.5 2.5H4v19h4.5v-6h4.2l4.8 6h5l-5.3-6.6c2.8-.8 4.8-3.3 4.8-6.4 0-3.6-2.9-6-7.5-6zm-.2 8.5H8.5V6.8h5.8c2 0 3.2 1 3.2 2.1 0 1.2-1.2 2.1-3.2 2.1z"/></svg>`
+      },
+
+      traderepublic: {
+        name: "Trade Republic",
+        tag: "TR",
+        badge: "Trade Republic",
+        tagline: "Europe's largest savings platform",
+        title: "Trade Republic European Wealth & Neobroker Platform",
+        desc: "Europas größte Spar- und Investmentplattform mit Vollbanklizenz. Pionier bei 4% Zinsen auf nicht investiertes Guthaben, Sparplänen, Fractional Shares und Anleihehandel.",
+        license: "BaFin Vollbank",
+        assets: "€35.0 Mrd. AUM",
+        focus: "Wealth & Securities",
+        emailDomain: "traderepublic.corp",
+        localGazette: "Bundesanzeiger DE",
+        browserPreviewUrl: "https://www.bundesanzeiger.de/ebanzwww/wexsservlet?tr_depot",
+        browserPreviewAction: "Status 200 OK • Extrahiere Trade Republic Bank GmbH Treuhandguthaben",
+        sqlTable: "bq_securities_lake.de_traderepublic_deposits",
+        rainbow: false,
+        // Official Brand Design Tokens (Bauhaus / Stark Monochromatic)
+        primary: "#FFFFFF",       // Stark White
+        primaryHover: "#E4E4E7",
+        primaryText: "#000000",   // Black on White contrast
+        accent: "#22C55E",        // Growth Green (#00D09C)
+        bg: "#000000",            // Stark Pure Pitch Black
+        surface: "#0A0A0A",
+        surfaceElevated: "#141414",
+        surfaceHigher: "#1F1F1F",
+        border: "#2C2C2E",
+        radius: "6px",            // Razor-sharp modernism
+        logoSvg: `<svg viewBox="0 0 24 24" class="w-6 h-6 stroke-current fill-none" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M12 8v8M14 13l3 3" stroke-linecap="round"/></svg>`
+      },
+
+      deutschebank: {
+        name: "Deutsche Bank (CIB)",
+        tag: "DB",
+        badge: "Deutsche Bank",
+        tagline: "Leistung aus Leidenschaft",
+        title: "Deutsche Bank Corporate & Investment Bank Agent Suite",
+        desc: "Führende europäische Universalbank mit globalem Corporate Banking und Investment Banking. Komplexe M&A-Transaktionsberatung, strukturierte Anleiheemissionen und FX-Derivate.",
+        license: "EZB / BaFin Tier-1",
+        assets: "€1.31 Bio.",
+        focus: "Capital Markets & M&A",
+        emailDomain: "db.corp",
+        localGazette: "BaFin & EZB Register",
+        browserPreviewUrl: "https://www.db.com/ir/de/berichte-und-unterlagen.htm",
+        browserPreviewAction: "Status 200 OK • Extrahiere Deutsche Bank AG Konzern-Kapitalquoten (Pillar 3)",
+        sqlTable: "bq_cib_lake.global_db_prudential",
+        rainbow: false,
+        // Official Brand Design Tokens
+        primary: "#0018A8",       // Official Deutsche Blue (Pantone 286 C)
+        primaryHover: "#001280",
+        primaryText: "#FFFFFF",
+        accent: "#00A3E0",        // Corporate Cyan
+        bg: "#030712",            // Deep Corporate Navy
+        surface: "#070E1E",
+        surfaceElevated: "#0D182E",
+        surfaceHigher: "#14223F",
+        border: "#1C3058",
+        radius: "6px",            // German Institutional Banking
+        logoSvg: `<svg viewBox="0 0 24 24" class="w-6 h-6"><rect x="2" y="2" width="20" height="20" rx="1" fill="#0018A8"/><path d="M5 19L19 5" stroke="#FFFFFF" stroke-width="3" stroke-linecap="square"/></svg>`
+      },
+
+      monzo: {
+        name: "Monzo Bank",
+        tag: "MONZO",
+        badge: "Monzo",
+        tagline: "Banking made easy",
+        title: "Monzo UK Digital Challenger Bank Agent Platform",
+        desc: "Großbritanniens führende Digitalbank mit 9+ Mio. Kunden. Innovator bei Spar-Pots, Monzo Flex (Buy Now Pay Later), vulnerablen Kundenschutzmechanismen und SME-Banking.",
+        license: "UK PRA & FCA",
+        assets: "£11.2 Mrd.",
+        focus: "Digital Retail & Flex",
+        emailDomain: "monzo.corp",
+        localGazette: "UK Companies House",
+        browserPreviewUrl: "https://monzo.com/annual-report/2025/",
+        browserPreviewAction: "Status 200 OK • Extrahiere Monzo Bank Ltd Balance Sheet & Flex Impairments",
+        sqlTable: "bq_monzo_lake.uk_monzo_credit_risk",
+        rainbow: false,
+        // Official Brand Design Tokens
+        primary: "#FF4F40",       // Official Hot Coral (Pantone 805 C digital)
+        primaryHover: "#E63E30",
+        primaryText: "#FFFFFF",
+        accent: "#FFAA00",        // Sunset Ochre
+        bg: "#09121D",            // Monzo Deep Midnight Navy
+        surface: "#0F1A29",
+        surfaceElevated: "#152438",
+        surfaceHigher: "#1C2F49",
+        border: "#284163",
+        radius: "20px",           // Friendly soft rounded pill cards
+        logoSvg: `<svg viewBox="0 0 24 24" class="w-6 h-6" fill="#FF4F40"><path d="M3 18V6l4.5 6L12 6l4.5 6L21 6v12h-3.5v-7L14 15.5 12 13l-2 2.5L6.5 11v7H3z"/></svg>`
+      },
+
+      bunq: {
+        name: "bunq",
+        tag: "BUNQ",
+        badge: "bunq",
+        tagline: "Bank of The Free",
+        title: "bunq Bank of the Free European ESG Agent Platform",
+        desc: "Europas zweitgrößte Neobank mit DNB-Banklizenz. Technologieführer bei Multi-IBANs, weltweitem Reise-Banking, automatischer CO2-Kompensation (Easy Green) und digitaler Mobilität.",
+        license: "Dutch DNB Vollbank",
+        assets: "€4.5 Mrd.",
+        focus: "ESG & Multi-IBAN",
+        emailDomain: "bunq.corp",
+        localGazette: "Dutch DNB Register",
+        browserPreviewUrl: "https://www.bunq.com/newsroom/media-kits",
+        browserPreviewAction: "Status 200 OK • Extrahiere bunq B.V. DNB Capital Adequacy & Easy Green ESG",
+        sqlTable: "bq_esg_lake.nl_bunq_sustainability",
+        rainbow: true,            // Shows the iconic bunq Rainbow Ribbon
+        // Official Brand Design Tokens
+        primary: "#00A86B",       // bunq Vivid Green
+        primaryHover: "#008F5B",
+        primaryText: "#FFFFFF",
+        accent: "#00E676",        // Electric Lime
+        bg: "#030D08",            // Eco Deep Forest
+        surface: "#07170F",
+        surfaceElevated: "#0D2217",
+        surfaceHigher: "#143021",
+        border: "#1C452E",
+        radius: "16px",
+        logoSvg: `<svg viewBox="0 0 24 24" class="w-6 h-6"><circle cx="12" cy="12" r="9" fill="url(#bunqRainbowGrad)"/><defs><linearGradient id="bunqRainbowGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FF1744"/><stop offset="25%" stop-color="#FF9100"/><stop offset="50%" stop-color="#00E676"/><stop offset="75%" stop-color="#00B0FF"/><stop offset="100%" stop-color="#D500F9"/></linearGradient></defs></svg>`
+      }
+    };
+
+    // The 6 Personas & their exact Fachfunktionen (Slides 3, 4, 11)
+    const PERSONAS = {
+      PORTFOLIO_MANAGER: {
+        code: "PORTFOLIO_MANAGER",
+        title: "Portfolio Manager & Investment Analyst (Buy side)",
+        heroCUJ: "Accelerate due diligence by synthesizing large volumes of research materials and generating first drafts of investment memos.",
+        desc: "Recherchiert Anlagechancen, führt Fundamentalanalysen durch und steuert das Portfolio mit dem Ziel kontinuierlicher Outperformance (Alpha).",
+        cujList: [
+          {
+            id: "pm-cuj-1",
+            name: "Due Diligence & Investment Memo Drafting",
+            desc: "Erstellt vollumfängliche Investment Memos für das Investment Committee inklusive DCF-Bewertung, Risikomatrix und Peer-Vergleich.",
+            prompt: "Führe eine vollumfängliche Buy-Side Due Diligence für das Institut durch. Strukturiere das Investment Memo in: Executive Summary, Ertragsdynamik, Einlagenstabilität, CET-1 Kapitalausstattung, Zinsmarge und Risikoanalyse mit klarer Investment-Empfehlung."
+          },
+          {
+            id: "pm-cuj-2",
+            name: "Idea Sourcing & Sector Filtering",
+            desc: "Filtert liquide europäische FinTechs und Neobanken nach EBITDA-Margenexpansion, LTV/CAC-Ratios und Einlagensicherungsquoten.",
+            prompt: "Scanne den europäischen Bankensektor nach Neobanken mit über 20% bereinigter EBITDA-Marge und wachsendem Zinsüberschuss. Vergleiche die Bewertungsmultiples mit traditionellen Banken."
+          },
+          {
+            id: "pm-cuj-3",
+            name: "Construction & Risk Factor Decomposition",
+            desc: "Zerlegt das Portfolio-Risiko in Makro-Zinsrisiko, Kreditrisiko und Währungsvolatilität.",
+            prompt: "Modelliere eine Risikofaktor-Zerlegung des Bankenportfolios unter Annahme einer 50 Basispunkte Zinssenkung durch die EZB. Berechne die Sensitivität auf Net Interest Income und Einlagenvolumen."
+          },
+          {
+            id: "pm-cuj-4",
+            name: "Coverage & Proactive Anomaly Monitoring",
+            desc: "Überwacht Portfoliounternehmen 24x7 auf Abweichungen von Ertragsprognosen und Einlagenabflüssen.",
+            prompt: "Aktiviere die 24x7 Überwachung für das Institut. Identifiziere Warnsignale bezüglich Einlagenfluktuationen, Kreditausfällen im Konsumentenbereich oder regulatorischen Sonderprüfungen."
+          }
+        ]
+      },
+
+      RESEARCH_ANALYST: {
+        code: "RESEARCH_ANALYST",
+        title: "Research Analyst (Sell side)",
+        heroCUJ: "Address the 'earnings scramble' by summarizing press releases and creating initial drafts of research notes, reducing the time required to publish analysis.",
+        desc: "Veröffentlicht branchenspezifische Analysen, Kursziele und Ratings ('Buy/Hold/Sell') zur Beratung institutioneller Kunden und zur Generierung von Handelsvolumen.",
+        cujList: [
+          {
+            id: "ra-cuj-1",
+            name: "The 'Earnings Scramble' 15-Min Flash Note",
+            desc: "Extrahiert unmittelbar nach Veröffentlichung von Quartalsberichten Abweichungen zum Konsens und generiert Veröffentlichungsentwürfe.",
+            prompt: "Erstelle eine unmittelbare 'Earnings Scramble' Flash Note zur jüngsten Ertragsveröffentlichung des Instituts. Extrahiere Abweichungen von Konsensschätzungen (FactSet) bei Erträgen, Nettoverlust/Gewinn und Kundenwachstum."
+          },
+          {
+            id: "ra-cuj-2",
+            name: "Financial Modeling & Consensus Variance",
+            desc: "Passt Diskontierungsfaktoren und Multiples an und berechnet revidierte Kursziele.",
+            prompt: "Aktualisiere das Bewertungsmodell für das Institut. Berechne die Konsens-Varianz und leite ein neues 12-Monats-Kursziel basierend auf 8.0x EV/EBITDA und 15x KGV ab."
+          },
+          {
+            id: "ra-cuj-3",
+            name: "Initiation of Coverage Comprehensive Report",
+            desc: "Verfasst einen detaillierten Einstiegsbericht mit Branchendynamik, Management-Due-Diligence und IFRS-Finanzkennzahlen.",
+            prompt: "Erstelle die Gliederung und Kernabschnitte eines 'Initiation of Coverage' Berichts mit Investment Thesis, Wettbewerbsvorteilen ('Moat') und detaillierter 3-Jahres-GuV-Prognose."
+          },
+          {
+            id: "ra-cuj-4",
+            name: "Stock Rating & Thematic Notes Publication",
+            desc: "Überprüft Buy/Hold/Sell-Einstufungen auf Basis veränderter Zinsspreads und Regulatorik.",
+            prompt: "Formuliere eine Begründung für ein Upgrade auf 'BUY' unter Berücksichtigung der Skaleneffekte bei IT-Kosten pro Kunde und wachsender Provisionserträge aus Krypto & Sparplänen."
+          }
+        ]
+      },
+
+      QUANT_TRADER: {
+        code: "QUANT_TRADER",
+        title: "Sales & Quant Trader",
+        heroCUJ: "Prepare morning briefings tailored to specific client lists by synthesizing overnight news and market data; Identify personalized trading ideas.",
+        desc: "Dient als primärer Ansprechpartner für institutionelle Kunden bei Marktinformationen, quantitativen Handelsideen und Ausführungsoptimierung.",
+        cujList: [
+          {
+            id: "qt-cuj-1",
+            name: "Pre-Market Morning Intelligence Briefing",
+            desc: "Synthetisiert nächtliche Makrodaten, Asien-Märkte und regulatorische News zu individuellen Briefings für institutionelle Kunden.",
+            prompt: "Generiere ein hochkompaktes Pre-Market Briefing für institutionelle Kunden. Synthetisiere nächtliche Zinsbewegungen, Renditekurven-Shifts und relevante Branchennachrichten vor Handelsbeginn."
+          },
+          {
+            id: "qt-cuj-2",
+            name: "Personalized Trading Ideas & Flow Signals",
+            desc: "Identifiziert Arbitrage-Chancen zwischen Einlagenrenditen, Anleihespreads und FX-Swaps.",
+            prompt: "Identifiziere taktische Relative-Value-Trading-Chancen im europäischen FinTech- und Banken-Anleihesegment unter Einbezug von Credit Default Swaps (CDS) und Duration."
+          },
+          {
+            id: "qt-cuj-3",
+            name: "Alpha Research & Quantitative Strategy Backtesting",
+            desc: "Testet Momentum- und Mean-Reversion-Strategien auf Hochfrequenz-Orderbuchdaten und berechnet Sharpe-Ratio und Max Drawdown.",
+            prompt: "Modelliere eine quantitative Handelsstrategie für Finanzwerte basierend auf Sentiment-Spikes und Orderbuch-Ungleichgewichten. Zeige erwartete Sharpe-Ratio und Drawdown-Profile."
+          },
+          {
+            id: "qt-cuj-4",
+            name: "Post-Market Wrap & Liquidity Analytics",
+            desc: "Analysiert End-of-Day-Transaktionsvolumina, Block-Trades und Dark-Pool-Aktivitäten.",
+            prompt: "Führe eine Post-Market Analyse der Liquiditätsverteilung durch. Identifiziere auffällige Block-Trades und berechne effektive Spread-Kosten."
+          }
+        ]
+      },
+
+      BUSINESS_LINE_MGR: {
+        code: "BUSINESS_LINE_MGR",
+        title: "Business Line Manager (Banking Division / P&L)",
+        heroCUJ: "Generate competitive intelligence and proactive client insights by synthesizing internal trading data with external market events.",
+        desc: "Steuert Strategie, Produktentwicklung und GuV (P&L) für Geschäftsbereiche wie Karten, Krypto, Konsumentenkredite oder B2B-Banking.",
+        cujList: [
+          {
+            id: "blm-cuj-1",
+            name: "Competitive Intelligence & Market Share Pulse",
+            desc: "Benchmarkt Margen, Einlagenzinsen und Gebührenstrukturen gegen europäische Neobank-Konkurrenten.",
+            prompt: "Erstelle ein Wettbewerbs-Benchmark gegen führende europäische Institute. Vergleiche Zinsangebote auf Tagesgeld, Kontoführungsgebühren und Krypto-Spreads."
+          },
+          {
+            id: "blm-cuj-2",
+            name: "Market Event Response & P&L Sensitivity Analysis",
+            desc: "Simuliert die Auswirkungen von EZB-Zinssenkungen auf den Zinsüberschuss (Net Interest Income) und die Kundenabwanderung.",
+            prompt: "Simuliere die P&L-Auswirkungen von drei aufeinanderfolgenden EZB-Zinsschritten (-25 bps). Berechne den Rückgang des Zinsüberschusses und skizziere kompensierende Fee-Income-Maßnahmen."
+          },
+          {
+            id: "blm-cuj-3",
+            name: "Product Profitability & Customer Cohort Analysis",
+            desc: "Analysiert Deckungsbeiträge einzelner Kundenkohorten (z.B. Premium-Abonnements vs. Free-Tier).",
+            prompt: "Analysiere den Lifetime-Value (LTV) und die Churn-Rate von Premium-Abonnenten im Vergleich zum kostenfreien Basiskonto."
+          },
+          {
+            id: "blm-cuj-4",
+            name: "Regulatory Capital Buffer & LCR Optimization",
+            desc: "Überwacht CET-1-Quoten und Liquiditätsdeckungsanforderungen (LCR) für das Produktportfolio.",
+            prompt: "Überprüfe die Einhaltung der aufsichtsrechtlichen Liquiditätsdeckungsquote (LCR) und Kernkapitalanforderung (CET-1). Identifiziere Optimierungspotenziale bei der Besicherung von Krediten."
+          }
+        ]
+      },
+
+      IB_ANALYST: {
+        code: "IB_ANALYST",
+        title: "Investment Banking (IB) Analyst (M&A / ECM)",
+        heroCUJ: "Accelerate due diligence by instantly synthesizing data rooms, surfacing key risks, and finding answers to complex questions on demand.",
+        desc: "Berät Unternehmenskunden bei strategischen M&A-Transaktionen, Börsengängen (IPOs) und strukturierten Kapitalerhöhungen.",
+        cujList: [
+          {
+            id: "iba-cuj-1",
+            name: "M&A Virtual Data Room Deep Diligence",
+            desc: "Durchsucht hunderte Verträge, Lizenzvereinbarungen und Prüfberichte im Datenraum und markiert Change-of-Control-Klauseln und Prozessrisiken.",
+            prompt: "Analysiere die virtuelle Datenraum-Dokumentation für eine M&A-Zieltransaktion. Hebe Change-of-Control-Klauseln, IT-Vendor-Lock-ins und anhängige regulatorische Prüfverfahren hervor."
+          },
+          {
+            id: "iba-cuj-2",
+            name: "LBO & M&A Valuation Modeling (XLSX)",
+            desc: "Baut dynamische Finanzmodelle mit Debt-Schedule, Synergie-Bewertungen und Sensitivitätstabellen.",
+            prompt: "Erstelle ein vollständiges LBO- und Fusionsmodell. Modelliere Fremdkapitaltranchen (Senior Debt, Mezzanine), Synergien in der IT-Infrastruktur und leite die erwartete Eigenkapitalrendite (IRR) ab."
+          },
+          {
+            id: "iba-cuj-3",
+            name: "Pitchbook & Board Transaction Materials Preparation",
+            desc: "Generiert Vorstandspräsentationen für M&A-Transaktionen, Spin-offs oder Wachstumsfinanzierungsrunden.",
+            prompt: "Erstelle ein Executive Pitchbook für den Vorstand bezüglich einer strategischen Übernahme zur paneuropäischen Expansion. Zeige strategische Rationale und Integrations-Roadmap."
+          },
+          {
+            id: "iba-cuj-4",
+            name: "IPO Readiness & Equity Story Drafting",
+            desc: "Formuliert die Equity Story und analysiert Bewertungs-Multiples vergleichbarer börsennotierter FinTechs.",
+            prompt: "Bewerte die IPO-Readiness des Instituts. Formuliere die Core Equity Story für institutionelle Investoren und erstelle ein Peer-Trading-Comps-Sheet mit EV/Sales und KGV."
+          }
+        ]
+      },
+
+      COMPLIANCE_MGR: {
+        code: "COMPLIANCE_MGR",
+        title: "Compliance Manager & KYC / AML Analyst",
+        heroCUJ: "Reduce Alert Fatigue by screening and applying contextual reasoning to clear and prioritize alerts.",
+        desc: "Führt Sorgfaltspflichtprüfungen (Due Diligence) durch, bewertet Risikoprofile und minimiert Fehlalarme durch kontextuelle KI-Prüfungen.",
+        cujList: [
+          {
+            id: "cmp-cuj-1",
+            name: "Contextual AML Alert Clearing (Reduce Alert Fatigue)",
+            desc: "Analysiert Transaktionsmuster im Kontext von Kundenhistorie, Geografie und Vermögensherkunft zur Entlastung des First-Line-Teams.",
+            prompt: "Führe eine kontextuelle Untersuchung für Transaktions-Alerts durch. Wende KI-Reasoning an, um unbegründete Geldwäsche-Verdachtsmeldungen (False Positives) automatisiert auszufiltern und echte Risiken zu priorisieren."
+          },
+          {
+            id: "cmp-cuj-2",
+            name: "PEP, Sanctions & Negative News Deep Screening",
+            desc: "Gleicht Kunden- und UBO-Listen in Echtzeit gegen OFAC-, EU- und UN-Sanktionslisten sowie Medienberichte ab.",
+            prompt: "Prüfe Kundenkonten auf Übereinstimmungen mit internationalen Sanktionslisten (EU, OFAC, UK HMT) und analysiere adverse Medienberichte bezüglich politisch exponierter Personen (PEP)."
+          },
+          {
+            id: "cmp-cuj-3",
+            name: "Crypto Travel Rule & VASP Verification (MiCA)",
+            desc: "Verifiziert Gegenpartei-Identitäten bei unhosted Krypto-Wallets gemäß MiCA und EU-Geldtransferverordnung.",
+            prompt: "Überprüfe Krypto-Transaktionen über €1.000 auf Konformität mit der EU Travel Rule. Validiere VASP-Identitäten und unhosted Wallet-Risikoscores."
+          },
+          {
+            id: "cmp-cuj-4",
+            name: "Regulatory Audit Trail Dossier (BaFin / FCA / EZB)",
+            desc: "Generiert manipulationssichere Dokumentationen für behördliche Sonderprüfungen.",
+            prompt: "Erstelle ein vollständiges Audit-Dossier zur Vorlage bei der zuständigen Aufsichtsbehörde. Dokumentiere Entscheidungsgründe, Prüfpfade und getroffene risikominimierende Maßnahmen."
+          }
+        ]
+      }
+    };
+
+    let activeBankKey = 'n26';
+    let activePersonaKey = 'PORTFOLIO_MANAGER';
+    let activeCujIndex = 0;
+    let activeScenario = 'base';
+
+    // Application Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      checkServerHealth();
+      changeBank('n26');
+    });
+
+    function checkServerHealth() {
+      fetch('/api/status')
+        .then(r => r.json())
+        .then(data => {
+          const badge = document.getElementById('serverHealthBadge');
+          if (data && data.auth_ok) {
+            badge.classList.remove('hidden');
+          }
+        })
+        .catch(err => {
+          console.log('Backend health check:', err);
+        });
+    }
+
+    // Transform Full Page Design to Selected Bank's Official Identity
+    function changeBank(bankKey) {
+      const bank = BANKS[bankKey];
+      if (!bank) return;
+      activeBankKey = bankKey;
+
+      // 1. Update Root CSS Custom Properties (Colors, Radii, Accents)
+      const root = document.documentElement;
+      root.style.setProperty('--bank-primary', bank.primary);
+      root.style.setProperty('--bank-primary-hover', bank.primaryHover);
+      root.style.setProperty('--bank-primary-text', bank.primaryText);
+      root.style.setProperty('--bank-accent', bank.accent);
+      root.style.setProperty('--bank-bg', bank.bg);
+      root.style.setProperty('--bank-surface', bank.surface);
+      root.style.setProperty('--bank-surface-elevated', bank.surfaceElevated);
+      root.style.setProperty('--bank-surface-higher', bank.surfaceHigher);
+      root.style.setProperty('--bank-border', bank.border);
+      root.style.setProperty('--bank-radius', bank.radius);
+
+      // Body background update
+      document.body.style.backgroundColor = bank.bg;
+
+      // 2. Bunq Rainbow Bar
+      const rainbowBar = document.getElementById('bunqRainbowBar');
+      if (bank.rainbow) {
+        rainbowBar.classList.remove('hidden');
+      } else {
+        rainbowBar.classList.add('hidden');
+      }
+
+      // 3. Header Branding & Logo
+      document.getElementById('bankBrandIconContainer').innerHTML = bank.logoSvg;
+      document.getElementById('bankBrandIconContainer').style.backgroundColor = bank.primary;
+      document.getElementById('bankBrandIconContainer').style.color = bank.primaryText;
+      document.getElementById('headerBankName').innerText = bank.name;
+      document.getElementById('headerBankTagline').innerText = bank.tagline;
+
+      // 4. Update Bank Selector Pills (Highlight Active)
+      Object.keys(BANKS).forEach(key => {
+        const pill = document.getElementById(`bankPill-${key}`);
+        if (pill) {
+          if (key === bankKey) {
+            pill.style.backgroundColor = bank.primary;
+            pill.style.color = bank.primaryText;
+            pill.style.borderColor = bank.primary;
+            pill.classList.add('shadow-md');
+          } else {
+            pill.style.backgroundColor = 'transparent';
+            pill.style.color = 'var(--bank-text-muted)';
+            pill.style.borderColor = 'var(--bank-border)';
+            pill.classList.remove('shadow-md');
+          }
+        }
+      });
+
+      // 5. Update Bank Context Hero Card
+      const badge = document.getElementById('bankBadge');
+      badge.innerText = bank.badge;
+      badge.style.backgroundColor = bank.primary;
+      badge.style.color = bank.primaryText;
+
+      document.getElementById('bankTitle').innerText = bank.title;
+      document.getElementById('bankDesc').innerText = bank.desc;
+      document.getElementById('statLicense').innerText = bank.license;
+      document.getElementById('statAssets').innerText = bank.assets;
+      document.getElementById('statFocus').innerText = bank.focus;
+
+      // 6. Update Digital Identity & Connectors
+      document.getElementById('digitalIdEmail').innerText = `agent-fin-research@${bank.emailDomain}`;
+      document.getElementById('labelLocalGazette').innerText = bank.localGazette;
+      document.getElementById('browserPreviewUrl').innerText = bank.browserPreviewUrl;
+      document.getElementById('browserPreviewAction').innerText = bank.browserPreviewAction;
+      document.getElementById('trustSqlSnippet').innerText = `SELECT capital_tier1, rwa, lcr FROM ${bank.sqlTable} WHERE report_date = '2025-12-31'`;
+
+      // Peer Multiple in Tab 3
+      document.getElementById('labelPeerActiveBank').innerText = `${bank.name} (${bank.tag})`;
+      document.getElementById('barPeerActiveMultiple').style.backgroundColor = bank.primary;
+
+      // Refresh Persona View with updated Bank context
+      updatePersonaView();
+    }
+
+    function selectPersona(personaKey) {
+      activePersonaKey = personaKey;
+      activeCujIndex = 0;
+
+      // Update Persona Cards UI Selection
+      document.querySelectorAll('.pcard').forEach(btn => {
+        btn.classList.remove('ring-2', 'ring-[var(--bank-primary)]');
+        btn.style.borderColor = 'var(--bank-border)';
+      });
+      const selected = document.getElementById(`pcard-${personaKey}`);
+      if (selected) {
+        selected.classList.add('ring-2');
+        selected.style.borderColor = 'var(--bank-primary)';
+      }
+
+      updatePersonaView();
+    }
+
+    function updatePersonaView() {
+      const bank = BANKS[activeBankKey];
+      const persona = PERSONAS[activePersonaKey];
+      if (!persona) return;
+
+      document.getElementById('activePersonaBadge').innerText = persona.code;
+      document.getElementById('activePersonaTitle').innerText = persona.title;
+      document.getElementById('activePersonaHeroCUJ').innerText = `Hero CUJ: ${persona.heroCUJ}`;
+      document.getElementById('activePersonaDescription').innerText = persona.desc;
+
+      // Render Fachfunktionen
+      const container = document.getElementById('fachfunktionenList');
+      container.innerHTML = '';
+
+      persona.cujList.forEach((cuj, index) => {
+        const isSelected = index === activeCujIndex;
+        const card = document.createElement('div');
+        card.className = `p-3.5 border cursor-pointer transition bank-surface-elevated bank-border bank-radius ${
+          isSelected 
+            ? 'ring-2' 
+            : 'hover:border-[var(--bank-accent)]'
+        }`;
+        if (isSelected) {
+          card.style.borderColor = bank.primary;
+        }
+        card.onclick = () => selectCuj(index);
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-[10px] font-mono text-[var(--bank-text-muted)] font-semibold">CUJ 0${index + 1}</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface bank-accent-text border bank-border">1P FRA</span>
+          </div>
+          <div class="font-bold text-xs text-white">${cuj.name}</div>
+          <div class="text-[11px] text-[var(--bank-text-muted)] mt-1 leading-relaxed line-clamp-2">${cuj.desc}</div>
+        `;
+        container.appendChild(card);
+      });
+
+      // Update text in prompt area with bank injected
+      const activeCuj = persona.cujList[activeCujIndex];
+      if (activeCuj) {
+        const contextualPrompt = activeCuj.prompt.replace(/das ausgewählte Institut|das Institut/g, bank.name);
+        document.getElementById('queryInput').value = contextualPrompt;
+      }
+    }
+
+    function selectCuj(index) {
+      activeCujIndex = index;
+      updatePersonaView();
+    }
+
+    function switchStep(step) {
+      const s1 = document.getElementById('containerStep1');
+      const s2 = document.getElementById('containerStep2');
+      const b1 = document.getElementById('stepBtn1');
+      const b2 = document.getElementById('stepBtn2');
+
+      if (step === 1) {
+        s1.classList.remove('hidden');
+        s2.classList.add('hidden');
+        b1.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 bank-btn-primary shadow-sm transition";
+        b2.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 text-[var(--bank-text-muted)] hover:text-white transition";
+      } else {
+        s1.classList.add('hidden');
+        s2.classList.remove('hidden');
+        b1.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 text-[var(--bank-text-muted)] hover:text-white transition";
+        b2.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 bank-btn-primary shadow-sm transition";
+        renderResults();
+      }
+    }
+
+    // Trigger Execution
+    async function triggerFachfunktion() {
+      const bank = BANKS[activeBankKey];
+      const btn = document.getElementById('btnTrigger');
+      const monitor = document.getElementById('executionMonitorArea');
+      const mode = document.getElementById('executionModeSelect').value;
+      const query = document.getElementById('queryInput').value;
+
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        <span>Wird ausgeführt...</span>
+      `;
+      monitor.classList.remove('hidden');
+
+      // Scroll to monitor
+      monitor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // Animate monitor steps
+      document.getElementById('browserNavigatingText').innerText = `> Connecting to ${bank.name} Data Feeds & ${bank.localGazette}...`;
+      document.getElementById('browserPreviewAction').innerText = `Status 200 OK • Querying 1P Discovery Engine (${mode})...`;
+      document.getElementById('critiqueStatus').innerText = "Running Critique...";
+      
+      let liveResult = null;
+
+      try {
+        const resp = await fetch('/api/run_agent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: query,
+            persona: activePersonaKey,
+            bank: bank.name,
+            mode: mode
+          })
+        });
+        const data = await resp.json();
+        if (data && data.live_data) {
+          liveResult = data.live_data;
+        }
+      } catch (err) {
+        console.log('Execution fetch err:', err);
+      }
+
+      // Finish animation
+      setTimeout(() => {
+        document.getElementById('critiqueStatus').innerText = "Verified";
+        document.getElementById('critiqueStatus').className = "text-emerald-400 font-bold";
+        document.getElementById('refineStatus').innerText = "Optimized";
+        document.getElementById('refineStatus').className = "text-emerald-400 font-bold";
+
+        btn.disabled = false;
+        btn.innerHTML = `
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span>Fachfunktion Ausführen</span>
+        `;
+
+        // Store live result and switch to Step 2
+        window.lastLiveResult = liveResult;
+        switchStep(2);
+      }, 1500);
+    }
+
+    // Deliverable Tabs Switcher
+    function showDeliverableTab(tabKey) {
+      const bank = BANKS[activeBankKey];
+      const tabs = ['report', 'model', 'charts', 'trust'];
+      tabs.forEach(t => {
+        const el = document.getElementById(`tabContent-${t}`);
+        const btn = document.getElementById(`tabBtn-${t}`);
+        if (t === tabKey) {
+          el.classList.remove('hidden');
+          btn.className = "py-2.5 border-b-2 text-white flex items-center space-x-1.5 font-bold";
+          btn.style.borderColor = bank.primary;
+        } else {
+          el.classList.add('hidden');
+          btn.className = "py-2.5 border-b-2 border-transparent text-[var(--bank-text-muted)] hover:text-white flex items-center space-x-1.5";
+          btn.style.borderColor = 'transparent';
+        }
+      });
+    }
+
+    // Render Comprehensive Results in Step 2
+    function renderResults() {
+      const bank = BANKS[activeBankKey];
+      const persona = PERSONAS[activePersonaKey];
+      const cuj = persona.cujList[activeCujIndex];
+
+      document.getElementById('resultSubtitle').innerText = `${bank.name} • Ausgeführt als: ${persona.title} • Fachfunktion: ${cuj.name}`;
+      document.getElementById('memoMetaBadge').innerText = `${bank.tag} • ${persona.code}`;
+      document.getElementById('memoHeadline').innerText = `${bank.name}: ${cuj.name}`;
+
+      // Check if we have real live output
+      const liveSection = document.getElementById('liveOutputSection');
+      const liveContent = document.getElementById('liveOutputContent');
+      const liveStats = document.getElementById('liveEventStats');
+
+      if (window.lastLiveResult && window.lastLiveResult.answer) {
+        liveSection.classList.remove('hidden');
+        if (typeof marked !== 'undefined' && marked.parse) {
+          liveContent.innerHTML = marked.parse(window.lastLiveResult.answer);
+        } else {
+          liveContent.innerText = window.lastLiveResult.answer;
+        }
+        liveStats.innerText = `${window.lastLiveResult.event_count || 25} Stream Events • Discovery Engine Live`;
+      } else {
+        liveSection.classList.add('hidden');
+      }
+
+      // Populate Structured Content
+      const memoContent = document.getElementById('memoStructuredContent');
+      memoContent.innerHTML = `
+        <div class="space-y-4">
+          <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
+            <h4 class="text-xs font-bold text-[var(--bank-accent)] uppercase tracking-wider font-mono">1. Executive Summary & Strategische Synthese</h4>
+            <p class="text-gray-300">
+              Die automatisierte Untersuchung von <strong>${bank.name}</strong> unter Anwendung der Fachperspektive <em>${persona.title}</em> ergab ein hochgradig stabiles operatives Fundament mit überdurchschnittlicher Ertragsdynamik im europäischen Bankenvergleich. Durch die Kombination von Einlagensicherung, skalierbarer Cloud-Infrastruktur und wachsendem Zinsüberschuss übertrifft die Rendite auf das regulatorische Eigenkapital (RoE) den Branchenschnitt um 420 Basispunkte.
+            </p>
+          </div>
+
+          <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
+            <h4 class="text-xs font-bold text-white uppercase tracking-wider font-mono">2. Fundamentale Finanzkennzahlen & Bilanzanalyse (${bank.name})</h4>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-[11px] pt-1">
+              <div class="p-2.5 rounded bg-black/40 border border-gray-800">
+                <div class="text-[var(--bank-text-muted)]">Net Interest Margin (NIM):</div>
+                <div class="text-emerald-400 font-bold text-sm">3.42% (+65 bps)</div>
+              </div>
+              <div class="p-2.5 rounded bg-black/40 border border-gray-800">
+                <div class="text-[var(--bank-text-muted)]">Cost-Income Ratio (CIR):</div>
+                <div class="text-white font-bold text-sm">54.8% (Ziel: &lt;50%)</div>
+              </div>
+              <div class="p-2.5 rounded bg-black/40 border border-gray-800">
+                <div class="text-[var(--bank-text-muted)]">Common Equity Tier 1:</div>
+                <div class="text-emerald-400 font-bold text-sm">16.8% (${bank.license})</div>
+              </div>
+              <div class="p-2.5 rounded bg-black/40 border border-gray-800">
+                <div class="text-[var(--bank-text-muted)]">Liquidity Coverage Ratio:</div>
+                <div class="text-white font-bold text-sm">215% (Min: 100%)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
+            <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-wider font-mono">3. Spezifische Audit- & Fach-Erkenntnisse (${cuj.name})</h4>
+            <ul class="list-disc list-inside space-y-1 text-gray-300">
+              <li><strong>Datenquellen-Verifikation:</strong> Geschäftsberichte, ${bank.localGazette} Offenlegungen und IFRS 9 Risikovorsorgen wurden lückenlos mit Primärdokumenten abgeglichen.</li>
+              <li><strong>Regulatorische Schutzmechanismen:</strong> MaRisk-, MiCA- und MiFID-II-Auflagen sind vollständig erfüllt. Es liegen keine aufsichtsrechtlichen Begrenzungen des Wachstums vor.</li>
+              <li><strong>Entscheidungs-Empfehlung:</strong> Freigabe der beantragten Transaktions- bzw. Risikoallokation mit Vorstands-Sign-off.</li>
+            </ul>
+          </div>
+        </div>
+      `;
+
+      // Update Chart Bar Color to Bank Primary
+      document.getElementById('chartBar26').style.backgroundColor = bank.primary;
+
+      // Update Spreadsheet
+      updateModelSpreadsheet();
+    }
+
+    // Interactive Scenario Toggle in Tab 2
+    function setScenario(scen) {
+      activeScenario = scen;
+      const bank = BANKS[activeBankKey];
+      const btns = ['bear', 'base', 'bull'];
+      btns.forEach(b => {
+        const el = document.getElementById(`scenBtn-${b}`);
+        if (b === scen) {
+          el.className = "px-3 py-1 rounded text-xs font-mono bank-btn-primary transition";
+        } else {
+          el.className = "px-3 py-1 rounded text-xs font-mono border bank-surface-higher bank-border text-[var(--bank-text-muted)] hover:text-white transition";
+        }
+      });
+
+      let mult = 1.0;
+      if (scen === 'bear') mult = 0.85;
+      if (scen === 'bull') mult = 1.25;
+
+      const rev = (435.0 * mult).toFixed(1);
+      const ebitda = (98.4 * mult).toFixed(1);
+      const ev = (3.42 * mult).toFixed(2);
+      const share = (48.20 * mult).toFixed(2);
+
+      document.getElementById('valRevenue').innerText = `€${rev} Mio.`;
+      document.getElementById('valEbitda').innerText = `€${ebitda} Mio.`;
+      document.getElementById('valEv').innerText = `€${ev} Mrd.`;
+      document.getElementById('valPerShare').innerText = `Impliziert: €${share} / Aktie`;
+
+      updateModelSpreadsheet(mult);
+    }
+
+    function updateModelSpreadsheet(mult = 1.0) {
+      const tbody = document.getElementById('modelSpreadsheetBody');
+      const rows = [
+        { name: "Zinsüberschuss (NII)", y23: "115.0", y24: "185.0", y25: "245.0", y26: (320.0 * mult).toFixed(1), y27: (395.0 * mult).toFixed(1) },
+        { name: "Provisionsüberschuss (Fee)", y23: "65.0", y24: "85.0", y25: "95.0", y26: (115.0 * mult).toFixed(1), y27: (140.0 * mult).toFixed(1) },
+        { name: "Gesamterträge", y23: "180.0", y24: "270.0", y25: "340.0", y26: (435.0 * mult).toFixed(1), y27: (535.0 * mult).toFixed(1) },
+        { name: "Verwaltungsaufwand", y23: "-195.0", y24: "-220.0", y25: "-235.0", y26: (-260.0 * (mult > 1 ? 1.08 : mult)).toFixed(1), y27: "-285.0" },
+        { name: "Risikovorsorge Kredite", y23: "-12.0", y24: "-18.0", y25: "-22.0", y26: (-25.0 * mult).toFixed(1), y27: "-28.0" },
+        { name: "Operatives EBITDA", y23: "-27.0", y24: "32.0", y25: "83.0", y26: (98.4 * mult).toFixed(1), y27: (152.0 * mult).toFixed(1) },
+        { name: "Free Cash Flow (FCF)", y23: "-45.0", y24: "18.5", y25: "62.0", y26: (78.0 * mult).toFixed(1), y27: (124.0 * mult).toFixed(1) }
+      ];
+
+      tbody.innerHTML = '';
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-[var(--bank-surface-higher)] transition";
+        tr.innerHTML = `
+          <td class="p-3 font-medium text-white">${r.name}</td>
+          <td class="p-3 text-right text-gray-400">${r.y23}</td>
+          <td class="p-3 text-right text-gray-400">${r.y24}</td>
+          <td class="p-3 text-right text-gray-300">${r.y25}</td>
+          <td class="p-3 text-right font-bold text-emerald-400">${r.y26}</td>
+          <td class="p-3 text-right text-gray-300">${r.y27}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // PDF Download via Print Engine
+    function downloadPdf() {
+      showDeliverableTab('report');
+      setTimeout(() => {
+        window.print();
+      }, 200);
+    }
+
+    // Excel CSV Download
+    function exportExcelCsv() {
+      let csv = "Kennzahl;2023A;2024A;2025E;2026E;2027E\n";
+      csv += "Zinsüberschuss;115.0;185.0;245.0;320.0;395.0\n";
+      csv += "Provisionsüberschuss;65.0;85.0;95.0;115.0;140.0\n";
+      csv += "Gesamterträge;180.0;270.0;340.0;435.0;535.0\n";
+      csv += "Operatives EBITDA;-27.0;32.0;83.0;98.4;152.0\n";
+      csv += "Free Cash Flow;-45.0;18.5;62.0;78.0;124.0\n";
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${BANKS[activeBankKey].tag}_Financial_Model_${activeScenario}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
+</body>
+</html>

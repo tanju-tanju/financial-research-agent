@@ -1,0 +1,17 @@
+{
+  "name": "projects/850196904392/locations/global/collections/default_collection/engines/aigents/assistants/default_assistant/agents/n26_supervisor",
+  "displayName": "N26 Multi-Agent Supervisor & Persona Orchestrator",
+  "description": "Enterprise coordinator routing institutional queries to credit, risk, cashflow, wealth, and compliance specialist subagents.",
+  "agentType": "LOW_CODE",
+  "state": "PRIVATE",
+  "metadata": {
+    "domain": "institutional-banking",
+    "subagents": [
+      "n26_credit_affordability",
+      "n26_aml_compliance",
+      "n26_business_cashflow",
+      "n26_wealth_crypto",
+      "n26_executive_pulse"
+    ]
+  }
+}
