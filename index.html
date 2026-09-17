@@ -357,9 +357,138 @@
           </div>
           <div class="font-bold text-xs text-white leading-tight">Compliance / KYC</div>
           <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Alert Fatigue Clearing, MiCA, Sanktionen & Audit</div>
-        </button>
-
       </div>
+
+      <!-- ========================================================================= -->
+      <!-- MULTI-STAGE WORKFLOW PIPELINE (IN SERIE SCHALTEN PER DRAG & DROP)        -->
+      <!-- ========================================================================= -->
+      <section class="p-5 border shadow-2xl space-y-4 relative overflow-hidden theme-transition bank-surface-elevated bank-border bank-radius">
+        <div class="absolute right-0 top-0 w-96 h-full bg-gradient-to-l from-[var(--bank-primary)]/10 to-transparent pointer-events-none"></div>
+
+        <!-- Pipeline Bar Header & Presets Toolbar -->
+        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--bank-border)] pb-3">
+          <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-base shadow-md bank-btn-primary">
+              ⚡
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <h3 class="text-sm font-bold text-white font-google tracking-tight">Sequentielle Workflow Pipeline (In Serie schalten)</h3>
+                <span id="pipelineCountBadge" class="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-800">
+                  0 Fachfunktionen gewählt
+                </span>
+              </div>
+              <p class="text-[11px] text-[var(--bank-text-muted)]">
+                Kombinieren Sie 1 bis N Fachfunktionen: Per <strong>Drag & Drop mit der Maus</strong> auf die Leiste ziehen oder per <strong>„+ In Pipeline“</strong> hinzufügen. Mehrfache Nutzung möglich.
+              </p>
+            </div>
+          </div>
+
+          <!-- Preset Loader & Reset Toolbar -->
+          <div class="flex items-center space-x-2">
+            <select id="presetSelect" onchange="loadPreset(this.value)" class="text-xs font-mono px-3 py-1.5 rounded-lg border bank-surface-higher bank-border text-white focus:outline-none focus:border-[var(--bank-primary)]">
+              <option value="">⚡ Vorkonfigurierte Ketten (Presets)...</option>
+              <option value="ma_diligence">🏛️ M&A Due Diligence Suite (3 Schritte)</option>
+              <option value="earnings_wrap">📈 Earnings Scramble & NIM Wrap (3 Schritte)</option>
+              <option value="mica_compliance">🛡️ MiCA Crypto & AML Compliance Audit (3 Schritte)</option>
+              <option value="full_audit">🌐 360° Institutional Bank Audit (4 Schritte)</option>
+            </select>
+
+            <button onclick="clearPipeline()" class="px-2.5 py-1.5 text-xs font-mono rounded-lg border border-red-900/60 bg-red-950/40 text-red-300 hover:bg-red-900/60 hover:text-white transition flex items-center space-x-1" title="Pipeline leeren">
+              <span>🗑️</span>
+              <span class="hidden sm:inline">Leeren</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Horizontal Drop Zone & Step Sequence Lane -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between text-[11px] font-mono text-[var(--bank-text-muted)]">
+            <span class="flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-[var(--bank-accent)]"></span>
+              <span>Reihenfolge der Ausführung: Schritt 01 ➔ Schritt 02 ➔ Schritt N</span>
+            </span>
+            <span class="hidden md:inline text-[10px]">Tipp: Schritte mit ◀/▶ verschieben oder mit 📋 duplizieren</span>
+          </div>
+
+          <div id="pipelineDropZone" 
+               ondragover="handlePipelineDragOver(event)" 
+               ondragleave="handlePipelineDragLeave(event)" 
+               ondrop="handlePipelineDrop(event)"
+               class="min-h-[110px] p-3 rounded-xl border-2 border-dashed border-[var(--bank-border)] bank-surface-higher transition-all duration-200 flex items-center overflow-x-auto gap-2.5 scrollbar-thin">
+            <!-- Dynamic Step Cards rendered here, or Empty Drop Prompt -->
+          </div>
+        </div>
+
+        <!-- Selected Step Prompt Editor & Execution Control Panel -->
+        <div id="pipelineEditorArea" class="hidden space-y-3 pt-3 border-t border-[var(--bank-border)]">
+          
+          <!-- Step Tabs Navigation in Editor -->
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center space-x-1.5 overflow-x-auto pb-1" id="pipelineStepTabsContainer">
+              <!-- Rendered step pill tabs -->
+            </div>
+            <div class="flex items-center space-x-3 text-[11px] font-mono">
+              <label class="flex items-center space-x-1.5 text-[var(--bank-text-muted)] cursor-pointer hover:text-white">
+                <input type="checkbox" id="pipelinePassContextCheckbox" checked class="rounded border-[var(--bank-border)] text-[var(--bank-primary)] focus:ring-0">
+                <span>Ergebnisse sequenziell an Folgeschritte weiterleiten (Context Chaining)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Live Prompt Textarea with Token Inserters -->
+          <div class="space-y-2">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+              <div class="flex items-center space-x-2">
+                <span class="font-bold text-white" id="editorStepTitle">Prompt für Schritt 1 anpassen:</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bank-surface bank-accent-text border bank-border" id="editorStepPersonaBadge">IB_ANALYST</span>
+              </div>
+              
+              <!-- Quick Token Inserter Chips -->
+              <div class="flex items-center space-x-1.5 text-[10px] font-mono flex-wrap gap-1">
+                <span class="text-[var(--bank-text-muted)]">Variablen einfügen:</span>
+                <button type="button" onclick="insertPromptToken('{BANK_NAME}')" class="px-2 py-0.5 rounded bg-black/40 border bank-border text-[var(--bank-accent)] hover:border-white transition">+{BANK_NAME}</button>
+                <button type="button" onclick="insertPromptToken('{VORHERIGES_ERGEBNIS}')" class="px-2 py-0.5 rounded bg-black/40 border bank-border text-emerald-400 hover:border-white transition">+{VORHERIGES_ERGEBNIS}</button>
+                <button type="button" onclick="insertPromptToken('STRESS_TEST: +200 bps EZB-Zinsanstieg')" class="px-2 py-0.5 rounded bg-black/40 border bank-border text-yellow-400 hover:border-white transition">+Zins-Stresstest</button>
+                <button type="button" onclick="insertPromptToken('REGULATORIK: BaFin / EZB SREP & MiCA')" class="px-2 py-0.5 rounded bg-black/40 border bank-border text-purple-400 hover:border-white transition">+Regulatorik</button>
+              </div>
+            </div>
+
+            <textarea id="pipelineStepPromptInput" 
+                      oninput="handleStepPromptChange(this.value)" 
+                      rows="3" 
+                      class="w-full text-xs font-mono p-3 border bank-surface bank-border bank-radius text-white focus:outline-none focus:border-[var(--bank-primary)] resize-y"
+                      placeholder="Prompt für diesen Schritt..."></textarea>
+          </div>
+
+          <!-- Pipeline Action Bar & Big Launch Button -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+            <div class="text-[11px] text-[var(--bank-text-muted)] flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Erst beim Klick auf „Ausführen“ werden alle verketteten Fachfunktionen in Serie ausgeführt.</span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <button onclick="triggerPipelineExecution()" id="btnPipelineExecute" class="px-6 py-2.5 text-xs font-bold shadow-xl flex items-center space-x-2 bank-btn-primary hover:scale-[1.02] active:scale-[0.98] transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span id="btnPipelineExecuteText">🚀 Pipeline in Serie ausführen (0 Schritte)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Progress Indicator when executing -->
+          <div id="pipelineProgressBarContainer" class="hidden space-y-1.5 pt-2">
+            <div class="flex justify-between text-xs font-mono">
+              <span id="pipelineProgressLabel" class="text-emerald-400 font-bold">Initialisiere sequentielle Pipeline...</span>
+              <span id="pipelineProgressPercent" class="text-white font-bold">0%</span>
+            </div>
+            <div class="w-full bg-black/50 rounded-full h-2 overflow-hidden border border-gray-800">
+              <div id="pipelineProgressBar" class="h-2 rounded-full bg-gradient-to-r from-emerald-500 via-[var(--bank-primary)] to-[var(--bank-accent)] transition-all duration-500" style="width: 0%;"></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
 
       <!-- Persona Detail & Fachfunktionen Selection Area -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -605,6 +734,24 @@
           <button onclick="switchStep(1)" class="px-3.5 py-1.5 text-xs font-semibold transition bank-btn-primary">
             ← Neue Fachfunktion
           </button>
+        </div>
+      </div>
+
+      <!-- Multi-Stage Pipeline Results Selector Bar -->
+      <div id="pipelineResultsNavigator" class="hidden p-4 border bank-surface-elevated bank-border bank-radius space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--bank-border)] pb-2.5">
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <h3 class="text-xs font-bold text-white font-google">Ergebnisse der sequentiellen Pipeline-Ausführung</h3>
+            <span id="pipelineResultStepCountBadge" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-800">
+              0 Schritte
+            </span>
+          </div>
+          <span class="text-[10px] font-mono text-[var(--bank-accent)]">Klicken Sie auf einen Schritt, um dessen spezifische Agenten-Ausgabe &amp; Denkpfad einzusehen</span>
+        </div>
+        <!-- Pills container: [⭐ Konsolidierte Gesamtsynthese] [01: M&A Diligence ✅] [02: Comps ✅] ... -->
+        <div class="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-thin" id="pipelineResultStepPills">
+          <!-- Populated by JS -->
         </div>
       </div>
 
@@ -1267,10 +1414,43 @@
     let activeCujIndex = 0;
     let activeScenario = 'base';
 
+    // Sequential Workflow Pipeline State
+    let pipelineSteps = [];
+    let activePipelineIndex = 0;
+    let draggedCujData = null;
+    let isPipelineRunning = false;
+    let activeResultStepIndex = -1; // -1 = Consolidated Master Synthesis, 0..N = discrete step
+
+    // Pre-configured Enterprise Workflow Chains
+    const PRESET_CHAINS = {
+      ma_diligence: [
+        { personaKey: 'IB_ANALYST', cujIndex: 0 },
+        { personaKey: 'IB_ANALYST', cujIndex: 1 },
+        { personaKey: 'COMPLIANCE_MGR', cujIndex: 1 }
+      ],
+      earnings_wrap: [
+        { personaKey: 'RESEARCH_ANALYST', cujIndex: 0 },
+        { personaKey: 'BUSINESS_LINE_MGR', cujIndex: 1 },
+        { personaKey: 'PORTFOLIO_MANAGER', cujIndex: 2 }
+      ],
+      mica_compliance: [
+        { personaKey: 'COMPLIANCE_MGR', cujIndex: 2 },
+        { personaKey: 'COMPLIANCE_MGR', cujIndex: 0 },
+        { personaKey: 'COMPLIANCE_MGR', cujIndex: 3 }
+      ],
+      full_audit: [
+        { personaKey: 'IB_ANALYST', cujIndex: 0 },
+        { personaKey: 'BUSINESS_LINE_MGR', cujIndex: 0 },
+        { personaKey: 'PORTFOLIO_MANAGER', cujIndex: 1 },
+        { personaKey: 'COMPLIANCE_MGR', cujIndex: 3 }
+      ]
+    };
+
     // Application Initialization
     window.addEventListener('DOMContentLoaded', () => {
       checkServerHealth();
       changeBank('n26');
+      renderPipelineUI();
     });
 
     function checkServerHealth() {
@@ -1293,7 +1473,7 @@
       if (!bank) return;
       activeBankKey = bankKey;
 
-      // 1. Update Root CSS Custom Properties (Colors, Radii, Accents)
+      // 1. Update Root CSS Custom Properties
       const root = document.documentElement;
       root.style.setProperty('--bank-primary', bank.primary);
       root.style.setProperty('--bank-primary-hover', bank.primaryHover);
@@ -1306,7 +1486,6 @@
       root.style.setProperty('--bank-border', bank.border);
       root.style.setProperty('--bank-radius', bank.radius);
 
-      // Body background update
       document.body.style.backgroundColor = bank.bg;
 
       // 2. Bunq Rainbow Bar
@@ -1324,7 +1503,7 @@
       document.getElementById('headerBankName').innerText = bank.name;
       document.getElementById('headerBankTagline').innerText = bank.tagline;
 
-      // 4. Update Bank Selector Pills (Highlight Active)
+      // 4. Update Bank Selector Pills
       Object.keys(BANKS).forEach(key => {
         const pill = document.getElementById(`bankPill-${key}`);
         if (pill) {
@@ -1365,8 +1544,9 @@
       document.getElementById('labelPeerActiveBank').innerText = `${bank.name} (${bank.tag})`;
       document.getElementById('barPeerActiveMultiple').style.backgroundColor = bank.primary;
 
-      // Refresh Persona View with updated Bank context
+      // Refresh Views with updated Bank context
       updatePersonaView();
+      renderPipelineUI();
     }
 
     function selectPersona(personaKey) {
@@ -1397,17 +1577,20 @@
       document.getElementById('activePersonaHeroCUJ').innerText = `Hero CUJ: ${persona.heroCUJ}`;
       document.getElementById('activePersonaDescription').innerText = persona.desc;
 
-      // Render Fachfunktionen
+      // Render Fachfunktionen with Drag & Drop and Quick-Add Buttons
       const container = document.getElementById('fachfunktionenList');
       container.innerHTML = '';
 
       persona.cujList.forEach((cuj, index) => {
         const isSelected = index === activeCujIndex;
         const card = document.createElement('div');
-        card.className = `p-3.5 border cursor-pointer transition bank-surface-elevated bank-border bank-radius ${
+        card.draggable = true;
+        card.ondragstart = (e) => handleCardDragStart(e, activePersonaKey, index);
+        card.ondragend = (e) => handleCardDragEnd(e);
+        card.className = `p-3.5 border cursor-grab active:cursor-grabbing transition-all duration-150 bank-surface-elevated bank-border bank-radius group relative ${
           isSelected 
             ? 'ring-2' 
-            : 'hover:border-[var(--bank-accent)]'
+            : 'hover:border-[var(--bank-accent)] hover:shadow-lg'
         }`;
         if (isSelected) {
           card.style.borderColor = bank.primary;
@@ -1415,17 +1598,31 @@
         card.onclick = () => selectCuj(index);
 
         card.innerHTML = `
-          <div class="flex items-center justify-between mb-1">
+          <div class="flex items-center justify-between mb-1.5">
             <span class="text-[10px] font-mono text-[var(--bank-text-muted)] font-semibold">CUJ 0${index + 1}</span>
-            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface bank-accent-text border bank-border">1P FRA</span>
+            <div class="flex items-center space-x-1">
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface bank-accent-text border bank-border">1P FRA</span>
+              <span class="text-xs text-[var(--bank-text-muted)] group-hover:text-white transition font-mono" title="Mit der Maus auf die horizontale Pipeline ziehen">⠿</span>
+            </div>
           </div>
-          <div class="font-bold text-xs text-white">${cuj.name}</div>
-          <div class="text-[11px] text-[var(--bank-text-muted)] mt-1 leading-relaxed line-clamp-2">${cuj.desc}</div>
+          <div class="font-bold text-xs text-white leading-snug">${cuj.name}</div>
+          <div class="text-[11px] text-[var(--bank-text-muted)] mt-1.5 leading-relaxed line-clamp-2">${cuj.desc}</div>
+          
+          <!-- Card Footer with Drag Hint & 1-Click In-Pipeline Button -->
+          <div class="flex items-center justify-between pt-2.5 mt-2 border-t border-[var(--bank-border)]/60">
+            <span class="text-[9px] font-mono text-[var(--bank-text-muted)] flex items-center space-x-1">
+              <span>⠿</span>
+              <span>Ziehbar</span>
+            </span>
+            <button type="button" onclick="event.stopPropagation(); addStepToPipeline('${activePersonaKey}', ${index});" class="px-2.5 py-1 text-[10px] font-bold rounded-lg border bank-border bank-surface hover:border-[var(--bank-accent)] text-[var(--bank-accent)] hover:text-white transition flex items-center space-x-1 shadow-sm">
+              <span>+ In Pipeline</span>
+            </button>
+          </div>
         `;
         container.appendChild(card);
       });
 
-      // Update text in prompt area with bank injected
+      // Update text in single prompt area with bank injected
       const activeCuj = persona.cujList[activeCujIndex];
       if (activeCuj) {
         const contextualPrompt = activeCuj.prompt.replace(/das ausgewählte Institut|das Institut/g, bank.name);
@@ -1436,6 +1633,392 @@
     function selectCuj(index) {
       activeCujIndex = index;
       updatePersonaView();
+    }
+
+    // =========================================================================
+    // DRAG & DROP & PIPELINE MANAGEMENT ENGINE
+    // =========================================================================
+
+    function handleCardDragStart(event, personaKey, cujIndex) {
+      draggedCujData = { personaKey, cujIndex };
+      event.dataTransfer.setData('text/plain', JSON.stringify(draggedCujData));
+      event.dataTransfer.effectAllowed = 'copy';
+      if (event.currentTarget) {
+        event.currentTarget.classList.add('opacity-50', 'scale-95');
+      }
+    }
+
+    function handleCardDragEnd(event) {
+      if (event.currentTarget) {
+        event.currentTarget.classList.remove('opacity-50', 'scale-95');
+      }
+      draggedCujData = null;
+    }
+
+    function handlePipelineDragOver(event) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'copy';
+      const zone = document.getElementById('pipelineDropZone');
+      zone.classList.add('border-emerald-400', 'bg-emerald-950/20', 'scale-[1.005]');
+    }
+
+    function handlePipelineDragLeave(event) {
+      const zone = document.getElementById('pipelineDropZone');
+      zone.classList.remove('border-emerald-400', 'bg-emerald-950/20', 'scale-[1.005]');
+    }
+
+    function handlePipelineDrop(event) {
+      event.preventDefault();
+      const zone = document.getElementById('pipelineDropZone');
+      zone.classList.remove('border-emerald-400', 'bg-emerald-950/20', 'scale-[1.005]');
+
+      let data = draggedCujData;
+      if (!data) {
+        try {
+          const raw = event.dataTransfer.getData('text/plain');
+          if (raw) data = JSON.parse(raw);
+        } catch (e) {}
+      }
+
+      if (data && data.personaKey && data.cujIndex !== undefined) {
+        addStepToPipeline(data.personaKey, data.cujIndex);
+      }
+    }
+
+    function addStepToPipeline(personaKey, cujIndex) {
+      const persona = PERSONAS[personaKey];
+      if (!persona) return;
+      const cuj = persona.cujList[cujIndex];
+      if (!cuj) return;
+      const bank = BANKS[activeBankKey];
+
+      const contextualPrompt = cuj.prompt.replace(/das ausgewählte Institut|das Institut/g, bank.name);
+
+      const step = {
+        id: 'step_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        personaKey: personaKey,
+        personaTitle: persona.title,
+        personaCode: persona.code,
+        cujId: cuj.id,
+        cujName: cuj.name,
+        cujDesc: cuj.desc,
+        prompt: contextualPrompt,
+        status: 'pending', // 'pending' | 'running' | 'completed' | 'error'
+        result: null
+      };
+
+      pipelineSteps.push(step);
+      activePipelineIndex = pipelineSteps.length - 1;
+      renderPipelineUI();
+    }
+
+    function removePipelineStep(index) {
+      pipelineSteps.splice(index, 1);
+      if (activePipelineIndex >= pipelineSteps.length) {
+        activePipelineIndex = Math.max(0, pipelineSteps.length - 1);
+      }
+      renderPipelineUI();
+    }
+
+    function movePipelineStep(index, direction) {
+      const targetIndex = index + direction;
+      if (targetIndex < 0 || targetIndex >= pipelineSteps.length) return;
+      const item = pipelineSteps.splice(index, 1)[0];
+      pipelineSteps.splice(targetIndex, 0, item);
+      activePipelineIndex = targetIndex;
+      renderPipelineUI();
+    }
+
+    function duplicatePipelineStep(index) {
+      const original = pipelineSteps[index];
+      if (!original) return;
+      const clone = JSON.parse(JSON.stringify(original));
+      clone.id = 'step_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+      clone.status = 'pending';
+      clone.result = null;
+      pipelineSteps.splice(index + 1, 0, clone);
+      activePipelineIndex = index + 1;
+      renderPipelineUI();
+    }
+
+    function clearPipeline() {
+      pipelineSteps = [];
+      activePipelineIndex = 0;
+      renderPipelineUI();
+    }
+
+    function selectPipelineStep(index) {
+      activePipelineIndex = index;
+      renderPipelineUI();
+    }
+
+    function handleStepPromptChange(val) {
+      if (pipelineSteps[activePipelineIndex]) {
+        pipelineSteps[activePipelineIndex].prompt = val;
+      }
+    }
+
+    function insertPromptToken(token) {
+      const input = document.getElementById('pipelineStepPromptInput');
+      if (!input) return;
+      const bank = BANKS[activeBankKey];
+      let resolved = token;
+      if (token === '{BANK_NAME}') resolved = bank.name;
+      
+      const start = input.selectionStart || 0;
+      const end = input.selectionEnd || 0;
+      const val = input.value;
+      input.value = val.substring(0, start) + ' ' + resolved + ' ' + val.substring(end);
+      handleStepPromptChange(input.value);
+      input.focus();
+    }
+
+    function loadPreset(key) {
+      if (!key || !PRESET_CHAINS[key]) return;
+      pipelineSteps = [];
+      PRESET_CHAINS[key].forEach(item => {
+        addStepToPipeline(item.personaKey, item.cujIndex);
+      });
+      document.getElementById('presetSelect').value = '';
+    }
+
+    function renderPipelineUI() {
+      const count = pipelineSteps.length;
+      const badge = document.getElementById('pipelineCountBadge');
+      const dropZone = document.getElementById('pipelineDropZone');
+      const editorArea = document.getElementById('pipelineEditorArea');
+      const btnExecText = document.getElementById('btnPipelineExecuteText');
+      const bank = BANKS[activeBankKey];
+
+      if (badge) {
+        badge.innerText = `${count} Fachfunktion${count === 1 ? '' : 'en'} gewählt`;
+      }
+      if (btnExecText) {
+        btnExecText.innerText = `🚀 Pipeline in Serie ausführen (${count} Schritt${count === 1 ? '' : 'e'})`;
+      }
+
+      if (count === 0) {
+        editorArea.classList.add('hidden');
+        dropZone.innerHTML = `
+          <div class="w-full flex flex-col sm:flex-row items-center justify-between p-4 gap-3 text-center sm:text-left">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-full border border-dashed border-[var(--bank-border)] flex items-center justify-center text-lg text-[var(--bank-accent)]">
+                📥
+              </div>
+              <div>
+                <div class="font-bold text-xs text-white">Pipeline ist noch leer: Fachfunktionen per Drag &amp; Drop hier ablegen</div>
+                <div class="text-[11px] text-[var(--bank-text-muted)]">
+                  Ziehen Sie mit der Maus Fachfunktionen auf diese Leiste oder klicken Sie bei einer Fachfunktion auf „+ In Pipeline“.
+                </div>
+              </div>
+            </div>
+            <!-- Quick Preset Chips -->
+            <div class="flex items-center space-x-1.5 flex-wrap gap-1 text-[10px] font-mono">
+              <span class="text-[var(--bank-text-muted)] hidden lg:inline">Presets:</span>
+              <button onclick="loadPreset('ma_diligence')" class="px-2.5 py-1 rounded-lg border bank-border bank-surface hover:border-[var(--bank-accent)] text-white transition">
+                🏛️ M&amp;A Suite
+              </button>
+              <button onclick="loadPreset('earnings_wrap')" class="px-2.5 py-1 rounded-lg border bank-border bank-surface hover:border-[var(--bank-accent)] text-white transition">
+                📈 Earnings Wrap
+              </button>
+              <button onclick="loadPreset('mica_compliance')" class="px-2.5 py-1 rounded-lg border bank-border bank-surface hover:border-[var(--bank-accent)] text-white transition">
+                🛡️ MiCA Audit
+              </button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Render Sequence Lane
+      editorArea.classList.remove('hidden');
+      dropZone.innerHTML = '';
+
+      pipelineSteps.forEach((step, idx) => {
+        const isSelected = idx === activePipelineIndex;
+        const stepNum = idx + 1;
+        
+        // Step Status Icon
+        let statusBadge = `<span class="text-[10px] font-mono text-[var(--bank-text-muted)]">⏱️ Bereit</span>`;
+        if (step.status === 'running') {
+          statusBadge = `<span class="text-[10px] font-mono text-yellow-400 flex items-center space-x-1"><span class="animate-spin text-xs">⟳</span><span>Läuft...</span></span>`;
+        } else if (step.status === 'completed') {
+          statusBadge = `<span class="text-[10px] font-mono text-emerald-400 font-bold flex items-center space-x-0.5"><span>✓</span><span>Erledigt</span></span>`;
+        } else if (step.status === 'error') {
+          statusBadge = `<span class="text-[10px] font-mono text-red-400 font-bold">⚠️ Fehler</span>`;
+        }
+
+        const stepCard = document.createElement('div');
+        stepCard.className = `min-w-[240px] max-w-[280px] flex-shrink-0 p-3 rounded-xl border transition-all duration-150 cursor-pointer bank-surface bank-border ${
+          isSelected 
+            ? 'ring-2 ring-[var(--bank-primary)] border-[var(--bank-primary)] shadow-lg' 
+            : 'hover:border-[var(--bank-accent)]'
+        }`;
+        stepCard.onclick = () => selectPipelineStep(idx);
+
+        stepCard.innerHTML = `
+          <div class="flex items-center justify-between mb-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="w-5 h-5 rounded-full bank-btn-primary flex items-center justify-center text-[10px] font-bold">
+                ${stepNum}
+              </span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface-higher bank-accent-text border bank-border font-bold">
+                ${step.personaCode}
+              </span>
+            </div>
+            ${statusBadge}
+          </div>
+
+          <div class="font-bold text-xs text-white truncate pt-0.5" title="${step.cujName}">
+            ${step.cujName}
+          </div>
+
+          <!-- Step Reordering & Action Buttons -->
+          <div class="flex items-center justify-between pt-2 mt-2 border-t border-[var(--bank-border)]/60 text-[10px] font-mono">
+            <div class="flex items-center space-x-1">
+              <button type="button" onclick="event.stopPropagation(); movePipelineStep(${idx}, -1);" ${idx === 0 ? 'disabled' : ''} class="w-5 h-5 rounded border bank-border hover:border-white disabled:opacity-30 disabled:hover:border-transparent flex items-center justify-center transition" title="Nach links verschieben">◀</button>
+              <button type="button" onclick="event.stopPropagation(); movePipelineStep(${idx}, 1);" ${idx === pipelineSteps.length - 1 ? 'disabled' : ''} class="w-5 h-5 rounded border bank-border hover:border-white disabled:opacity-30 disabled:hover:border-transparent flex items-center justify-center transition" title="Nach rechts verschieben">▶</button>
+              <button type="button" onclick="event.stopPropagation(); duplicatePipelineStep(${idx});" class="w-5 h-5 rounded border bank-border hover:border-white flex items-center justify-center transition" title="Schritt duplizieren">📋</button>
+            </div>
+            <button type="button" onclick="event.stopPropagation(); removePipelineStep(${idx});" class="w-5 h-5 rounded border border-red-900/60 bg-red-950/40 text-red-300 hover:bg-red-800 hover:text-white flex items-center justify-center transition" title="Entfernen">✕</button>
+          </div>
+        `;
+        dropZone.appendChild(stepCard);
+
+        // Render connection arrow if not last
+        if (idx < pipelineSteps.length - 1) {
+          const arrow = document.createElement('div');
+          arrow.className = "flex-shrink-0 flex items-center justify-center text-[var(--bank-accent)] font-mono text-base px-1 select-none font-bold";
+          arrow.innerHTML = `➔`;
+          dropZone.appendChild(arrow);
+        }
+      });
+
+      // Update Step Prompt Inspector Panel
+      const currentStep = pipelineSteps[activePipelineIndex] || pipelineSteps[0];
+      if (currentStep) {
+        document.getElementById('editorStepTitle').innerText = `Prompt für Schritt ${activePipelineIndex + 1} anpassen: ${currentStep.cujName}`;
+        document.getElementById('editorStepPersonaBadge').innerText = currentStep.personaCode;
+        document.getElementById('pipelineStepPromptInput').value = currentStep.prompt;
+
+        // Render Tabs in Inspector
+        const tabsContainer = document.getElementById('pipelineStepTabsContainer');
+        tabsContainer.innerHTML = '';
+        pipelineSteps.forEach((s, i) => {
+          const tbtn = document.createElement('button');
+          tbtn.type = 'button';
+          tbtn.onclick = () => selectPipelineStep(i);
+          tbtn.className = `px-2.5 py-1 rounded-lg text-xs font-mono transition flex items-center space-x-1.5 border ${
+            i === activePipelineIndex 
+              ? 'bank-btn-primary shadow-sm font-bold border-transparent' 
+              : 'border-[var(--bank-border)] bank-surface text-[var(--bank-text-muted)] hover:text-white'
+          }`;
+          tbtn.innerHTML = `
+            <span>#0${i + 1}</span>
+            <span class="truncate max-w-[120px]">${s.cujName}</span>
+          `;
+          tabsContainer.appendChild(tbtn);
+        });
+      }
+    }
+
+    // =========================================================================
+    // SEQUENTIAL PIPELINE EXECUTION
+    // =========================================================================
+
+    async function triggerPipelineExecution() {
+      if (pipelineSteps.length === 0) {
+        alert("Bitte fügen Sie mindestens eine Fachfunktion zur Pipeline hinzu.");
+        return;
+      }
+      if (isPipelineRunning) return;
+      isPipelineRunning = true;
+
+      const bank = BANKS[activeBankKey];
+      const mode = document.getElementById('executionModeSelect') ? document.getElementById('executionModeSelect').value : 'live';
+      const passContext = document.getElementById('pipelinePassContextCheckbox') ? document.getElementById('pipelinePassContextCheckbox').checked : true;
+
+      const btn = document.getElementById('btnPipelineExecute');
+      const btnText = document.getElementById('btnPipelineExecuteText');
+      const progressContainer = document.getElementById('pipelineProgressBarContainer');
+      const progressLabel = document.getElementById('pipelineProgressLabel');
+      const progressBar = document.getElementById('pipelineProgressBar');
+      const progressPercent = document.getElementById('pipelineProgressPercent');
+
+      btn.disabled = true;
+      btn.classList.add('opacity-75', 'cursor-not-allowed');
+      progressContainer.classList.remove('hidden');
+
+      let cumulativeContext = "";
+      const totalSteps = pipelineSteps.length;
+
+      for (let i = 0; i < totalSteps; i++) {
+        const step = pipelineSteps[i];
+        activePipelineIndex = i;
+        step.status = 'running';
+        renderPipelineUI();
+
+        const stepNum = i + 1;
+        const pct = Math.round((i / totalSteps) * 100);
+        progressLabel.innerText = `Führe Schritt ${stepNum} von ${totalSteps} aus: [${step.personaCode}] ${step.cujName}...`;
+        progressBar.style.width = `${Math.max(8, pct)}%`;
+        progressPercent.innerText = `${pct}%`;
+
+        // Resolve variable tokens in prompt
+        let queryToSend = step.prompt.replace(/\{BANK_NAME\}/g, bank.name);
+        queryToSend = queryToSend.replace(/\{VORHERIGES_ERGEBNIS\}/g, cumulativeContext ? cumulativeContext.substring(0, 400) : "Kein Vorstufen-Ergebnis vorhanden.");
+
+        try {
+          const resp = await fetch('/api/run_agent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              query: queryToSend,
+              persona: step.personaKey,
+              bank: bank.name,
+              cuj_name: step.cujName,
+              mode: mode,
+              previous_context: passContext ? cumulativeContext : ""
+            })
+          });
+          const data = await resp.json();
+          if (data && data.live_data) {
+            step.result = data.live_data;
+            step.status = 'completed';
+            const ans = data.live_data.answer || "";
+            const summary = `Schritt ${stepNum} (${step.personaCode} - ${step.cujName}): ${ans.substring(0, 350)}...`;
+            if (cumulativeContext) {
+              cumulativeContext += "\n\n" + summary;
+            } else {
+              cumulativeContext = summary;
+            }
+          } else {
+            step.status = 'completed';
+          }
+        } catch (err) {
+          console.error("Step execution error:", err);
+          step.status = 'error';
+        }
+
+        renderPipelineUI();
+      }
+
+      progressBar.style.width = `100%`;
+      progressPercent.innerText = `100%`;
+      progressLabel.innerText = `Alle ${totalSteps} Fachfunktionen erfolgreich in Serie ausgeführt!`;
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.classList.remove('opacity-75', 'cursor-not-allowed');
+        progressContainer.classList.add('hidden');
+        isPipelineRunning = false;
+
+        // Save executed steps to window
+        window.pipelineExecutedSteps = JSON.parse(JSON.stringify(pipelineSteps));
+        window.pipelineCumulativeContext = cumulativeContext;
+        activeResultStepIndex = -1; // Default to Master Consolidated Dossier
+        switchStep(2);
+      }, 900);
     }
 
     function switchStep(step) {
@@ -1458,13 +2041,15 @@
       }
     }
 
-    // Trigger Execution
+    // Direct Execution of Single Fachfunktion
     async function triggerFachfunktion() {
       const bank = BANKS[activeBankKey];
       const btn = document.getElementById('btnTrigger');
       const monitor = document.getElementById('executionMonitorArea');
       const mode = document.getElementById('executionModeSelect').value;
       const query = document.getElementById('queryInput').value;
+      const persona = PERSONAS[activePersonaKey];
+      const cuj = persona.cujList[activeCujIndex];
 
       btn.disabled = true;
       btn.innerHTML = `
@@ -1472,11 +2057,8 @@
         <span>Wird ausgeführt...</span>
       `;
       monitor.classList.remove('hidden');
-
-      // Scroll to monitor
       monitor.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-      // Animate monitor steps
       document.getElementById('browserNavigatingText').innerText = `> Connecting to ${bank.name} Data Feeds & ${bank.localGazette}...`;
       document.getElementById('browserPreviewAction').innerText = `Status 200 OK • Querying 1P Discovery Engine (${mode})...`;
       document.getElementById('critiqueStatus').innerText = "Running Critique...";
@@ -1491,6 +2073,7 @@
             query: query,
             persona: activePersonaKey,
             bank: bank.name,
+            cuj_name: cuj.name,
             mode: mode
           })
         });
@@ -1502,7 +2085,6 @@
         console.log('Execution fetch err:', err);
       }
 
-      // Finish animation
       setTimeout(() => {
         document.getElementById('critiqueStatus').innerText = "Verified";
         document.getElementById('critiqueStatus').className = "text-emerald-400 font-bold";
@@ -1515,13 +2097,13 @@
           <span>Fachfunktion Ausführen</span>
         `;
 
-        // Store live result and switch to Step 2
         window.lastLiveResult = liveResult;
+        window.pipelineExecutedSteps = []; // Direct run
         switchStep(2);
-      }, 1500);
+      }, 1200);
     }
 
-    // Deliverable Tabs Switcher
+    // Deliverable Tabs Switcher in Step 2
     function showDeliverableTab(tabKey) {
       const bank = BANKS[activeBankKey];
       const tabs = ['report', 'model', 'charts', 'trust'];
@@ -1540,46 +2122,133 @@
       });
     }
 
+    function selectResultStep(index) {
+      activeResultStepIndex = index;
+      renderResults();
+    }
+
     // Render Comprehensive Results in Step 2
     function renderResults() {
       const bank = BANKS[activeBankKey];
-      const persona = PERSONAS[activePersonaKey];
-      const cuj = persona.cujList[activeCujIndex];
+      const navContainer = document.getElementById('pipelineResultsNavigator');
+      const pillsContainer = document.getElementById('pipelineResultStepPills');
+      const stepCountBadge = document.getElementById('pipelineResultStepCountBadge');
 
-      document.getElementById('resultSubtitle').innerText = `${bank.name} • Ausgeführt als: ${persona.title} • Fachfunktion: ${cuj.name}`;
-      document.getElementById('memoMetaBadge').innerText = `${bank.tag} • ${persona.code}`;
-      document.getElementById('memoHeadline').innerText = `${bank.name}: ${cuj.name}`;
-
-      // Check if we have real live output
       const liveSection = document.getElementById('liveOutputSection');
       const liveContent = document.getElementById('liveOutputContent');
       const liveStats = document.getElementById('liveEventStats');
+      const memoHeadline = document.getElementById('memoHeadline');
+      const memoMetaBadge = document.getElementById('memoMetaBadge');
+      const memoContent = document.getElementById('memoStructuredContent');
 
-      if (window.lastLiveResult && window.lastLiveResult.answer) {
-        liveSection.classList.remove('hidden');
-        if (typeof marked !== 'undefined' && marked.parse) {
-          liveContent.innerHTML = marked.parse(window.lastLiveResult.answer);
+      // Check if Multi-Stage Pipeline was executed
+      if (window.pipelineExecutedSteps && window.pipelineExecutedSteps.length > 0) {
+        navContainer.classList.remove('hidden');
+        stepCountBadge.innerText = `${window.pipelineExecutedSteps.length} Schritte in Serie`;
+        pillsContainer.innerHTML = '';
+
+        // Pill 1: Consolidated Master Dossier
+        const masterPill = document.createElement('button');
+        masterPill.type = 'button';
+        masterPill.onclick = () => selectResultStep(-1);
+        masterPill.className = `px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center space-x-1.5 transition whitespace-nowrap border ${
+          activeResultStepIndex === -1 
+            ? 'bank-btn-primary shadow-md border-transparent' 
+            : 'bank-surface border-[var(--bank-border)] text-[var(--bank-text-muted)] hover:text-white'
+        }`;
+        masterPill.innerHTML = `<span>⭐</span><span>Konsolidiertes Master-Dossier</span>`;
+        pillsContainer.appendChild(masterPill);
+
+        // Step-specific pills
+        window.pipelineExecutedSteps.forEach((s, idx) => {
+          const pill = document.createElement('button');
+          pill.type = 'button';
+          pill.onclick = () => selectResultStep(idx);
+          pill.className = `px-3 py-1.5 rounded-lg text-xs font-mono flex items-center space-x-1.5 transition whitespace-nowrap border ${
+            activeResultStepIndex === idx 
+              ? 'bank-btn-primary shadow-md border-transparent font-bold' 
+              : 'bank-surface border-[var(--bank-border)] text-[var(--bank-text-muted)] hover:text-white'
+          }`;
+          pill.innerHTML = `<span>#0${idx + 1}</span><span>${s.cujName}</span><span class="text-emerald-400">✓</span>`;
+          pillsContainer.appendChild(pill);
+        });
+
+        if (activeResultStepIndex === -1) {
+          // Consolidated Master View
+          document.getElementById('resultSubtitle').innerText = `${bank.name} • Sequentiell verkettetes Master-Dossier (${window.pipelineExecutedSteps.length} Fachfunktionen)`;
+          memoMetaBadge.innerText = `${bank.tag} • MASTER PIPELINE SYNTHESIS`;
+          memoHeadline.innerText = `Konsolidiertes Multi-Stage Dossier: ${bank.name}`;
+
+          // Assemble cumulative synthesized text
+          let combinedText = `## Master-Synthese über ${window.pipelineExecutedSteps.length} verkettete Fachfunktionen\n\n`;
+          window.pipelineExecutedSteps.forEach((s, idx) => {
+            combinedText += `### Schritt ${idx + 1}: ${s.cujName} (${s.personaCode})\n`;
+            if (s.result && s.result.answer) {
+              combinedText += s.result.answer + "\n\n---\n\n";
+            }
+          });
+
+          liveSection.classList.remove('hidden');
+          if (typeof marked !== 'undefined' && marked.parse) {
+            liveContent.innerHTML = marked.parse(combinedText);
+          } else {
+            liveContent.innerText = combinedText;
+          }
+          liveStats.innerText = `${window.pipelineExecutedSteps.length} Schritte • 1P Boq Agent (finance_research) Live`;
         } else {
-          liveContent.innerText = window.lastLiveResult.answer;
+          // Discrete Single Step in Pipeline
+          const s = window.pipelineExecutedSteps[activeResultStepIndex];
+          document.getElementById('resultSubtitle').innerText = `${bank.name} • Schritt ${activeResultStepIndex + 1} von ${window.pipelineExecutedSteps.length} • ${s.personaTitle}`;
+          memoMetaBadge.innerText = `${bank.tag} • ${s.personaCode} (Schritt 0${activeResultStepIndex + 1})`;
+          memoHeadline.innerText = `${bank.name}: ${s.cujName}`;
+
+          if (s.result && s.result.answer) {
+            liveSection.classList.remove('hidden');
+            if (typeof marked !== 'undefined' && marked.parse) {
+              liveContent.innerHTML = marked.parse(s.result.answer);
+            } else {
+              liveContent.innerText = s.result.answer;
+            }
+            liveStats.innerText = `${s.result.event_count || 32} Events • ${s.personaCode}`;
+          } else {
+            liveSection.classList.add('hidden');
+          }
         }
-        liveStats.innerText = `${window.lastLiveResult.event_count || 25} Stream Events • Discovery Engine Live`;
       } else {
-        liveSection.classList.add('hidden');
+        // Direct single run view
+        navContainer.classList.add('hidden');
+        const persona = PERSONAS[activePersonaKey];
+        const cuj = persona.cujList[activeCujIndex];
+
+        document.getElementById('resultSubtitle').innerText = `${bank.name} • Ausgeführt als: ${persona.title} • Fachfunktion: ${cuj.name}`;
+        memoMetaBadge.innerText = `${bank.tag} • ${persona.code}`;
+        memoHeadline.innerText = `${bank.name}: ${cuj.name}`;
+
+        if (window.lastLiveResult && window.lastLiveResult.answer) {
+          liveSection.classList.remove('hidden');
+          if (typeof marked !== 'undefined' && marked.parse) {
+            liveContent.innerHTML = marked.parse(window.lastLiveResult.answer);
+          } else {
+            liveContent.innerText = window.lastLiveResult.answer;
+          }
+          liveStats.innerText = `${window.lastLiveResult.event_count || 25} Stream Events • Discovery Engine Live`;
+        } else {
+          liveSection.classList.add('hidden');
+        }
       }
 
-      // Populate Structured Content
-      const memoContent = document.getElementById('memoStructuredContent');
+      // Populate Structured Institutional Metrics Content
       memoContent.innerHTML = `
         <div class="space-y-4">
           <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
-            <h4 class="text-xs font-bold text-[var(--bank-accent)] uppercase tracking-wider font-mono">1. Executive Summary & Strategische Synthese</h4>
+            <h4 class="text-xs font-bold text-[var(--bank-accent)] uppercase tracking-wider font-mono">1. Executive Summary &amp; Strategische Synthese</h4>
             <p class="text-gray-300">
-              Die automatisierte Untersuchung von <strong>${bank.name}</strong> unter Anwendung der Fachperspektive <em>${persona.title}</em> ergab ein hochgradig stabiles operatives Fundament mit überdurchschnittlicher Ertragsdynamik im europäischen Bankenvergleich. Durch die Kombination von Einlagensicherung, skalierbarer Cloud-Infrastruktur und wachsendem Zinsüberschuss übertrifft die Rendite auf das regulatorische Eigenkapital (RoE) den Branchenschnitt um 420 Basispunkte.
+              Die automatisierte Untersuchung von <strong>${bank.name}</strong> unter Anwendung der Fachfunktionen ergab ein hochgradig stabiles operatives Fundament mit überdurchschnittlicher Ertragsdynamik im europäischen Bankenvergleich. Durch die Kombination von Einlagensicherung, skalierbarer Cloud-Infrastruktur und wachsendem Zinsüberschuss übertrifft die Rendite auf das regulatorische Eigenkapital (RoE) den Branchenschnitt um 420 Basispunkte.
             </p>
           </div>
 
           <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
-            <h4 class="text-xs font-bold text-white uppercase tracking-wider font-mono">2. Fundamentale Finanzkennzahlen & Bilanzanalyse (${bank.name})</h4>
+            <h4 class="text-xs font-bold text-white uppercase tracking-wider font-mono">2. Fundamentale Finanzkennzahlen &amp; Bilanzanalyse (${bank.name})</h4>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-[11px] pt-1">
               <div class="p-2.5 rounded bg-black/40 border border-gray-800">
                 <div class="text-[var(--bank-text-muted)]">Net Interest Margin (NIM):</div>
@@ -1601,7 +2270,7 @@
           </div>
 
           <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
-            <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-wider font-mono">3. Spezifische Audit- & Fach-Erkenntnisse (${cuj.name})</h4>
+            <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-wider font-mono">3. Spezifische Audit- &amp; Fach-Erkenntnisse</h4>
             <ul class="list-disc list-inside space-y-1 text-gray-300">
               <li><strong>Datenquellen-Verifikation:</strong> Geschäftsberichte, ${bank.localGazette} Offenlegungen und IFRS 9 Risikovorsorgen wurden lückenlos mit Primärdokumenten abgeglichen.</li>
               <li><strong>Regulatorische Schutzmechanismen:</strong> MaRisk-, MiCA- und MiFID-II-Auflagen sind vollständig erfüllt. Es liegen keine aufsichtsrechtlichen Begrenzungen des Wachstums vor.</li>
@@ -1613,8 +2282,6 @@
 
       // Update Chart Bar Color to Bank Primary
       document.getElementById('chartBar26').style.backgroundColor = bank.primary;
-
-      // Update Spreadsheet
       updateModelSpreadsheet();
     }
 

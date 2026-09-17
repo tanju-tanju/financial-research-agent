@@ -79,6 +79,26 @@ Mit jedem Mandantenwechsel aktualisieren sich:
 
 ---
 
+## Sequentielle Multi-Stage Workflow Pipeline (In Serie schalten per Drag & Drop)
+
+Die Plattform ermöglicht es, **1 bis N Fachfunktionen in Serie zu schalten** und automatisiert als Research-Kette ausführen zu lassen:
+* **Horizontale Drag & Drop Leiste:** Fachfunktionen können per Maus direkt aus der Liste auf die horizontale Leiste gezogen werden (HTML5 Drag & Drop) oder über die Schaltfläche **„+ In Pipeline“** mit 1 Klick hinzugefügt werden.
+* **Beliebige Verkettung & Mehrfachnutzung:** Beliebige Fachfunktionen aus allen 6 Fach-Personas können frei kombiniert und auch mehrfach hintereinandergeschaltet werden (z. B. Schritt 1: IB Analyst M&A Datenraum ➔ Schritt 2: Portfolio Manager Peer Comps ➔ Schritt 3: Compliance Manager PEP Screening ➔ Schritt 4: Business Line Manager NIM Sensitivität).
+* **Schritt-Prompt-Inspector & Variablen-Tokens:** Der Prompt für jeden einzelnen Schritt kann vor der Ausführung individuell editiert werden. Schnell-Einfügechips für dynamische Tokens stehen bereit:
+  * `{BANK_NAME}`: Löst den Namen des aktuell gewählten Instituts auf.
+  * `{VORHERIGES_ERGEBNIS}`: Übergibt die Zwischenergebnisse vorangegangener Schritte.
+  * `+Zins-Stresstest`: Fügt Parameter für einen +200 bps EZB-Zinsschock ein.
+  * `+Regulatorik`: Ergänzt Kriterien für BaFin, EZB SREP und MiCA.
+* **Context Chaining:** Erkenntnisse und Schlüsseldaten aus Schritt $i$ werden automatisch zusammengefasst und als Kontext an Schritt $i+1$ weitergeleitet.
+* **Vorkonfigurierte Banking-Presets:**
+  * 🏛️ **M&A Due Diligence Suite** (3 Schritte)
+  * 📈 **Earnings Scramble & NIM Wrap** (3 Schritte)
+  * 🛡️ **MiCA Crypto & AML Compliance Audit** (3 Schritte)
+  * 🌐 **360° Institutional Bank Audit** (4 Schritte)
+* **Ausführung & Schritt-für-Schritt-Prüfung:** Die Ausführung startet erst beim Klick auf **„🚀 Pipeline in Serie ausführen“**. Live-Fortschrittsbalken und Status-Badges zeigen den aktuellen Bearbeitungsstand (`⏱️` ➔ `🔄` ➔ `✅`). In Schritt 2 („Ergebnisse & Artifacts“) erlaubt der Step-Navigator den Wechsel zwischen dem **Konsolidierten Master-Dossier** und den Einzelergebnissen jedes einzelnen Schrittes.
+
+---
+
 ## Architektur & Datenfluss
 
 ```mermaid

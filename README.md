@@ -79,6 +79,26 @@ Each simulation dynamically updates:
 
 ---
 
+## Multi-Stage Sequential Workflow Pipeline (In Serie schalten per Drag & Drop)
+
+The platform enables users to combine **1 to N Fachfunktionen in series** into an automated research pipeline:
+* **Mouse Drag & Drop Lane:** Drag any Fachfunktion card directly onto the horizontal sequence shelf with the mouse, or use the accessible 1-click `+ In Pipeline` button.
+* **Multi-Instance Chaining:** Combine identical or different Fachfunktionen across all 6 Personas arbitrarily (e.g., Step 1: IB Analyst M&A Diligence ➔ Step 2: Portfolio Manager Comps ➔ Step 3: Compliance Manager PEP Screening).
+* **Step Prompt Inspector & Token Insertion:** Edit the research prompt for each individual step before execution. Quick-insert dynamic variable tokens:
+  * `{BANK_NAME}`: Resolves to the selected bank institution.
+  * `{VORHERIGES_ERGEBNIS}`: Forwards intermediate findings from previous steps.
+  * `+Zins-Stresstest`: Injects +200 bps ECB rate shock parameters.
+  * `+Regulatorik`: Injects BaFin, ECB SSM, and MiCA regulatory criteria.
+* **Context Chaining:** Intermediate outputs from Step $i$ are automatically propagated to Step $i+1$ as structured context.
+* **Pre-Configured Enterprise Presets:**
+  * 🏛️ **M&A Due Diligence Suite** (3 steps)
+  * 📈 **Earnings Scramble & NIM Wrap** (3 steps)
+  * 🛡️ **MiCA Crypto & AML Compliance Audit** (3 steps)
+  * 🌐 **360° Institutional Bank Audit** (4 steps)
+* **Execution & Step-by-Step Inspection:** Triggered explicitly via **"🚀 Pipeline in Serie ausführen"**. Real-time progress bar and status indicators update live (`⏱️` ➔ `🔄` ➔ `✅`). Step 2 ("Ergebnisse & Artifacts") provides an interactive step navigator to inspect both the **Consolidated Master Dossier** and discrete step-by-step findings.
+
+---
+
 ## Architectural Architecture
 
 The platform connects to Google Cloud's AI infrastructure:
