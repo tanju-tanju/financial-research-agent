@@ -177,9 +177,30 @@ financial-research-agent/
 ├── README.md                    # English Master Documentation
 ├── README_DE.md                 # German Master Documentation
 ├── ASSET_REPLICATION_GUIDE.md   # Field Enablement Guide for CE & Sales
+├── subagents/                   # Autonomous Banking Subagents Swarm
+│   ├── financial_research.py    # NL2SQL, Peer Multiples, Balance Sheet Analysis
+│   ├── compliance_screener.py   # Sanctions, PEP, MiCA & DORA Verification
+│   ├── risk_policy.py           # MaRisk BTR 1, DSCR Sensitivity & Stress Testing
+│   ├── report_synthesizer.py    # Investment Memos & Audit Trail Formulation
+│   └── supervisor.py            # Workflow Routing & HITL Review Gating
+├── services/                    # Production Foundation Services
+│   ├── bigquery_service.py      # Dual-tier Data Room & Macro Benchmarks
+│   ├── deterministic_math.py    # Zero-hallucination Arithmetic Runtime
+│   ├── audit_vault.py           # WORM Append-Only Ledger & SHA-256 Chaining
+│   └── observability_service.py # Distributed Tracing & Catalog Inspector
+├── data/                        # Synthetic Institutional Data Room Datasets
+│   ├── firmenkredite.jsonl
+│   ├── finanzhistorie.jsonl
+│   ├── ma_deal_pipeline.jsonl
+│   ├── capital_markets_multiples.jsonl
+│   └── private_wealth_depots.jsonl
+├── sql/                         # BigQuery DDL Schemas & Authorized Views
+│   └── 02_bank_internal_core_ddl.sql
 ├── agent_registry/              # Google Cloud Agent Cards
 │   ├── finance_research_card.json
-│   └── n26_supervisor_card.json
+│   ├── n26_supervisor_card.json
+│   ├── financial-research-card.json
+│   └── financial-compliance-screener-card.json
 ├── docs/
 │   └── assets/
 │       └── slides/              # Executive Pitch Deck Slides (slide_1, slide_3, etc.)

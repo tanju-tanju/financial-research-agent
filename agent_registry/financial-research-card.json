@@ -1,0 +1,37 @@
+{
+  "supportedInterfaces": [
+    {
+      "url": "https://financial-banking-agent-hub-850196904392.europe-west3.run.app/api/agents/financial-research",
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "2.0.0"
+    }
+  ],
+  "name": "financial-financial-research",
+  "description": "Financial Research Agent executing parameterized NL2SQL queries across bank_internal_core and market_external_enrichment under BaFin Zero-Hallucination mandate.",
+  "version": "2.0.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false
+  },
+  "defaultInputModes": ["application/json"],
+  "defaultOutputModes": ["application/json"],
+  "skills": [
+    {
+      "id": "NL2SQL_DualTierQuery",
+      "name": "NL2SQL Parameterized Dual-Tier BigQuery Execution",
+      "description": "Translates business questions into parameterized SQL queries joining confidential internal credit records with external macro transport benchmarks and peer multiples.",
+      "tags": ["nl2sql", "bigquery", "zero-hallucination", "bafin"]
+    },
+    {
+      "id": "PeerCompsMultiplesValuation",
+      "name": "Capital Markets Peer-Group Comps & Multiples",
+      "description": "Computes EV/EBITDA, EV/Sales, and FCF-Yield multiples against external peer benchmarks and models EBITDA synergy shocks.",
+      "tags": ["comps", "valuation", "ev-ebitda", "ma-advisory"]
+    }
+  ],
+  "regulatoryCompliance": {
+    "framework": "BaFin Zero-Hallucination Mandat & MaRisk BTR 1",
+    "zeroHallucinationGuaranteed": true,
+    "authorizedViewOnly": true
+  }
+}

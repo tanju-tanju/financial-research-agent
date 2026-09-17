@@ -168,9 +168,30 @@ financial-research-agent/
 ├── README.md                    # Englische Hauptdokumentation
 ├── README_DE.md                 # Deutsche Hauptdokumentation
 ├── ASSET_REPLICATION_GUIDE.md   # Field Enablement Guide für Vertrieb & Architekten
-├── agent_registry/              # Agenten-Metadatenkarten
+├── subagents/                   # Autonomer Banking-Subagenten-Schwarm
+│   ├── financial_research.py    # NL2SQL, Peer-Multiples, Bilanzanalyse
+│   ├── compliance_screener.py   # Sanktionen, PEP, MiCA & DORA Prüfung
+│   ├── risk_policy.py           # MaRisk BTR 1, DSCR Sensitivität & Stresstests
+│   ├── report_synthesizer.py    # Kredit-Memos & Revisionspfad-Erstellung
+│   └── supervisor.py            # Workflow-Routing & Vier-Augen-Freigabe (HITL)
+├── services/                    # Produktionsnahe Basisservices
+│   ├── bigquery_service.py      # Dual-Tier Datenraum & Makro-Benchmarks
+│   ├── deterministic_math.py    # Zero-Hallucination Rechenlogik
+│   ├── audit_vault.py           # WORM Revisionsspeicher & SHA-256 Chaining
+│   └── observability_service.py # Verteiltes Tracing & Agenten-Katalog
+├── data/                        # Synthetische institutionelle Datenraum-Datensätze
+│   ├── firmenkredite.jsonl
+│   ├── finanzhistorie.jsonl
+│   ├── ma_deal_pipeline.jsonl
+│   ├── capital_markets_multiples.jsonl
+│   └── private_wealth_depots.jsonl
+├── sql/                         # BigQuery DDL Schemas & Autorisierte Views
+│   └── 02_bank_internal_core_ddl.sql
+├── agent_registry/              # Google Cloud Agenten-Karten
 │   ├── finance_research_card.json
-│   └── n26_supervisor_card.json
+│   ├── n26_supervisor_card.json
+│   ├── financial-research-card.json
+│   └── financial-compliance-screener-card.json
 ├── docs/
 │   └── assets/
 │       └── slides/              # Präsentationsfolien (slide_1, slide_3, etc.)

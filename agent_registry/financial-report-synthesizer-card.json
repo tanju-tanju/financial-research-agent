@@ -1,0 +1,37 @@
+{
+  "supportedInterfaces": [
+    {
+      "url": "https://financial-banking-agent-hub-850196904392.europe-west3.run.app/api/agents/report-synthesizer",
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "2.0.0"
+    }
+  ],
+  "name": "financial-report-synthesizer",
+  "description": "Report Synthesizer assembling committee decision dossiers, specifying risk covenants, and verifying groundedness under MaRisk AT 4.3.2.",
+  "version": "2.0.0",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "defaultInputModes": ["application/json"],
+  "defaultOutputModes": ["application/json"],
+  "skills": [
+    {
+      "id": "CommitteeDossierSynthesis",
+      "name": "Credit & Investment Committee Dossier Synthesis",
+      "description": "Synthesizes multi-agent findings into structured, decision-ready memos with explicit risk ratings and approval recommendations.",
+      "tags": ["dossier", "synthesis", "kreditausschuss", "marisk", "at4.3.2"]
+    },
+    {
+      "id": "CovenantPrescriptionEngine",
+      "name": "Dynamic Covenant & Condition Prescription",
+      "description": "Formulates customized loan covenants, interest hedging mandates, locked-box clauses, and earn-out structures tailored to the risk tier.",
+      "tags": ["covenants", "mitigation", "term-sheet"]
+    }
+  ],
+  "regulatoryCompliance": {
+    "framework": "MaRisk AT 4.3.2 (Kreditbeschlussfassung)",
+    "groundednessThreshold": 0.95,
+    "hallucinationTolerance": 0.00
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "supportedInterfaces": [
+    {
+      "url": "https://financial-banking-agent-hub-850196904392.europe-west3.run.app/api/agents/risk-policy",
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "2.0.0"
+    }
+  ],
+  "name": "financial-risk-policy-sentinel",
+  "description": "Risk Policy Sentinel executing deterministic DSCR, leverage calculations, and 5-scenario sensitivity stress tests under MaRisk BTR 1.",
+  "version": "2.0.0",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "defaultInputModes": ["application/json"],
+  "defaultOutputModes": ["application/json"],
+  "skills": [
+    {
+      "id": "DeterministicDSCREvaluation",
+      "name": "Deterministic Debt Service Coverage Ratio (DSCR) Calculator",
+      "description": "Calculates capital service coverage using audited EBITDA, CapEx, and debt schedules without LLM math approximation.",
+      "tags": ["dscr", "covenants", "marisk", "btr1", "leverage"]
+    },
+    {
+      "id": "MacroeconomicSensitivityStressTest",
+      "name": "5-Scenario Macroeconomic Sensitivity Stress Test",
+      "description": "Evaluates borrower resilience against energy price peaks (+15%), revenue shocks (-10%), and interest rate drag (+200 bps).",
+      "tags": ["stress-testing", "sensitivity", "tail-risk"]
+    }
+  ],
+  "regulatoryCompliance": {
+    "framework": "MaRisk BTR 1 (Kreditrisikosteuerung) & BTO 1.2",
+    "deterministicMath": true,
+    "riskClassification": "Tier 1 - Tier 3"
+  }
+}

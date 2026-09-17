@@ -1,0 +1,37 @@
+{
+  "supportedInterfaces": [
+    {
+      "url": "https://financial-banking-agent-hub-850196904392.europe-west3.run.app/api/agents/supervisor",
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "2.0.0"
+    }
+  ],
+  "name": "financial-supervisor-router",
+  "description": "Supervisor Router for automated WZ-2008 sector triage, transaction classification, and sub-agent dispatching under MaRisk AT 4.3.1.",
+  "version": "2.0.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false
+  },
+  "defaultInputModes": ["application/json"],
+  "defaultOutputModes": ["application/json", "text/event-stream"],
+  "skills": [
+    {
+      "id": "WZ2008SectorTriage",
+      "name": "WZ-2008 Sector & Case Triage",
+      "description": "Classifies commercial credit and M&A dossiers by German WZ-2008 code, facility size, and risk thresholds.",
+      "tags": ["marisk", "at4.3.1", "supervisor", "triage", "governance"]
+    },
+    {
+      "id": "SubagentDispatchOrchestration",
+      "name": "Sub-Agent Dispatch Orchestration",
+      "description": "Generates dynamic execution plans dispatching research, covenant calculation, and sanction screening tasks.",
+      "tags": ["orchestration", "multi-agent", "dispatch"]
+    }
+  ],
+  "regulatoryCompliance": {
+    "framework": "MaRisk AT 4.3.1 (Aufbauorganisation)",
+    "fourEyesPrinciple": true,
+    "auditTrace": "SHA-256 Chained WORM"
+  }
+}

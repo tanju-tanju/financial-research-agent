@@ -1,0 +1,38 @@
+{
+  "supportedInterfaces": [
+    {
+      "url": "https://financial-banking-agent-hub-850196904392.europe-west3.run.app/api/agents/audit-vault",
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "2.0.0"
+    }
+  ],
+  "name": "financial-audit-vault-worm",
+  "description": "Immutable WORM Audit Vault computing cryptographic SHA-256 hash chains for all agent interactions under GoBD and DORA Art. 12.",
+  "version": "2.0.0",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "defaultInputModes": ["application/json"],
+  "defaultOutputModes": ["application/json"],
+  "skills": [
+    {
+      "id": "CryptographicHashChaining",
+      "name": "SHA-256 Chained Cryptographic Ledger",
+      "description": "Computes continuous digital signature chains across prompt hashes, SQL traces, and response payloads to ensure tamper-proof audit trails.",
+      "tags": ["audit", "sha256", "cryptography", "gobd", "dora"]
+    },
+    {
+      "id": "BigQueryWORMStream",
+      "name": "BigQuery WORM Immutable Storage Sink",
+      "description": "Streams immutable audit records directly into bank_internal_core.audit_agent_execution_log with write-once-read-many policy.",
+      "tags": ["worm", "bigquery", "compliance-logging"]
+    }
+  ],
+  "regulatoryCompliance": {
+    "framework": "GoBD & DORA Art. 12 (Aufzeichnungspflichten)",
+    "immutability": "Write Once Read Many (WORM)",
+    "hashAlgorithm": "SHA-256",
+    "retentionYears": 10
+  }
+}

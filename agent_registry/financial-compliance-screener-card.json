@@ -1,0 +1,37 @@
+{
+  "supportedInterfaces": [
+    {
+      "url": "https://financial-banking-agent-hub-850196904392.europe-west3.run.app/api/agents/compliance-screener",
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "2.0.0"
+    }
+  ],
+  "name": "financial-compliance-screener",
+  "description": "Suitability & Compliance Screener auditing PEP registries, EU sanctions, Transparenzregister (UBO), AWG § 55 FDI, and EU FSR.",
+  "version": "2.0.0",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "defaultInputModes": ["application/json"],
+  "defaultOutputModes": ["application/json"],
+  "skills": [
+    {
+      "id": "SanctionsAndPEPScreening",
+      "name": "Automated Sanctions, PEP & GwG Watchlist Screening",
+      "description": "Cross-checks beneficial owners and entities against EU financial sanctions, BaFin decrees, and PEP registries under GwG § 10.",
+      "tags": ["compliance", "gwg", "pep", "sanctions", "transparenzregister"]
+    },
+    {
+      "id": "FDIForeignInvestmentScreening",
+      "name": "FDI & Foreign Subsidies Regulation (AWG § 55 / EU FSR)",
+      "description": "Screens M&A target sectors for mandatory German BMWK filings under AWG § 55 / AWV § 55a and EU FSR 2022/2560 thresholds.",
+      "tags": ["awg55", "bmwk", "fdi", "eu-fsr", "cross-border"]
+    }
+  ],
+  "regulatoryCompliance": {
+    "framework": "GwG § 10, DORA RTS & AWG § 55",
+    "zeroMatchValidation": true,
+    "auditEvidenceRetention": "10 Years (GoBD)"
+  }
+}
