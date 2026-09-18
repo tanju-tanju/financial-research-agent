@@ -131,11 +131,34 @@ class FinanceAgentRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(personas_metadata, indent=2).encode("utf-8"))
 
+    _token_cache = {"token": None, "auth_ok": False, "expiry": 0}
+
     def get_access_token(self):
+        now = time.time()
+        if now < FinanceAgentRequestHandler._token_cache["expiry"]:
+            return FinanceAgentRequestHandler._token_cache["token"], FinanceAgentRequestHandler._token_cache["auth_ok"]
+
         try:
-            token = subprocess.check_output(["gcloud", "auth", "print-access-token"], timeout=5).decode().strip()
-            return token, bool(token)
+            cmd = ["gcloud", "auth", "print-access-token", "--quiet"]
+            token = subprocess.check_output(
+                cmd,
+                stdin=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                timeout=3
+            ).decode().strip()
+            ok = bool(token and not token.startswith("ERROR"))
+            FinanceAgentRequestHandler._token_cache = {
+                "token": token if ok else None,
+                "auth_ok": ok,
+                "expiry": now + 300 if ok else now + 30
+            }
+            return FinanceAgentRequestHandler._token_cache["token"], ok
         except Exception:
+            FinanceAgentRequestHandler._token_cache = {
+                "token": None,
+                "auth_ok": False,
+                "expiry": now + 30
+            }
             return None, False
 
     def handle_run_agent(self):
