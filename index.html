@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" class="dark">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -226,15 +226,25 @@
 
       </div>
 
-      <!-- Step Navigation (Schritt 1 vs Schritt 2) -->
+      <!-- Step Navigation (Specialist Functions vs Results) -->
       <div class="flex items-center space-x-1 p-1 rounded-xl border bank-surface-higher bank-border">
         <button id="stepBtn1" onclick="switchStep(1)" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 bank-btn-primary shadow-sm transition">
           <span class="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-bold">1</span>
-          <span>Fachfunktionen</span>
+          <span id="stepBtn1Text">Specialist Functions</span>
         </button>
         <button id="stepBtn2" onclick="switchStep(2)" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 text-[var(--bank-text-muted)] hover:text-white transition">
           <span class="w-4 h-4 rounded-full bg-gray-700 text-[10px] flex items-center justify-center font-bold">2</span>
-          <span>Ergebnisse & Artifacts</span>
+          <span id="stepBtn2Text">Results & Artifacts</span>
+        </button>
+      </div>
+
+      <!-- Language Switcher (EN / DE) -->
+      <div class="flex items-center space-x-1 p-1 rounded-xl border bank-surface-higher bank-border">
+        <button id="langBtnEn" onclick="switchLanguage('en')" class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition bank-btn-primary" title="Switch to English">
+          EN
+        </button>
+        <button id="langBtnDe" onclick="switchLanguage('de')" class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition text-[var(--bank-text-muted)] hover:text-white" title="Zu Deutsch wechseln">
+          DE
         </button>
       </div>
 
@@ -287,12 +297,12 @@
         <div>
           <h2 class="text-base font-google font-bold text-white flex items-center space-x-2">
             <span class="w-6 h-6 rounded-full bank-btn-primary flex items-center justify-center text-xs">1</span>
-            <span>Schritt 1: Persona auswählen & Fachfunktionen auslösen</span>
+            <span id="headerStep1Title">Step 1: Select Persona & Execute Specialist Functions</span>
           </h2>
-          <p class="text-xs text-[var(--bank-text-muted)]">Wählen Sie die Fachrolle aus den Folien und lösen Sie den hochspezialisierten Research-Auftrag an den 1P Agenten aus.</p>
+          <p class="text-xs text-[var(--bank-text-muted)]" id="headerStep1Desc">Select an institutional role from the pitch deck and dispatch a specialized research brief to the 1P Agent.</p>
         </div>
-        <div class="text-xs font-mono text-[var(--bank-accent)]">
-          6 Fach-Personas • 24 Enterprise CUJs
+        <div class="text-xs font-mono text-[var(--bank-accent)]" id="headerStep1Badges">
+          6 Personas • 24 Enterprise CUJs
         </div>
       </div>
 
@@ -306,7 +316,7 @@
             <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface bank-accent-text border bank-border">Buy-Side</span>
           </div>
           <div class="font-bold text-xs text-white leading-tight">Portfolio Manager</div>
-          <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Alpha-Generierung, Due Diligence, Memos & Risiko</div>
+          <div id="pcard-sub-PORTFOLIO_MANAGER" class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Alpha Generation, Due Diligence, Memos & Risk</div>
         </button>
 
         <!-- Persona 2: Research Analyst -->
@@ -316,7 +326,7 @@
             <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface text-yellow-400 border bank-border">Sell-Side</span>
           </div>
           <div class="font-bold text-xs text-white leading-tight">Research Analyst</div>
-          <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Earnings Scramble, Konsensus, Buy/Sell Notes</div>
+          <div id="pcard-sub-RESEARCH_ANALYST" class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Earnings Scramble, Consensus, Buy/Sell Notes</div>
         </button>
 
         <!-- Persona 3: Sales / Quant Trader -->
@@ -326,7 +336,7 @@
             <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface text-purple-400 border bank-border">Trading</span>
           </div>
           <div class="font-bold text-xs text-white leading-tight">Sales & Quant Trader</div>
-          <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Pre-Market Briefing, Alpha Backtesting, Order Flow</div>
+          <div id="pcard-sub-QUANT_TRADER" class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Pre-Market Briefing, Alpha Backtesting, Order Flow</div>
         </button>
 
         <!-- Persona 4: Business Line Manager -->
@@ -336,7 +346,7 @@
             <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface text-emerald-400 border bank-border">P&L Strat</span>
           </div>
           <div class="font-bold text-xs text-white leading-tight">Business Line Mgr</div>
-          <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Wettbewerb, Zinsspannen, P&L-Sensitivität</div>
+          <div id="pcard-sub-BUSINESS_LINE_MGR" class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Competition, Interest Margins, P&L Sensitivity</div>
         </button>
 
         <!-- Persona 5: IB Analyst -->
@@ -346,7 +356,7 @@
             <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface text-blue-400 border bank-border">M&A / ECM</span>
           </div>
           <div class="font-bold text-xs text-white leading-tight">IB Analyst</div>
-          <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Data Room Due Diligence, LBO & DCF Modelle</div>
+          <div id="pcard-sub-IB_ANALYST" class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Data Room Due Diligence, LBO & DCF Models</div>
         </button>
 
         <!-- Persona 6: Compliance Manager -->
@@ -356,7 +366,8 @@
             <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface text-red-400 border bank-border">KYC / AML</span>
           </div>
           <div class="font-bold text-xs text-white leading-tight">Compliance / KYC</div>
-          <div class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Alert Fatigue Clearing, MiCA, Sanktionen & Audit</div>
+          <div id="pcard-sub-COMPLIANCE_MGR" class="text-[10px] text-[var(--bank-text-muted)] mt-1 line-clamp-2">Alert Fatigue Clearing, MiCA, Sanctions & Audit</div>
+        </button>
       </div>
 
       <!-- ========================================================================= -->
@@ -373,13 +384,13 @@
             </div>
             <div>
               <div class="flex items-center space-x-2">
-                <h3 class="text-sm font-bold text-white font-google tracking-tight">Sequentielle Workflow Pipeline (In Serie schalten)</h3>
+                <h3 class="text-sm font-bold text-white font-google tracking-tight" id="pipelineSectionTitle">Sequential Workflow Pipeline (Series Chaining)</h3>
                 <span id="pipelineCountBadge" class="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-800">
-                  0 Fachfunktionen gewählt
+                  0 Functions Selected
                 </span>
               </div>
-              <p class="text-[11px] text-[var(--bank-text-muted)]">
-                Kombinieren Sie 1 bis N Fachfunktionen: Per <strong>Drag & Drop mit der Maus</strong> auf die Leiste ziehen oder per <strong>„+ In Pipeline“</strong> hinzufügen. Mehrfache Nutzung möglich.
+              <p class="text-[11px] text-[var(--bank-text-muted)]" id="pipelineSectionDesc">
+                Combine 1 to N specialist functions: <strong>Drag &amp; drop with mouse</strong> onto the lane or add via <strong>„+ In Pipeline“</strong>. Multi-use supported.
               </p>
             </div>
           </div>
@@ -387,16 +398,16 @@
           <!-- Preset Loader & Reset Toolbar -->
           <div class="flex items-center space-x-2">
             <select id="presetSelect" onchange="loadPreset(this.value)" class="text-xs font-mono px-3 py-1.5 rounded-lg border bank-surface-higher bank-border text-white focus:outline-none focus:border-[var(--bank-primary)]">
-              <option value="">⚡ Vorkonfigurierte Ketten (Presets)...</option>
-              <option value="ma_diligence">🏛️ M&A Due Diligence Suite (3 Schritte)</option>
-              <option value="earnings_wrap">📈 Earnings Scramble & NIM Wrap (3 Schritte)</option>
-              <option value="mica_compliance">🛡️ MiCA Crypto & AML Compliance Audit (3 Schritte)</option>
-              <option value="full_audit">🌐 360° Institutional Bank Audit (4 Schritte)</option>
+              <option value="" id="optPresetDefault">⚡ Pre-Configured Presets...</option>
+              <option value="ma_diligence" id="optPresetMa">🏛️ M&amp;A Due Diligence Suite (3 Steps)</option>
+              <option value="earnings_wrap" id="optPresetEarnings">📈 Earnings Scramble &amp; NIM Wrap (3 Steps)</option>
+              <option value="mica_compliance" id="optPresetMica">🛡️ MiCA Crypto &amp; AML Compliance Audit (3 Steps)</option>
+              <option value="full_audit" id="optPresetAudit">🌐 360° Institutional Bank Audit (4 Steps)</option>
             </select>
 
-            <button onclick="clearPipeline()" class="px-2.5 py-1.5 text-xs font-mono rounded-lg border border-red-900/60 bg-red-950/40 text-red-300 hover:bg-red-900/60 hover:text-white transition flex items-center space-x-1" title="Pipeline leeren">
+            <button onclick="clearPipeline()" class="px-2.5 py-1.5 text-xs font-mono rounded-lg border border-red-900/60 bg-red-950/40 text-red-300 hover:bg-red-900/60 hover:text-white transition flex items-center space-x-1" title="Clear pipeline">
               <span>🗑️</span>
-              <span class="hidden sm:inline">Leeren</span>
+              <span class="hidden sm:inline" id="pipelineClearBtnText">Clear</span>
             </button>
           </div>
         </div>
@@ -406,9 +417,9 @@
           <div class="flex items-center justify-between text-[11px] font-mono text-[var(--bank-text-muted)]">
             <span class="flex items-center space-x-1.5">
               <span class="w-2 h-2 rounded-full bg-[var(--bank-accent)]"></span>
-              <span>Reihenfolge der Ausführung: Schritt 01 ➔ Schritt 02 ➔ Schritt N</span>
+              <span id="pipelineOrderHint">Execution Sequence: Step 01 ➔ Step 02 ➔ Step N</span>
             </span>
-            <span class="hidden md:inline text-[10px]">Tipp: Schritte mit ◀/▶ verschieben oder mit 📋 duplizieren</span>
+            <span class="hidden md:inline text-[10px]" id="pipelineReorderTip">Tip: Reorder with ◀/▶ or duplicate with 📋</span>
           </div>
 
           <div id="pipelineDropZone" 
@@ -431,7 +442,7 @@
             <div class="flex items-center space-x-3 text-[11px] font-mono">
               <label class="flex items-center space-x-1.5 text-[var(--bank-text-muted)] cursor-pointer hover:text-white">
                 <input type="checkbox" id="pipelinePassContextCheckbox" checked class="rounded border-[var(--bank-border)] text-[var(--bank-primary)] focus:ring-0">
-                <span>Ergebnisse sequenziell an Folgeschritte weiterleiten (Context Chaining)</span>
+                <span id="pipelineContextChainLabel">Forward results sequentially to subsequent steps (Context Chaining)</span>
               </label>
             </div>
           </div>
@@ -440,17 +451,17 @@
           <div class="space-y-2">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
               <div class="flex items-center space-x-2">
-                <span class="font-bold text-white" id="editorStepTitle">Prompt für Schritt 1 anpassen:</span>
+                <span class="font-bold text-white" id="editorStepTitle">Customize prompt for Step 1:</span>
                 <span class="text-[10px] font-mono px-2 py-0.5 rounded bank-surface bank-accent-text border bank-border" id="editorStepPersonaBadge">IB_ANALYST</span>
               </div>
               
               <!-- Quick Token Inserter Chips -->
               <div class="flex items-center space-x-1.5 text-[10px] font-mono flex-wrap gap-1">
-                <span class="text-[var(--bank-text-muted)]">Variablen einfügen:</span>
+                <span class="text-[var(--bank-text-muted)]" id="pipelineVarTokenLabel">Insert variables:</span>
                 <button type="button" onclick="insertPromptToken('{BANK_NAME}')" class="px-2 py-0.5 rounded bg-black/40 border bank-border text-[var(--bank-accent)] hover:border-white transition">+{BANK_NAME}</button>
-                <button type="button" onclick="insertPromptToken('{VORHERIGES_ERGEBNIS}')" class="px-2 py-0.5 rounded bg-black/40 border bank-border text-emerald-400 hover:border-white transition">+{VORHERIGES_ERGEBNIS}</button>
-                <button type="button" onclick="insertPromptToken('STRESS_TEST: +200 bps EZB-Zinsanstieg')" class="px-2 py-0.5 rounded bg-black/40 border bank-border text-yellow-400 hover:border-white transition">+Zins-Stresstest</button>
-                <button type="button" onclick="insertPromptToken('REGULATORIK: BaFin / EZB SREP & MiCA')" class="px-2 py-0.5 rounded bg-black/40 border bank-border text-purple-400 hover:border-white transition">+Regulatorik</button>
+                <button type="button" onclick="insertPromptToken('{PREVIOUS_RESULT}')" class="px-2 py-0.5 rounded bg-black/40 border bank-border text-emerald-400 hover:border-white transition" id="tokenPrevResultBtn">+{PREVIOUS_RESULT}</button>
+                <button type="button" onclick="insertPromptToken('STRESS_TEST: +200 bps ECB Rate Shock')" class="px-2 py-0.5 rounded bg-black/40 border bank-border text-yellow-400 hover:border-white transition" id="tokenStressBtn">+Rate-StressTest</button>
+                <button type="button" onclick="insertPromptToken('REGULATORY: BaFin / ECB SREP &amp; MiCA')" class="px-2 py-0.5 rounded bg-black/40 border bank-border text-purple-400 hover:border-white transition" id="tokenRegBtn">+Regulatory</button>
               </div>
             </div>
 
@@ -458,20 +469,20 @@
                       oninput="handleStepPromptChange(this.value)" 
                       rows="3" 
                       class="w-full text-xs font-mono p-3 border bank-surface bank-border bank-radius text-white focus:outline-none focus:border-[var(--bank-primary)] resize-y"
-                      placeholder="Prompt für diesen Schritt..."></textarea>
+                      placeholder="Prompt for this step..."></textarea>
           </div>
 
           <!-- Pipeline Action Bar & Big Launch Button -->
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
             <div class="text-[11px] text-[var(--bank-text-muted)] flex items-center space-x-2">
               <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Erst beim Klick auf „Ausführen“ werden alle verketteten Fachfunktionen in Serie ausgeführt.</span>
+              <span id="pipelineExecutionHint">Specialist functions execute sequentially only upon clicking 'Execute Pipeline'.</span>
             </div>
 
             <div class="flex items-center space-x-2">
               <button onclick="triggerPipelineExecution()" id="btnPipelineExecute" class="px-6 py-2.5 text-xs font-bold shadow-xl flex items-center space-x-2 bank-btn-primary hover:scale-[1.02] active:scale-[0.98] transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span id="btnPipelineExecuteText">🚀 Pipeline in Serie ausführen (0 Schritte)</span>
+                <span id="btnPipelineExecuteText">🚀 Execute Pipeline in Series (0 Steps)</span>
               </button>
             </div>
           </div>
@@ -510,7 +521,7 @@
 
           <!-- Fachfunktionen Cards -->
           <div class="space-y-2">
-            <label class="text-xs font-bold text-white uppercase tracking-wider block">Verfügbare Fachfunktionen & Hero CUJs (Folie 4):</label>
+            <label class="text-xs font-bold text-white uppercase tracking-wider block" id="availableCujHeader">Available Specialist Functions &amp; Hero CUJs:</label>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="fachfunktionenList">
               <!-- Populated dynamically via JS -->
             </div>
@@ -521,16 +532,16 @@
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-white flex items-center space-x-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span>Research Brief an den 1P Financial Research Agent</span>
+                <span id="briefInputTitle">Research Brief to 1P Financial Research Agent</span>
               </span>
               <span class="text-[10px] font-mono text-[var(--bank-text-muted)]">Gemini Enterprise Input</span>
             </div>
             <textarea id="queryInput" rows="3" class="w-full text-xs font-mono p-3 border bank-surface-higher bank-border bank-radius text-white focus:outline-none focus:border-[var(--bank-primary)] resize-none"></textarea>
             <div class="flex items-center justify-between pt-1">
-              <span class="text-[11px] text-[var(--bank-text-muted)]">Der Prompt wird direkt an das 1P Boq-Backend von <code class="text-[var(--bank-accent)]">finance_research</code> übermittelt.</span>
+              <span class="text-[11px] text-[var(--bank-text-muted)]" id="briefInputHint">Prompt is dispatched directly to the 1P Boq backend of <code class="text-[var(--bank-accent)]">finance_research</code>.</span>
               <button onclick="triggerFachfunktion()" id="btnTrigger" class="px-5 py-2.5 text-xs font-bold shadow-lg flex items-center space-x-2 bank-btn-primary">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                <span>Fachfunktion Ausführen</span>
+                <span id="btnTriggerText">Execute Function</span>
               </button>
             </div>
           </div>
@@ -716,23 +727,23 @@
         <div>
           <h2 class="text-base font-google font-bold text-white flex items-center space-x-2">
             <span class="w-6 h-6 rounded-full bank-btn-primary flex items-center justify-center text-xs">2</span>
-            <span>Schritt 2: Ergebnisse & Institutional Financial Artifacts</span>
+            <span id="step2HeaderTitle">Step 2: Results &amp; Institutional Financial Artifacts</span>
           </h2>
-          <p class="text-xs text-[var(--bank-text-muted)]" id="resultSubtitle">Prüfen Sie die vom 1P Financial Research Agenten erstellten Artefakte, Modelle und Trust-Dossiers.</p>
+          <p class="text-xs text-[var(--bank-text-muted)]" id="resultSubtitle">Review artifacts, financial models, and compliance dossiers generated by the 1P Financial Research Agent.</p>
         </div>
 
         <!-- Export Buttons -->
         <div class="flex items-center space-x-2 no-print">
           <button onclick="downloadPdf()" class="px-3.5 py-1.5 border hover:border-[var(--bank-accent)] text-xs font-semibold text-white flex items-center space-x-1.5 transition bank-surface-higher bank-border bank-radius">
             <svg class="w-3.5 h-3.5 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/></svg>
-            <span>Download Board-Ready PDF</span>
+            <span id="btnDownloadPdfText">Download Board-Ready PDF</span>
           </button>
           <button onclick="exportExcelCsv()" class="px-3.5 py-1.5 border hover:border-[var(--bank-accent)] text-xs font-semibold text-white flex items-center space-x-1.5 transition bank-surface-higher bank-border bank-radius">
             <svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h14a1 1 0 100-2H3zM3 11a1 1 0 100 2h7a1 1 0 100-2H3z"/></svg>
-            <span>Modell (.XLSX / CSV)</span>
+            <span id="btnExportModelText">Model (.XLSX / CSV)</span>
           </button>
           <button onclick="switchStep(1)" class="px-3.5 py-1.5 text-xs font-semibold transition bank-btn-primary">
-            ← Neue Fachfunktion
+            <span id="btnBackToStep1Text">← New Function</span>
           </button>
         </div>
       </div>
@@ -742,14 +753,14 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--bank-border)] pb-2.5">
           <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-            <h3 class="text-xs font-bold text-white font-google">Ergebnisse der sequentiellen Pipeline-Ausführung</h3>
+            <h3 class="text-xs font-bold text-white font-google" id="pipelineResultsHeader">Sequential Pipeline Execution Results</h3>
             <span id="pipelineResultStepCountBadge" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-800">
-              0 Schritte
+              0 Steps
             </span>
           </div>
-          <span class="text-[10px] font-mono text-[var(--bank-accent)]">Klicken Sie auf einen Schritt, um dessen spezifische Agenten-Ausgabe &amp; Denkpfad einzusehen</span>
+          <span class="text-[10px] font-mono text-[var(--bank-accent)]" id="pipelineResultsSubhint">Click any step to inspect its specific agent output and reasoning trace</span>
         </div>
-        <!-- Pills container: [⭐ Konsolidierte Gesamtsynthese] [01: M&A Diligence ✅] [02: Comps ✅] ... -->
+        <!-- Pills container: [⭐ Consolidated Master Dossier] [01: M&A Diligence ✅] [02: Comps ✅] ... -->
         <div class="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-thin" id="pipelineResultStepPills">
           <!-- Populated by JS -->
         </div>
@@ -758,16 +769,16 @@
       <!-- Deliverable Tabs (Folie 6 & 15: Reports, Models, Charts, Trust & Compliance) -->
       <div class="flex items-center border-b border-[var(--bank-border)] space-x-4 text-xs font-semibold no-print">
         <button onclick="showDeliverableTab('report')" id="tabBtn-report" class="py-2.5 border-b-2 border-[var(--bank-primary)] text-white flex items-center space-x-1.5 font-bold">
-          <span>📄 Investment Memo & Analyst Report</span>
+          <span id="tabLabelReport">📄 Investment Memo &amp; Analyst Report</span>
         </button>
         <button onclick="showDeliverableTab('model')" id="tabBtn-model" class="py-2.5 border-b-2 border-transparent text-[var(--bank-text-muted)] hover:text-white flex items-center space-x-1.5">
-          <span>📊 Interaktives Finanzmodell (XLSX)</span>
+          <span id="tabLabelModel">📊 Interactive Valuation Model (XLSX)</span>
         </button>
         <button onclick="showDeliverableTab('charts')" id="tabBtn-charts" class="py-2.5 border-b-2 border-transparent text-[var(--bank-text-muted)] hover:text-white flex items-center space-x-1.5">
-          <span>📈 Financial Charts & Risikoprofil</span>
+          <span id="tabLabelCharts">📈 Financial Charts &amp; Risk Profile</span>
         </button>
         <button onclick="showDeliverableTab('trust')" id="tabBtn-trust" class="py-2.5 border-b-2 border-transparent text-[var(--bank-text-muted)] hover:text-white flex items-center space-x-1.5">
-          <span>🛡️ Trust, Explainability & Audit (Folie 6)</span>
+          <span id="tabLabelTrust">🛡️ Trust, Explainability &amp; Audit</span>
         </button>
       </div>
 
@@ -1025,7 +1036,148 @@
 
   <!-- Application Logic -->
   <script>
-    // Official Bank Design System & Domain Configurations
+    // Active Language State
+    let currentLang = 'en'; // Default to English
+
+    // Comprehensive Internationalization (i18n) Dictionary
+    const I18N = {
+      en: {
+        step1Btn: "Specialist Functions",
+        step2Btn: "Results & Artifacts",
+        headerStep1Title: "Step 1: Select Persona & Execute Specialist Functions",
+        headerStep1Desc: "Select an institutional role from the pitch deck and dispatch a specialized research brief to the 1P Agent.",
+        headerStep1Badges: "6 Personas • 24 Enterprise CUJs",
+        labelLicenseTitle: "Supervision / License",
+        labelAssetsTitle: "Assets & Deposits",
+        labelFocusTitle: "Strategic Focus",
+        sub_PORTFOLIO_MANAGER: "Alpha Generation, Due Diligence, Memos & Risk",
+        sub_RESEARCH_ANALYST: "Earnings Scramble, Consensus, Buy/Sell Notes",
+        sub_QUANT_TRADER: "Pre-Market Briefing, Alpha Backtesting, Order Flow",
+        sub_BUSINESS_LINE_MGR: "Competition, Interest Margins, P&L Sensitivity",
+        sub_IB_ANALYST: "Data Room Due Diligence, LBO & DCF Models",
+        sub_COMPLIANCE_MGR: "Alert Fatigue Clearing, MiCA, Sanctions & Audit",
+        pipelineSectionTitle: "Sequential Workflow Pipeline (Series Chaining)",
+        pipelineSectionDesc: "Combine 1 to N specialist functions: <strong>Drag & drop with mouse</strong> onto the lane or add via <strong>„+ In Pipeline“</strong>. Multi-use supported.",
+        pipelineOrderHint: "Execution Sequence: Step 01 ➔ Step 02 ➔ Step N",
+        pipelineReorderTip: "Tip: Reorder with ◀/▶ or duplicate with 📋",
+        pipelineClearBtnText: "Clear",
+        pipelineContextChainLabel: "Forward results sequentially to subsequent steps (Context Chaining)",
+        editorStepTitle: "Customize prompt for Step ",
+        pipelineVarTokenLabel: "Insert variables:",
+        tokenStressBtn: "+Rate-StressTest",
+        tokenRegBtn: "+Regulatory",
+        pipelineExecutionHint: "Specialist functions execute sequentially only upon clicking 'Execute Pipeline'.",
+        availableCujHeader: "Available Specialist Functions & Hero CUJs:",
+        briefInputTitle: "Research Brief to 1P Financial Research Agent",
+        briefInputHint: "Prompt is dispatched directly to the 1P Boq backend of finance_research.",
+        btnTriggerText: "Execute Function",
+        step2HeaderTitle: "Step 2: Results & Institutional Financial Artifacts",
+        resultSubtitle: "Review artifacts, financial models, and compliance dossiers generated by the 1P Financial Research Agent.",
+        btnDownloadPdfText: "Download Board-Ready PDF",
+        btnExportModelText: "Model (.XLSX / CSV)",
+        btnBackToStep1Text: "← New Function",
+        pipelineResultsHeader: "Sequential Pipeline Execution Results",
+        pipelineResultsSubhint: "Click any step to inspect its specific agent output and reasoning trace",
+        tabLabelReport: "📄 Investment Memo & Analyst Report",
+        tabLabelModel: "📊 Interactive Valuation Model (XLSX)",
+        tabLabelCharts: "📈 Financial Charts & Risk Profile",
+        tabLabelTrust: "🛡️ Trust, Explainability & Audit",
+        optPresetDefault: "⚡ Pre-Configured Presets...",
+        optPresetMa: "🏛️ M&A Due Diligence Suite (3 Steps)",
+        optPresetEarnings: "📈 Earnings Scramble & NIM Wrap (3 Steps)",
+        optPresetMica: "🛡️ MiCA Crypto & AML Compliance Audit (3 Steps)",
+        optPresetAudit: "🌐 360° Institutional Bank Audit (4 Steps)",
+        dragHint: "Draggable",
+        addToPipe: "+ In Pipeline",
+        ready: "Ready",
+        running: "Running...",
+        completed: "Completed",
+        error: "Error",
+        functionsSelected: "Functions Selected",
+        functionSelected: "Function Selected",
+        executePipelinePrefix: "🚀 Execute Pipeline in Series",
+        emptyDropTitle: "Pipeline is empty: Drag & drop specialist functions here",
+        emptyDropDesc: "Drag specialist function cards onto this lane with the mouse or click '+ In Pipeline' on any card below.",
+        masterDossierPill: "Consolidated Master Dossier",
+        stepsInSeries: "Steps in Series",
+        stepInSeries: "Step in Series",
+        stepPrefix: "Step",
+        stagePrefix: "Stage",
+        emptyPipelineAlert: "Please add at least one specialist function to the pipeline.",
+        executingStep: "Executing Step",
+        of: "of",
+        pipelineDone: "All {count} specialist functions executed successfully in series!"
+      },
+      de: {
+        step1Btn: "Fachfunktionen",
+        step2Btn: "Ergebnisse & Artifacts",
+        headerStep1Title: "Schritt 1: Persona auswählen & Fachfunktionen auslösen",
+        headerStep1Desc: "Wählen Sie die Fachrolle aus den Folien und lösen Sie den hochspezialisierten Research-Auftrag an den 1P Agenten aus.",
+        headerStep1Badges: "6 Fach-Personas • 24 Enterprise CUJs",
+        labelLicenseTitle: "Aufsicht / Lizenz",
+        labelAssetsTitle: "Assets & Einlagen",
+        labelFocusTitle: "Strategischer Fokus",
+        sub_PORTFOLIO_MANAGER: "Alpha-Generierung, Due Diligence, Memos & Risiko",
+        sub_RESEARCH_ANALYST: "Earnings Scramble, Konsensus, Buy/Sell Notes",
+        sub_QUANT_TRADER: "Pre-Market Briefing, Alpha Backtesting, Order Flow",
+        sub_BUSINESS_LINE_MGR: "Wettbewerb, Zinsspannen, P&L-Sensitivität",
+        sub_IB_ANALYST: "Data Room Due Diligence, LBO & DCF Modelle",
+        sub_COMPLIANCE_MGR: "Alert Fatigue Clearing, MiCA, Sanktionen & Audit",
+        pipelineSectionTitle: "Sequentielle Workflow Pipeline (In Serie schalten)",
+        pipelineSectionDesc: "Kombinieren Sie 1 bis N Fachfunktionen: Per <strong>Drag & Drop mit der Maus</strong> auf die Leiste ziehen oder per <strong>„+ In Pipeline“</strong> hinzufügen. Mehrfache Nutzung möglich.",
+        pipelineOrderHint: "Reihenfolge der Ausführung: Schritt 01 ➔ Schritt 02 ➔ Schritt N",
+        pipelineReorderTip: "Tipp: Schritte mit ◀/▶ verschieben oder mit 📋 duplizieren",
+        pipelineClearBtnText: "Leeren",
+        pipelineContextChainLabel: "Ergebnisse sequenziell an Folgeschritte weiterleiten (Context Chaining)",
+        editorStepTitle: "Prompt für Schritt ",
+        pipelineVarTokenLabel: "Variablen einfügen:",
+        tokenStressBtn: "+Zins-Stresstest",
+        tokenRegBtn: "+Regulatorik",
+        pipelineExecutionHint: "Erst beim Klick auf „Ausführen“ werden alle verketteten Fachfunktionen in Serie ausgeführt.",
+        availableCujHeader: "Verfügbare Fachfunktionen & Hero CUJs (Folie 4):",
+        briefInputTitle: "Research Brief an den 1P Financial Research Agent",
+        briefInputHint: "Der Prompt wird direkt an das 1P Boq-Backend von finance_research übermittelt.",
+        btnTriggerText: "Fachfunktion Ausführen",
+        step2HeaderTitle: "Schritt 2: Ergebnisse & Institutional Financial Artifacts",
+        resultSubtitle: "Prüfen Sie die vom 1P Financial Research Agenten erstellten Artefakte, Modelle und Trust-Dossiers.",
+        btnDownloadPdfText: "Download Board-Ready PDF",
+        btnExportModelText: "Modell (.XLSX / CSV)",
+        btnBackToStep1Text: "← Neue Fachfunktion",
+        pipelineResultsHeader: "Ergebnisse der sequentiellen Pipeline-Ausführung",
+        pipelineResultsSubhint: "Klicken Sie auf einen Schritt, um dessen spezifische Agenten-Ausgabe & Denkpfad einzusehen",
+        tabLabelReport: "📄 Investment Memo & Analyst Report",
+        tabLabelModel: "📊 Interaktives Finanzmodell (XLSX)",
+        tabLabelCharts: "📈 Financial Charts & Risikoprofil",
+        tabLabelTrust: "🛡️ Trust, Explainability & Audit (Folie 6)",
+        optPresetDefault: "⚡ Vorkonfigurierte Ketten (Presets)...",
+        optPresetMa: "🏛️ M&A Due Diligence Suite (3 Schritte)",
+        optPresetEarnings: "📈 Earnings Scramble & NIM Wrap (3 Schritte)",
+        optPresetMica: "🛡️ MiCA Crypto & AML Compliance Audit (3 Schritte)",
+        optPresetAudit: "🌐 360° Institutional Bank Audit (4 Schritte)",
+        dragHint: "Ziehbar",
+        addToPipe: "+ In Pipeline",
+        ready: "Bereit",
+        running: "Läuft...",
+        completed: "Erledigt",
+        error: "Fehler",
+        functionsSelected: "Fachfunktionen gewählt",
+        functionSelected: "Fachfunktion gewählt",
+        executePipelinePrefix: "🚀 Pipeline in Serie ausführen",
+        emptyDropTitle: "Pipeline ist noch leer: Fachfunktionen per Drag & Drop hier ablegen",
+        emptyDropDesc: "Ziehen Sie mit der Maus Fachfunktionen auf diese Leiste oder klicken Sie bei einer Fachfunktion auf „+ In Pipeline“.",
+        masterDossierPill: "Konsolidiertes Master-Dossier",
+        stepsInSeries: "Schritte in Serie",
+        stepInSeries: "Schritt in Serie",
+        stepPrefix: "Schritt",
+        stagePrefix: "Stufe",
+        emptyPipelineAlert: "Bitte fügen Sie mindestens eine Fachfunktion zur Pipeline hinzu.",
+        executingStep: "Führe Schritt",
+        of: "von",
+        pipelineDone: "Alle {count} Fachfunktionen erfolgreich in Serie ausgeführt!"
+      }
+    };
+
+    // Official Bank Design System & Domain Configurations (English First + German support)
     const BANKS = {
       n26: {
         name: "N26 Bank",
@@ -1033,14 +1185,24 @@
         badge: "N26",
         tagline: "The Mobile Bank",
         title: "N26 Bank European Multi-Agent Architecture",
-        desc: "Vollregulierte europäische Neobank mit BaFin-Vollbanklizenz. Spezialisiert auf mobiles Retail-Banking, Krypto-Vermögensverwaltung, Zinsportfolios und Konsumentenkredite für 8,5 Mio. Kunden.",
-        license: "BaFin / EZB Vollbank",
-        assets: "€8.2 Mrd.",
+        desc: "Fully regulated European neobank with BaFin full banking license. Specialized in mobile retail banking, crypto wealth management, interest portfolios, and consumer credit for 8.5M customers.",
+        desc_en: "Fully regulated European neobank with BaFin full banking license. Specialized in mobile retail banking, crypto wealth management, interest portfolios, and consumer credit for 8.5M customers.",
+        desc_de: "Vollregulierte europäische Neobank mit BaFin-Vollbanklizenz. Spezialisiert auf mobiles Retail-Banking, Krypto-Vermögensverwaltung, Zinsportfolios und Konsumentenkredite für 8,5 Mio. Kunden.",
+        license: "BaFin / ECB Full Banking",
+        license_en: "BaFin / ECB Full Banking",
+        license_de: "BaFin / EZB Vollbank",
+        assets: "€8.2B",
+        assets_en: "€8.2B",
+        assets_de: "€8.2 Mrd.",
         focus: "Retail & Wealth",
+        focus_en: "Retail & Wealth",
+        focus_de: "Retail & Wealth",
         emailDomain: "n26.corp",
-        localGazette: "Bundesanzeiger DE",
+        localGazette: "Federal Gazette (Bundesanzeiger DE)",
         browserPreviewUrl: "https://www.bundesanzeiger.de/ebanzwww/wexsservlet",
-        browserPreviewAction: "Status 200 OK • Extrahiere N26 AG IFRS 9 Risikovorsorge & CET-1",
+        browserPreviewAction: "Status 200 OK • Extract N26 AG IFRS 9 Capital & Risk Disclosures",
+        browserPreviewAction_en: "Status 200 OK • Extract N26 AG IFRS 9 Capital & Risk Disclosures",
+        browserPreviewAction_de: "Status 200 OK • Extrahiere N26 AG IFRS 9 Risikovorsorge & CET-1",
         sqlTable: "bq_reg_lake.de_n26_prudential",
         rainbow: false,
         // Official Brand Design Tokens
@@ -1063,14 +1225,24 @@
         badge: "Revolut",
         tagline: "Change the way you money",
         title: "Revolut Global Multi-Currency & Treasury Agent Suite",
-        desc: "Globale Finanz-Super-App mit UK PRA-Lizenz und europäischer Banklizenz (Bank of Lithuania). Über 45 Mio. Privat- und Geschäftskunden mit starkem Fokus auf FX-Arbitrage, Wealth und Multi-Currency.",
+        desc: "Global financial super-app with UK PRA license and European banking license (Bank of Lithuania). Over 45M retail and business customers with strong focus on FX arbitrage, wealth, and multi-currency.",
+        desc_en: "Global financial super-app with UK PRA license and European banking license (Bank of Lithuania). Over 45M retail and business customers with strong focus on FX arbitrage, wealth, and multi-currency.",
+        desc_de: "Globale Finanz-Super-App mit UK PRA-Lizenz und europäischer Banklizenz (Bank of Lithuania). Über 45 Mio. Privat- und Geschäftskunden mit starkem Fokus auf FX-Arbitrage, Wealth und Multi-Currency.",
         license: "UK PRA & Bank of Lithuania",
-        assets: "€21.5 Mrd.",
+        license_en: "UK PRA & Bank of Lithuania",
+        license_de: "UK PRA & Bank of Lithuania",
+        assets: "€21.5B",
+        assets_en: "€21.5B",
+        assets_de: "€21.5 Mrd.",
         focus: "FX & Global Treasury",
+        focus_en: "FX & Global Treasury",
+        focus_de: "FX & Global Treasury",
         emailDomain: "revolut.corp",
         localGazette: "UK Companies House / PRA",
         browserPreviewUrl: "https://find-and-update.company-information.service.gov.uk/company/08804411",
-        browserPreviewAction: "Status 200 OK • Extrahiere Revolut Ltd Annual Report & PRA Buffer",
+        browserPreviewAction: "Status 200 OK • Extract Revolut Ltd Annual Report & PRA Buffer",
+        browserPreviewAction_en: "Status 200 OK • Extract Revolut Ltd Annual Report & PRA Buffer",
+        browserPreviewAction_de: "Status 200 OK • Extrahiere Revolut Ltd Annual Report & PRA Buffer",
         sqlTable: "bq_treasury_lake.uk_revolut_prudential",
         rainbow: false,
         // Official Brand Design Tokens
@@ -1093,14 +1265,24 @@
         badge: "Trade Republic",
         tagline: "Europe's largest savings platform",
         title: "Trade Republic European Wealth & Neobroker Platform",
-        desc: "Europas größte Spar- und Investmentplattform mit Vollbanklizenz. Pionier bei 4% Zinsen auf nicht investiertes Guthaben, Sparplänen, Fractional Shares und Anleihehandel.",
-        license: "BaFin Vollbank",
-        assets: "€35.0 Mrd. AUM",
+        desc: "Europe's largest savings and investment platform with full banking license. Pioneer in 4% interest on uninvested cash balances, automated savings plans, fractional shares, and bond trading.",
+        desc_en: "Europe's largest savings and investment platform with full banking license. Pioneer in 4% interest on uninvested cash balances, automated savings plans, fractional shares, and bond trading.",
+        desc_de: "Europas größte Spar- und Investmentplattform mit Vollbanklizenz. Pionier bei 4% Zinsen auf nicht investiertes Guthaben, Sparplänen, Fractional Shares und Anleihehandel.",
+        license: "BaFin Full Banking",
+        license_en: "BaFin Full Banking",
+        license_de: "BaFin Vollbank",
+        assets: "€35.0B AUM",
+        assets_en: "€35.0B AUM",
+        assets_de: "€35.0 Mrd. AUM",
         focus: "Wealth & Securities",
+        focus_en: "Wealth & Securities",
+        focus_de: "Wealth & Securities",
         emailDomain: "traderepublic.corp",
-        localGazette: "Bundesanzeiger DE",
+        localGazette: "Federal Gazette (Bundesanzeiger DE)",
         browserPreviewUrl: "https://www.bundesanzeiger.de/ebanzwww/wexsservlet?tr_depot",
-        browserPreviewAction: "Status 200 OK • Extrahiere Trade Republic Bank GmbH Treuhandguthaben",
+        browserPreviewAction: "Status 200 OK • Extract Trade Republic Bank GmbH Fiduciary Balances",
+        browserPreviewAction_en: "Status 200 OK • Extract Trade Republic Bank GmbH Fiduciary Balances",
+        browserPreviewAction_de: "Status 200 OK • Extrahiere Trade Republic Bank GmbH Treuhandguthaben",
         sqlTable: "bq_securities_lake.de_traderepublic_deposits",
         rainbow: false,
         // Official Brand Design Tokens (Bauhaus / Stark Monochromatic)
@@ -1121,16 +1303,26 @@
         name: "Deutsche Bank (CIB)",
         tag: "DB",
         badge: "Deutsche Bank",
-        tagline: "Leistung aus Leidenschaft",
+        tagline: "Performance with Passion",
         title: "Deutsche Bank Corporate & Investment Bank Agent Suite",
-        desc: "Führende europäische Universalbank mit globalem Corporate Banking und Investment Banking. Komplexe M&A-Transaktionsberatung, strukturierte Anleiheemissionen und FX-Derivate.",
-        license: "EZB / BaFin Tier-1",
-        assets: "€1.31 Bio.",
+        desc: "Leading European universal bank with global corporate and investment banking. Complex M&A advisory, structured debt issuance, and FX derivatives.",
+        desc_en: "Leading European universal bank with global corporate and investment banking. Complex M&A advisory, structured debt issuance, and FX derivatives.",
+        desc_de: "Führende europäische Universalbank mit globalem Corporate Banking und Investment Banking. Komplexe M&A-Transaktionsberatung, strukturierte Anleiheemissionen und FX-Derivate.",
+        license: "ECB / BaFin Tier-1",
+        license_en: "ECB / BaFin Tier-1",
+        license_de: "EZB / BaFin Tier-1",
+        assets: "€1.31T",
+        assets_en: "€1.31T",
+        assets_de: "€1.31 Bio.",
         focus: "Capital Markets & M&A",
+        focus_en: "Capital Markets & M&A",
+        focus_de: "Capital Markets & M&A",
         emailDomain: "db.corp",
-        localGazette: "BaFin & EZB Register",
-        browserPreviewUrl: "https://www.db.com/ir/de/berichte-und-unterlagen.htm",
-        browserPreviewAction: "Status 200 OK • Extrahiere Deutsche Bank AG Konzern-Kapitalquoten (Pillar 3)",
+        localGazette: "BaFin & ECB Registers",
+        browserPreviewUrl: "https://www.db.com/ir/en/reports-and-events.htm",
+        browserPreviewAction: "Status 200 OK • Extract Deutsche Bank AG Group Capital Ratios (Pillar 3)",
+        browserPreviewAction_en: "Status 200 OK • Extract Deutsche Bank AG Group Capital Ratios (Pillar 3)",
+        browserPreviewAction_de: "Status 200 OK • Extrahiere Deutsche Bank AG Konzern-Kapitalquoten (Pillar 3)",
         sqlTable: "bq_cib_lake.global_db_prudential",
         rainbow: false,
         // Official Brand Design Tokens
@@ -1153,14 +1345,24 @@
         badge: "Monzo",
         tagline: "Banking made easy",
         title: "Monzo UK Digital Challenger Bank Agent Platform",
-        desc: "Großbritanniens führende Digitalbank mit 9+ Mio. Kunden. Innovator bei Spar-Pots, Monzo Flex (Buy Now Pay Later), vulnerablen Kundenschutzmechanismen und SME-Banking.",
+        desc: "UK's leading digital bank with 9M+ customers. Innovator in Savings Pots, Monzo Flex (Buy Now Pay Later), vulnerable customer protections, and SME banking.",
+        desc_en: "UK's leading digital bank with 9M+ customers. Innovator in Savings Pots, Monzo Flex (Buy Now Pay Later), vulnerable customer protections, and SME banking.",
+        desc_de: "Großbritanniens führende Digitalbank mit 9+ Mio. Kunden. Innovator bei Spar-Pots, Monzo Flex (Buy Now Pay Later), vulnerablen Kundenschutzmechanismen und SME-Banking.",
         license: "UK PRA & FCA",
-        assets: "£11.2 Mrd.",
+        license_en: "UK PRA & FCA",
+        license_de: "UK PRA & FCA",
+        assets: "£11.2B",
+        assets_en: "£11.2B",
+        assets_de: "£11.2 Mrd.",
         focus: "Digital Retail & Flex",
+        focus_en: "Digital Retail & Flex",
+        focus_de: "Digital Retail & Flex",
         emailDomain: "monzo.corp",
         localGazette: "UK Companies House",
         browserPreviewUrl: "https://monzo.com/annual-report/2025/",
-        browserPreviewAction: "Status 200 OK • Extrahiere Monzo Bank Ltd Balance Sheet & Flex Impairments",
+        browserPreviewAction: "Status 200 OK • Extract Monzo Bank Ltd Balance Sheet & Flex Impairments",
+        browserPreviewAction_en: "Status 200 OK • Extract Monzo Bank Ltd Balance Sheet & Flex Impairments",
+        browserPreviewAction_de: "Status 200 OK • Extrahiere Monzo Bank Ltd Balance Sheet & Flex Impairments",
         sqlTable: "bq_monzo_lake.uk_monzo_credit_risk",
         rainbow: false,
         // Official Brand Design Tokens
@@ -1183,14 +1385,24 @@
         badge: "bunq",
         tagline: "Bank of The Free",
         title: "bunq Bank of the Free European ESG Agent Platform",
-        desc: "Europas zweitgrößte Neobank mit DNB-Banklizenz. Technologieführer bei Multi-IBANs, weltweitem Reise-Banking, automatischer CO2-Kompensation (Easy Green) und digitaler Mobilität.",
-        license: "Dutch DNB Vollbank",
-        assets: "€4.5 Mrd.",
+        desc: "Europe's second largest neobank with Dutch DNB banking license. Tech leader in Multi-IBAN accounts, worldwide travel banking, automated carbon offsetting (Easy Green), and sustainable digital mobility.",
+        desc_en: "Europe's second largest neobank with Dutch DNB banking license. Tech leader in Multi-IBAN accounts, worldwide travel banking, automated carbon offsetting (Easy Green), and sustainable digital mobility.",
+        desc_de: "Europas zweitgrößte Neobank mit DNB-Banklizenz. Technologieführer bei Multi-IBANs, weltweitem Reise-Banking, automatischer CO2-Kompensation (Easy Green) und digitaler Mobilität.",
+        license: "Dutch DNB Full Banking",
+        license_en: "Dutch DNB Full Banking",
+        license_de: "Dutch DNB Vollbank",
+        assets: "€4.5B",
+        assets_en: "€4.5B",
+        assets_de: "€4.5 Mrd.",
         focus: "ESG & Multi-IBAN",
+        focus_en: "ESG & Multi-IBAN",
+        focus_de: "ESG & Multi-IBAN",
         emailDomain: "bunq.corp",
         localGazette: "Dutch DNB Register",
         browserPreviewUrl: "https://www.bunq.com/newsroom/media-kits",
-        browserPreviewAction: "Status 200 OK • Extrahiere bunq B.V. DNB Capital Adequacy & Easy Green ESG",
+        browserPreviewAction: "Status 200 OK • Extract bunq B.V. DNB Capital Adequacy & Easy Green ESG",
+        browserPreviewAction_en: "Status 200 OK • Extract bunq B.V. DNB Capital Adequacy & Easy Green ESG",
+        browserPreviewAction_de: "Status 200 OK • Extrahiere bunq B.V. DNB Capital Adequacy & Easy Green ESG",
         sqlTable: "bq_esg_lake.nl_bunq_sustainability",
         rainbow: true,            // Shows the iconic bunq Rainbow Ribbon
         // Official Brand Design Tokens
@@ -1208,37 +1420,67 @@
       }
     };
 
-    // The 6 Personas & their exact Fachfunktionen (Slides 3, 4, 11)
+    // The 6 Personas & their exact Fachfunktionen (Slides 3, 4, 11) - English First with Full German Support
     const PERSONAS = {
       PORTFOLIO_MANAGER: {
         code: "PORTFOLIO_MANAGER",
         title: "Portfolio Manager & Investment Analyst (Buy side)",
+        title_en: "Portfolio Manager & Investment Analyst (Buy side)",
+        title_de: "Portfolio Manager & Investment Analyst (Buy side)",
         heroCUJ: "Accelerate due diligence by synthesizing large volumes of research materials and generating first drafts of investment memos.",
-        desc: "Recherchiert Anlagechancen, führt Fundamentalanalysen durch und steuert das Portfolio mit dem Ziel kontinuierlicher Outperformance (Alpha).",
+        heroCUJ_en: "Accelerate due diligence by synthesizing large volumes of research materials and generating first drafts of investment memos.",
+        heroCUJ_de: "Beschleunigt die Due Diligence durch Synthese umfangreicher Research-Materialien und automatisierte Erstellung erster Investment-Memo-Entwürfe.",
+        desc: "Researches investment opportunities, conducts fundamental analysis, and manages the portfolio targeting continuous outperformance (Alpha).",
+        desc_en: "Researches investment opportunities, conducts fundamental analysis, and manages the portfolio targeting continuous outperformance (Alpha).",
+        desc_de: "Recherchiert Anlagechancen, führt Fundamentalanalysen durch und steuert das Portfolio mit dem Ziel kontinuierlicher Outperformance (Alpha).",
         cujList: [
           {
             id: "pm-cuj-1",
             name: "Due Diligence & Investment Memo Drafting",
-            desc: "Erstellt vollumfängliche Investment Memos für das Investment Committee inklusive DCF-Bewertung, Risikomatrix und Peer-Vergleich.",
-            prompt: "Führe eine vollumfängliche Buy-Side Due Diligence für das Institut durch. Strukturiere das Investment Memo in: Executive Summary, Ertragsdynamik, Einlagenstabilität, CET-1 Kapitalausstattung, Zinsmarge und Risikoanalyse mit klarer Investment-Empfehlung."
+            name_en: "Due Diligence & Investment Memo Drafting",
+            name_de: "Due Diligence & Investment Memo Drafting",
+            desc: "Generates comprehensive investment memos for the Investment Committee including DCF valuation, risk matrix, and peer comparison.",
+            desc_en: "Generates comprehensive investment memos for the Investment Committee including DCF valuation, risk matrix, and peer comparison.",
+            desc_de: "Erstellt vollumfängliche Investment Memos für das Investment Committee inklusive DCF-Bewertung, Risikomatrix und Peer-Vergleich.",
+            prompt: "Perform a comprehensive buy-side due diligence review for {BANK_NAME}. Structure the investment memo into: Executive Summary, Revenue & EBITDA Trajectory, Debt Service Coverage (DSCR), Collateral Coverage Ratio, and Committee Recommendation.",
+            prompt_en: "Perform a comprehensive buy-side due diligence review for {BANK_NAME}. Structure the investment memo into: Executive Summary, Revenue & EBITDA Trajectory, Debt Service Coverage (DSCR), Collateral Coverage Ratio, and Committee Recommendation.",
+            prompt_de: "Führe eine vollumfängliche Buy-Side Due Diligence für {BANK_NAME} durch. Strukturiere das Investment Memo in: Executive Summary, Ertragsdynamik, Einlagenstabilität, CET-1 Kapitalausstattung, Zinsmarge und Risikoanalyse mit klarer Investment-Empfehlung."
           },
           {
             id: "pm-cuj-2",
             name: "Idea Sourcing & Sector Filtering",
-            desc: "Filtert liquide europäische FinTechs und Neobanken nach EBITDA-Margenexpansion, LTV/CAC-Ratios und Einlagensicherungsquoten.",
-            prompt: "Scanne den europäischen Bankensektor nach Neobanken mit über 20% bereinigter EBITDA-Marge und wachsendem Zinsüberschuss. Vergleiche die Bewertungsmultiples mit traditionellen Banken."
+            name_en: "Idea Sourcing & Sector Filtering",
+            name_de: "Ideenfindung & Sektor-Filterung",
+            desc: "Screens liquid European FinTechs and neobanks by EBITDA margin expansion, LTV/CAC ratios, and deposit security ratios.",
+            desc_en: "Screens liquid European FinTechs and neobanks by EBITDA margin expansion, LTV/CAC ratios, and deposit security ratios.",
+            desc_de: "Filtert liquide europäische FinTechs und Neobanken nach EBITDA-Margenexpansion, LTV/CAC-Ratios und Einlagensicherungsquoten.",
+            prompt: "Screen the European banking universe for institutions with CET-1 ratio > 14.5%, RoTE > 12.0%, and deposit beta under 35%. Benchmark peer multiples against historical medians.",
+            prompt_en: "Screen the European banking universe for institutions with CET-1 ratio > 14.5%, RoTE > 12.0%, and deposit beta under 35%. Benchmark peer multiples against historical medians.",
+            prompt_de: "Scanne den europäischen Bankensektor nach Neobanken mit über 20% bereinigter EBITDA-Marge und wachsendem Zinsüberschuss. Vergleiche die Bewertungsmultiples mit traditionellen Banken."
           },
           {
             id: "pm-cuj-3",
             name: "Construction & Risk Factor Decomposition",
-            desc: "Zerlegt das Portfolio-Risiko in Makro-Zinsrisiko, Kreditrisiko und Währungsvolatilität.",
-            prompt: "Modelliere eine Risikofaktor-Zerlegung des Bankenportfolios unter Annahme einer 50 Basispunkte Zinssenkung durch die EZB. Berechne die Sensitivität auf Net Interest Income und Einlagenvolumen."
+            name_en: "Construction & Risk Factor Decomposition",
+            name_de: "Portfoliokonstruktion & Risikofaktor-Zerlegung",
+            desc: "Decomposes portfolio risk into macro interest rate risk, credit risk, and currency volatility.",
+            desc_en: "Decomposes portfolio risk into macro interest rate risk, credit risk, and currency volatility.",
+            desc_de: "Zerlegt das Portfolio-Risiko in Makro-Zinsrisiko, Kreditrisiko und Währungsvolatilität.",
+            prompt: "Model a factor risk decomposition of the bank credit and equity portfolio assuming an ECB rate cut of 50 bps combined with a 15% energy shock. Calculate sensitivities on Net Interest Income and deposit volatility for {BANK_NAME}.",
+            prompt_en: "Model a factor risk decomposition of the bank credit and equity portfolio assuming an ECB rate cut of 50 bps combined with a 15% energy shock. Calculate sensitivities on Net Interest Income and deposit volatility for {BANK_NAME}.",
+            prompt_de: "Modelliere eine Risikofaktor-Zerlegung des Bankenportfolios unter Annahme einer 50 Basispunkte Zinssenkung durch die EZB. Berechne die Sensitivität auf Net Interest Income und Einlagenvolumen für {BANK_NAME}."
           },
           {
             id: "pm-cuj-4",
             name: "Coverage & Proactive Anomaly Monitoring",
-            desc: "Überwacht Portfoliounternehmen 24x7 auf Abweichungen von Ertragsprognosen und Einlagenabflüssen.",
-            prompt: "Aktiviere die 24x7 Überwachung für das Institut. Identifiziere Warnsignale bezüglich Einlagenfluktuationen, Kreditausfällen im Konsumentenbereich oder regulatorischen Sonderprüfungen."
+            name_en: "Coverage & Proactive Anomaly Monitoring",
+            name_de: "Coverage & Proaktives Anomalie-Monitoring",
+            desc: "Continuously monitors portfolio institutions 24x7 for earnings forecast deviations, deposit outflows, or regulatory probes.",
+            desc_en: "Continuously monitors portfolio institutions 24x7 for earnings forecast deviations, deposit outflows, or regulatory probes.",
+            desc_de: "Überwacht Portfoliounternehmen 24x7 auf Abweichungen von Ertragsprognosen und Einlagenabflüssen.",
+            prompt: "Activate 24x7 continuous monitoring for {BANK_NAME}. Identify early warning signals regarding deposit fluctuations, consumer credit defaults, or regulatory audit notices.",
+            prompt_en: "Activate 24x7 continuous monitoring for {BANK_NAME}. Identify early warning signals regarding deposit fluctuations, consumer credit defaults, or regulatory audit notices.",
+            prompt_de: "Aktiviere die 24x7 Überwachung für {BANK_NAME}. Identifiziere Warnsignale bezüglich Einlagenfluktuationen, Kreditausfällen im Konsumentenbereich oder regulatorischen Sonderprüfungen."
           }
         ]
       },
@@ -1246,32 +1488,62 @@
       RESEARCH_ANALYST: {
         code: "RESEARCH_ANALYST",
         title: "Research Analyst (Sell side)",
+        title_en: "Research Analyst (Sell side)",
+        title_de: "Research Analyst (Sell side)",
         heroCUJ: "Address the 'earnings scramble' by summarizing press releases and creating initial drafts of research notes, reducing the time required to publish analysis.",
-        desc: "Veröffentlicht branchenspezifische Analysen, Kursziele und Ratings ('Buy/Hold/Sell') zur Beratung institutioneller Kunden und zur Generierung von Handelsvolumen.",
+        heroCUJ_en: "Address the 'earnings scramble' by summarizing press releases and creating initial drafts of research notes, reducing the time required to publish analysis.",
+        heroCUJ_de: "Bewältigt den 'Earnings Scramble' durch Zusammenfassung von Quartalsberichten und Erstellung von Research-Notes.",
+        desc: "Publishes industry-specific analyses, price targets, and ratings ('Buy/Hold/Sell') to advise institutional clients and generate trading volume.",
+        desc_en: "Publishes industry-specific analyses, price targets, and ratings ('Buy/Hold/Sell') to advise institutional clients and generate trading volume.",
+        desc_de: "Veröffentlicht branchenspezifische Analysen, Kursziele und Ratings ('Buy/Hold/Sell') zur Beratung institutioneller Kunden und zur Generierung von Handelsvolumen.",
         cujList: [
           {
             id: "ra-cuj-1",
             name: "The 'Earnings Scramble' 15-Min Flash Note",
-            desc: "Extrahiert unmittelbar nach Veröffentlichung von Quartalsberichten Abweichungen zum Konsens und generiert Veröffentlichungsentwürfe.",
-            prompt: "Erstelle eine unmittelbare 'Earnings Scramble' Flash Note zur jüngsten Ertragsveröffentlichung des Instituts. Extrahiere Abweichungen von Konsensschätzungen (FactSet) bei Erträgen, Nettoverlust/Gewinn und Kundenwachstum."
+            name_en: "The 'Earnings Scramble' 15-Min Flash Note",
+            name_de: "The 'Earnings Scramble' 15-Min Flash Note",
+            desc: "Extracts variances against consensus estimates immediately post earnings release and drafts publishable research notes.",
+            desc_en: "Extracts variances against consensus estimates immediately post earnings release and drafts publishable research notes.",
+            desc_de: "Extrahiert unmittelbar nach Veröffentlichung von Quartalsberichten Abweichungen zum Konsens und generiert Veröffentlichungsentwürfe.",
+            prompt: "Draft an immediate 'Earnings Scramble' Flash Note for {BANK_NAME}'s latest quarterly results. Extract variances against consensus estimates for Net Interest Income, Fee Revenue, and Operating Expenses. Include updated 12-month price targets.",
+            prompt_en: "Draft an immediate 'Earnings Scramble' Flash Note for {BANK_NAME}'s latest quarterly results. Extract variances against consensus estimates for Net Interest Income, Fee Revenue, and Operating Expenses. Include updated 12-month price targets.",
+            prompt_de: "Erstelle eine unmittelbare 'Earnings Scramble' Flash Note zur jüngsten Ertragsveröffentlichung von {BANK_NAME}. Extrahiere Abweichungen von Konsensschätzungen (FactSet) bei Erträgen, Nettoverlust/Gewinn und Kundenwachstum."
           },
           {
             id: "ra-cuj-2",
             name: "Financial Modeling & Consensus Variance",
-            desc: "Passt Diskontierungsfaktoren und Multiples an und berechnet revidierte Kursziele.",
-            prompt: "Aktualisiere das Bewertungsmodell für das Institut. Berechne die Konsens-Varianz und leite ein neues 12-Monats-Kursziel basierend auf 8.0x EV/EBITDA und 15x KGV ab."
+            name_en: "Financial Modeling & Consensus Variance",
+            name_de: "Finanzmodellierung & Konsensus-Varianz",
+            desc: "Adjusts discount factors and multiples, recalculating revised equity price targets.",
+            desc_en: "Adjusts discount factors and multiples, recalculating revised equity price targets.",
+            desc_de: "Passt Diskontierungsfaktoren und Multiples an und berechnet revidierte Kursziele.",
+            prompt: "Update the financial valuation model for {BANK_NAME}. Recalculate consensus variance and derive an updated 12-month target price based on 8.0x EV/EBITDA and 15x P/E multiples.",
+            prompt_en: "Update the financial valuation model for {BANK_NAME}. Recalculate consensus variance and derive an updated 12-month target price based on 8.0x EV/EBITDA and 15x P/E multiples.",
+            prompt_de: "Aktualisiere das Bewertungsmodell für {BANK_NAME}. Berechne die Konsens-Varianz und leite ein neues 12-Monats-Kursziel basierend auf 8.0x EV/EBITDA und 15x KGV ab."
           },
           {
             id: "ra-cuj-3",
             name: "Initiation of Coverage Comprehensive Report",
-            desc: "Verfasst einen detaillierten Einstiegsbericht mit Branchendynamik, Management-Due-Diligence und IFRS-Finanzkennzahlen.",
-            prompt: "Erstelle die Gliederung und Kernabschnitte eines 'Initiation of Coverage' Berichts mit Investment Thesis, Wettbewerbsvorteilen ('Moat') und detaillierter 3-Jahres-GuV-Prognose."
+            name_en: "Initiation of Coverage Comprehensive Report",
+            name_de: "Initiation of Coverage Umfassender Bericht",
+            desc: "Drafts an in-depth initiation report covering industry dynamics, management due diligence, and IFRS metrics.",
+            desc_en: "Drafts an in-depth initiation report covering industry dynamics, management due diligence, and IFRS metrics.",
+            desc_de: "Verfasst einen detaillierten Einstiegsbericht mit Branchendynamik, Management-Due-Diligence und IFRS-Finanzkennzahlen.",
+            prompt: "Draft the executive overview and investment thesis for an Initiation of Coverage report on {BANK_NAME}, focusing on its technological moat, deposit pass-through model, and 3-year projected P&L.",
+            prompt_en: "Draft the executive overview and investment thesis for an Initiation of Coverage report on {BANK_NAME}, focusing on its technological moat, deposit pass-through model, and 3-year projected P&L.",
+            prompt_de: "Erstelle die Gliederung und Kernabschnitte eines 'Initiation of Coverage' Berichts für {BANK_NAME} mit Investment Thesis, Wettbewerbsvorteilen ('Moat') und detaillierter 3-Jahres-GuV-Prognose."
           },
           {
             id: "ra-cuj-4",
             name: "Stock Rating & Thematic Notes Publication",
-            desc: "Überprüft Buy/Hold/Sell-Einstufungen auf Basis veränderter Zinsspreads und Regulatorik.",
-            prompt: "Formuliere eine Begründung für ein Upgrade auf 'BUY' unter Berücksichtigung der Skaleneffekte bei IT-Kosten pro Kunde und wachsender Provisionserträge aus Krypto & Sparplänen."
+            name_en: "Stock Rating & Thematic Notes Publication",
+            name_de: "Rating-Begründung & Thematische Publikation",
+            desc: "Reviews Buy/Hold/Sell ratings based on shifting interest spreads and regulatory capital policies.",
+            desc_en: "Reviews Buy/Hold/Sell ratings based on shifting interest spreads and regulatory capital policies.",
+            desc_de: "Überprüft Buy/Hold/Sell-Einstufungen auf Basis veränderter Zinsspreads und Regulatorik.",
+            prompt: "Formulate an investment upgrade justification to 'BUY' for {BANK_NAME}, factoring in IT economies of scale, customer growth, and expanding fee margins.",
+            prompt_en: "Formulate an investment upgrade justification to 'BUY' for {BANK_NAME}, factoring in IT economies of scale, customer growth, and expanding fee margins.",
+            prompt_de: "Formuliere eine Begründung für ein Upgrade auf 'BUY' für {BANK_NAME} unter Berücksichtigung der Skaleneffekte bei IT-Kosten pro Kunde und wachsender Provisionserträge aus Krypto & Sparplänen."
           }
         ]
       },
@@ -1279,32 +1551,62 @@
       QUANT_TRADER: {
         code: "QUANT_TRADER",
         title: "Sales & Quant Trader",
+        title_en: "Sales & Quant Trader",
+        title_de: "Sales & Quant Trader",
         heroCUJ: "Prepare morning briefings tailored to specific client lists by synthesizing overnight news and market data; Identify personalized trading ideas.",
-        desc: "Dient als primärer Ansprechpartner für institutionelle Kunden bei Marktinformationen, quantitativen Handelsideen und Ausführungsoptimierung.",
+        heroCUJ_en: "Prepare morning briefings tailored to specific client lists by synthesizing overnight news and market data; Identify personalized trading ideas.",
+        heroCUJ_de: "Erstellt maßgeschneiderte Morning-Briefings für institutionelle Kundenlisten; Identifiziert personalisierte Handelsideen.",
+        desc: "Serves as primary touchpoint for institutional clients regarding market intelligence, quantitative trade ideas, and execution routing.",
+        desc_en: "Serves as primary touchpoint for institutional clients regarding market intelligence, quantitative trade ideas, and execution routing.",
+        desc_de: "Dient als primärer Ansprechpartner für institutionelle Kunden bei Marktinformationen, quantitativen Handelsideen und Ausführungsoptimierung.",
         cujList: [
           {
             id: "qt-cuj-1",
             name: "Pre-Market Morning Intelligence Briefing",
-            desc: "Synthetisiert nächtliche Makrodaten, Asien-Märkte und regulatorische News zu individuellen Briefings für institutionelle Kunden.",
-            prompt: "Generiere ein hochkompaktes Pre-Market Briefing für institutionelle Kunden. Synthetisiere nächtliche Zinsbewegungen, Renditekurven-Shifts und relevante Branchennachrichten vor Handelsbeginn."
+            name_en: "Pre-Market Morning Intelligence Briefing",
+            name_de: "Pre-Market Morning Intelligence Briefing",
+            desc: "Synthesizes overnight macro data, Asian trading sessions, and regulatory announcements into concise client briefings.",
+            desc_en: "Synthesizes overnight macro data, Asian trading sessions, and regulatory announcements into concise client briefings.",
+            desc_de: "Synthetisiert nächtliche Makrodaten, Asien-Märkte und regulatorische News zu individuellen Briefings für institutionelle Kunden.",
+            prompt: "Generate an actionable Pre-Market Morning Briefing for the institutional sales desk. Summarize overnight Euribor fixings, European sovereign spread shifts, and key banking news regarding {BANK_NAME}.",
+            prompt_en: "Generate an actionable Pre-Market Morning Briefing for the institutional sales desk. Summarize overnight Euribor fixings, European sovereign spread shifts, and key banking news regarding {BANK_NAME}.",
+            prompt_de: "Generiere ein hochkompaktes Pre-Market Briefing für institutionelle Kunden. Synthetisiere nächtliche Zinsbewegungen, Renditekurven-Shifts und relevante Branchennachrichten vor Handelsbeginn bezüglich {BANK_NAME}."
           },
           {
             id: "qt-cuj-2",
             name: "Personalized Trading Ideas & Flow Signals",
-            desc: "Identifiziert Arbitrage-Chancen zwischen Einlagenrenditen, Anleihespreads und FX-Swaps.",
-            prompt: "Identifiziere taktische Relative-Value-Trading-Chancen im europäischen FinTech- und Banken-Anleihesegment unter Einbezug von Credit Default Swaps (CDS) und Duration."
+            name_en: "Personalized Trading Ideas & Flow Signals",
+            name_de: "Personalisierte Trading-Ideen & Flow-Signale",
+            desc: "Identifies arbitrage opportunities between deposit yields, bond spreads, and FX swaps.",
+            desc_en: "Identifies arbitrage opportunities between deposit yields, bond spreads, and FX swaps.",
+            desc_de: "Identifiziert Arbitrage-Chancen zwischen Einlagenrenditen, Anleihespreads und FX-Swaps.",
+            prompt: "Identify relative-value trading opportunities in Tier-2 subordinated bank debt vs Senior Non-Preferred paper across European issuers, with focus on {BANK_NAME}.",
+            prompt_en: "Identify relative-value trading opportunities in Tier-2 subordinated bank debt vs Senior Non-Preferred paper across European issuers, with focus on {BANK_NAME}.",
+            prompt_de: "Identifiziere taktische Relative-Value-Trading-Chancen im europäischen FinTech- und Banken-Anleihesegment unter Einbezug von Credit Default Swaps (CDS) und Duration für {BANK_NAME}."
           },
           {
             id: "qt-cuj-3",
             name: "Alpha Research & Quantitative Strategy Backtesting",
-            desc: "Testet Momentum- und Mean-Reversion-Strategien auf Hochfrequenz-Orderbuchdaten und berechnet Sharpe-Ratio und Max Drawdown.",
-            prompt: "Modelliere eine quantitative Handelsstrategie für Finanzwerte basierend auf Sentiment-Spikes und Orderbuch-Ungleichgewichten. Zeige erwartete Sharpe-Ratio und Drawdown-Profile."
+            name_en: "Alpha Research & Quantitative Strategy Backtesting",
+            name_de: "Alpha Research & Quantitatives Strategie-Backtesting",
+            desc: "Tests momentum and mean-reversion strategies on order book data, calculating Sharpe ratio and max drawdown.",
+            desc_en: "Tests momentum and mean-reversion strategies on order book data, calculating Sharpe ratio and max drawdown.",
+            desc_de: "Testet Momentum- und Mean-Reversion-Strategien auf Hochfrequenz-Orderbuchdaten und berechnet Sharpe-Ratio und Max Drawdown.",
+            prompt: "Backtest an intraday momentum and sentiment trading strategy for European banking equities following central bank rate announcements. Compute Sharpe Ratio and Drawdown metrics for {BANK_NAME}.",
+            prompt_en: "Backtest an intraday momentum and sentiment trading strategy for European banking equities following central bank rate announcements. Compute Sharpe Ratio and Drawdown metrics for {BANK_NAME}.",
+            prompt_de: "Modelliere eine quantitative Handelsstrategie für Finanzwerte basierend auf Sentiment-Spikes und Orderbuch-Ungleichgewichten. Zeige erwartete Sharpe-Ratio und Drawdown-Profile für {BANK_NAME}."
           },
           {
             id: "qt-cuj-4",
             name: "Post-Market Wrap & Liquidity Analytics",
-            desc: "Analysiert End-of-Day-Transaktionsvolumina, Block-Trades und Dark-Pool-Aktivitäten.",
-            prompt: "Führe eine Post-Market Analyse der Liquiditätsverteilung durch. Identifiziere auffällige Block-Trades und berechne effektive Spread-Kosten."
+            name_en: "Post-Market Wrap & Liquidity Analytics",
+            name_de: "Post-Market Wrap & Liquiditäts-Analytics",
+            desc: "Analyzes end-of-day transaction volumes, block trades, and dark pool executions.",
+            desc_en: "Analyzes end-of-day transaction volumes, block trades, and dark pool executions.",
+            desc_de: "Analysiert End-of-Day-Transaktionsvolumina, Block-Trades und Dark-Pool-Aktivitäten.",
+            prompt: "Perform a post-market liquidity and block-trade analysis for European bank equities and credit instruments. Evaluate effective spread costs for {BANK_NAME}.",
+            prompt_en: "Perform a post-market liquidity and block-trade analysis for European bank equities and credit instruments. Evaluate effective spread costs for {BANK_NAME}.",
+            prompt_de: "Führe eine Post-Market Analyse der Liquiditätsverteilung durch. Identifiziere auffällige Block-Trades und berechne effektive Spread-Kosten für {BANK_NAME}."
           }
         ]
       },
@@ -1312,32 +1614,62 @@
       BUSINESS_LINE_MGR: {
         code: "BUSINESS_LINE_MGR",
         title: "Business Line Manager (Banking Division / P&L)",
+        title_en: "Business Line Manager (Banking Division / P&L)",
+        title_de: "Business Line Manager (Banking Division / P&L)",
         heroCUJ: "Generate competitive intelligence and proactive client insights by synthesizing internal trading data with external market events.",
-        desc: "Steuert Strategie, Produktentwicklung und GuV (P&L) für Geschäftsbereiche wie Karten, Krypto, Konsumentenkredite oder B2B-Banking.",
+        heroCUJ_en: "Generate competitive intelligence and proactive client insights by synthesizing internal trading data with external market events.",
+        heroCUJ_de: "Erstellt Competitive Intelligence und Kunden-Insights durch Synthese interner Daten mit Marktereignissen.",
+        desc: "Steers strategy, product development, and P&L for divisions such as cards, crypto, consumer credit, or commercial banking.",
+        desc_en: "Steers strategy, product development, and P&L for divisions such as cards, crypto, consumer credit, or commercial banking.",
+        desc_de: "Steuert Strategie, Produktentwicklung und GuV (P&L) für Geschäftsbereiche wie Karten, Krypto, Konsumentenkredite oder B2B-Banking.",
         cujList: [
           {
             id: "blm-cuj-1",
             name: "Competitive Intelligence & Market Share Pulse",
-            desc: "Benchmarkt Margen, Einlagenzinsen und Gebührenstrukturen gegen europäische Neobank-Konkurrenten.",
-            prompt: "Erstelle ein Wettbewerbs-Benchmark gegen führende europäische Institute. Vergleiche Zinsangebote auf Tagesgeld, Kontoführungsgebühren und Krypto-Spreads."
+            name_en: "Competitive Intelligence & Market Share Pulse",
+            name_de: "Competitive Intelligence & Marktanteils-Benchmark",
+            desc: "Benchmarks margins, deposit interest rates, and fee schedules against European neobank peers.",
+            desc_en: "Benchmarks margins, deposit interest rates, and fee schedules against European neobank peers.",
+            desc_de: "Benchmarkt Margen, Einlagenzinsen und Gebührenstrukturen gegen europäische Neobank-Konkurrenten.",
+            prompt: "Model deposit beta elasticity and competitive pricing for {BANK_NAME} against European neobanks. Estimate customer attrition if deposit pass-through rates change by 25 bps.",
+            prompt_en: "Model deposit beta elasticity and competitive pricing for {BANK_NAME} against European neobanks. Estimate customer attrition if deposit pass-through rates change by 25 bps.",
+            prompt_de: "Erstelle ein Wettbewerbs-Benchmark für {BANK_NAME} gegen führende europäische Institute. Vergleiche Zinsangebote auf Tagesgeld, Kontoführungsgebühren und Krypto-Spreads."
           },
           {
             id: "blm-cuj-2",
             name: "Market Event Response & P&L Sensitivity Analysis",
-            desc: "Simuliert die Auswirkungen von EZB-Zinssenkungen auf den Zinsüberschuss (Net Interest Income) und die Kundenabwanderung.",
-            prompt: "Simuliere die P&L-Auswirkungen von drei aufeinanderfolgenden EZB-Zinsschritten (-25 bps). Berechne den Rückgang des Zinsüberschusses und skizziere kompensierende Fee-Income-Maßnahmen."
+            name_en: "Market Event Response & P&L Sensitivity Analysis",
+            name_de: "Markt-Event-Response & P&L-Sensitivitätsanalyse",
+            desc: "Simulates the P&L impact of ECB rate cuts on Net Interest Income (NII) and customer churn.",
+            desc_en: "Simulates the P&L impact of ECB rate cuts on Net Interest Income (NII) and customer churn.",
+            desc_de: "Simuliert die Auswirkungen von EZB-Zinssenkungen auf den Zinsüberschuss (Net Interest Income) und die Kundenabwanderung.",
+            prompt: "Calculate bank-wide Net Interest Margin (NIM) sensitivity for {BANK_NAME} under 3 ECB rate scenarios (-150 bps cut, 0 bps flat, +75 bps hike). Outline compensatory fee income strategies.",
+            prompt_en: "Calculate bank-wide Net Interest Margin (NIM) sensitivity for {BANK_NAME} under 3 ECB rate scenarios (-150 bps cut, 0 bps flat, +75 bps hike). Outline compensatory fee income strategies.",
+            prompt_de: "Simuliere die P&L-Auswirkungen von drei aufeinanderfolgenden EZB-Zinsschritten (-25 bps) für {BANK_NAME}. Berechne den Rückgang des Zinsüberschusses und skizziere kompensierende Fee-Income-Maßnahmen."
           },
           {
             id: "blm-cuj-3",
             name: "Product Profitability & Customer Cohort Analysis",
-            desc: "Analysiert Deckungsbeiträge einzelner Kundenkohorten (z.B. Premium-Abonnements vs. Free-Tier).",
-            prompt: "Analysiere den Lifetime-Value (LTV) und die Churn-Rate von Premium-Abonnenten im Vergleich zum kostenfreien Basiskonto."
+            name_en: "Product Profitability & Customer Cohort Analysis",
+            name_de: "Produkt-Profitabilität & Kunden-Kohorten-Analyse",
+            desc: "Analyzes contribution margins across customer cohorts (e.g. Premium subscriptions vs Free tier).",
+            desc_en: "Analyzes contribution margins across customer cohorts (e.g. Premium subscriptions vs Free tier).",
+            desc_de: "Analysiert Deckungsbeiträge einzelner Kundenkohorten (z.B. Premium-Abonnements vs. Free-Tier).",
+            prompt: "Compare LTV/CAC ratios and unit economics across customer cohorts onboarded in 2024 vs 2025 for {BANK_NAME}. Break down revenue drivers between interchange fees, FX markups, and net interest income.",
+            prompt_en: "Compare LTV/CAC ratios and unit economics across customer cohorts onboarded in 2024 vs 2025 for {BANK_NAME}. Break down revenue drivers between interchange fees, FX markups, and net interest income.",
+            prompt_de: "Analysiere den Lifetime-Value (LTV) und die Churn-Rate von Premium-Abonnenten im Vergleich zum kostenfreien Basiskonto für {BANK_NAME}."
           },
           {
             id: "blm-cuj-4",
             name: "Regulatory Capital Buffer & LCR Optimization",
-            desc: "Überwacht CET-1-Quoten und Liquiditätsdeckungsanforderungen (LCR) für das Produktportfolio.",
-            prompt: "Überprüfe die Einhaltung der aufsichtsrechtlichen Liquiditätsdeckungsquote (LCR) und Kernkapitalanforderung (CET-1). Identifiziere Optimierungspotenziale bei der Besicherung von Krediten."
+            name_en: "Regulatory Capital Buffer & LCR Optimization",
+            name_de: "Regulatorischer Kapitalpuffer & LCR-Optimierung",
+            desc: "Monitors CET-1 ratios and Liquidity Coverage Requirements (LCR) across products.",
+            desc_en: "Monitors CET-1 ratios and Liquidity Coverage Requirements (LCR) across products.",
+            desc_de: "Überwacht CET-1-Quoten und Liquiditätsdeckungsanforderungen (LCR) für das Produktportfolio.",
+            prompt: "Review compliance with Liquidity Coverage Ratio (LCR) and Common Equity Tier-1 (CET-1) requirements for {BANK_NAME}. Identify optimization potential in collateral management.",
+            prompt_en: "Review compliance with Liquidity Coverage Ratio (LCR) and Common Equity Tier-1 (CET-1) requirements for {BANK_NAME}. Identify optimization potential in collateral management.",
+            prompt_de: "Überprüfe die Einhaltung der aufsichtsrechtlichen Liquiditätsdeckungsquote (LCR) und Kernkapitalanforderung (CET-1) für {BANK_NAME}. Identifiziere Optimierungspotenziale bei der Besicherung von Krediten."
           }
         ]
       },
@@ -1345,32 +1677,62 @@
       IB_ANALYST: {
         code: "IB_ANALYST",
         title: "Investment Banking (IB) Analyst (M&A / ECM)",
+        title_en: "Investment Banking (IB) Analyst (M&A / ECM)",
+        title_de: "Investment Banking (IB) Analyst (M&A / ECM)",
         heroCUJ: "Accelerate due diligence by instantly synthesizing data rooms, surfacing key risks, and finding answers to complex questions on demand.",
-        desc: "Berät Unternehmenskunden bei strategischen M&A-Transaktionen, Börsengängen (IPOs) und strukturierten Kapitalerhöhungen.",
+        heroCUJ_en: "Accelerate due diligence by instantly synthesizing data rooms, surfacing key risks, and finding answers to complex questions on demand.",
+        heroCUJ_de: "Beschleunigt die Due Diligence durch sofortige Synthese von Datenräumen und Aufdeckung von Risiken.",
+        desc: "Advises corporate clients on strategic M&A transactions, IPOs, and structured debt capital issuance.",
+        desc_en: "Advises corporate clients on strategic M&A transactions, IPOs, and structured debt capital issuance.",
+        desc_de: "Berät Unternehmenskunden bei strategischen M&A-Transaktionen, Börsengängen (IPOs) und strukturierten Kapitalerhöhungen.",
         cujList: [
           {
             id: "iba-cuj-1",
             name: "M&A Virtual Data Room Deep Diligence",
-            desc: "Durchsucht hunderte Verträge, Lizenzvereinbarungen und Prüfberichte im Datenraum und markiert Change-of-Control-Klauseln und Prozessrisiken.",
-            prompt: "Analysiere die virtuelle Datenraum-Dokumentation für eine M&A-Zieltransaktion. Hebe Change-of-Control-Klauseln, IT-Vendor-Lock-ins und anhängige regulatorische Prüfverfahren hervor."
+            name_en: "M&A Virtual Data Room Deep Diligence",
+            name_de: "M&A Virtual Data Room Deep Diligence",
+            desc: "Parses hundreds of contracts, licenses, and audit reports in the data room, flagging change-of-control clauses and litigation risks.",
+            desc_en: "Parses hundreds of contracts, licenses, and audit reports in the data room, flagging change-of-control clauses and litigation risks.",
+            desc_de: "Durchsucht hunderte Verträge, Lizenzvereinbarungen und Prüfberichte im Datenraum und markiert Change-of-Control-Klauseln und Prozessrisiken.",
+            prompt: "Synthesize the confidential Virtual Data Room for a potential target transaction involving {BANK_NAME}. Extract LTM revenue, normalized EBITDA, customer concentration metrics, change-of-control clauses, and regulatory proceedings.",
+            prompt_en: "Synthesize the confidential Virtual Data Room for a potential target transaction involving {BANK_NAME}. Extract LTM revenue, normalized EBITDA, customer concentration metrics, change-of-control clauses, and regulatory proceedings.",
+            prompt_de: "Analysiere die virtuelle Datenraum-Dokumentation für eine M&A-Zieltransaktion bezüglich {BANK_NAME}. Hebe Change-of-Control-Klauseln, IT-Vendor-Lock-ins und anhängige regulatorische Prüfverfahren hervor."
           },
           {
             id: "iba-cuj-2",
             name: "LBO & M&A Valuation Modeling (XLSX)",
-            desc: "Baut dynamische Finanzmodelle mit Debt-Schedule, Synergie-Bewertungen und Sensitivitätstabellen.",
-            prompt: "Erstelle ein vollständiges LBO- und Fusionsmodell. Modelliere Fremdkapitaltranchen (Senior Debt, Mezzanine), Synergien in der IT-Infrastruktur und leite die erwartete Eigenkapitalrendite (IRR) ab."
+            name_en: "LBO & M&A Valuation Modeling (XLSX)",
+            name_de: "LBO & M&A Bewertungsmodellierung (XLSX)",
+            desc: "Builds dynamic financial models with debt schedules, synergy assessments, and sensitivity tables.",
+            desc_en: "Builds dynamic financial models with debt schedules, synergy assessments, and sensitivity tables.",
+            desc_de: "Baut dynamische Finanzmodelle mit Debt-Schedule, Synergie-Bewertungen und Sensitivitätstabellen.",
+            prompt: "Build a 5-year Leveraged Buyout (LBO) and merger model for {BANK_NAME} at 8.0x EV/EBITDA. Model debt tranches (Senior Debt, Mezzanine), IT synergies, and determine sponsor equity IRR.",
+            prompt_en: "Build a 5-year Leveraged Buyout (LBO) and merger model for {BANK_NAME} at 8.0x EV/EBITDA. Model debt tranches (Senior Debt, Mezzanine), IT synergies, and determine sponsor equity IRR.",
+            prompt_de: "Erstelle ein vollständiges LBO- und Fusionsmodell für {BANK_NAME}. Modelliere Fremdkapitaltranchen (Senior Debt, Mezzanine), Synergien in der IT-Infrastruktur und leite die erwartete Eigenkapitalrendite (IRR) ab."
           },
           {
             id: "iba-cuj-3",
             name: "Pitchbook & Board Transaction Materials Preparation",
-            desc: "Generiert Vorstandspräsentationen für M&A-Transaktionen, Spin-offs oder Wachstumsfinanzierungsrunden.",
-            prompt: "Erstelle ein Executive Pitchbook für den Vorstand bezüglich einer strategischen Übernahme zur paneuropäischen Expansion. Zeige strategische Rationale und Integrations-Roadmap."
+            name_en: "Pitchbook & Board Transaction Materials Preparation",
+            name_de: "Pitchbook & Vorstands-Transaktionsunterlagen",
+            desc: "Generates executive presentations for M&A transactions, spin-offs, or growth capital rounds.",
+            desc_en: "Generates executive presentations for M&A transactions, spin-offs, or growth capital rounds.",
+            desc_de: "Generiert Vorstandspräsentationen für M&A-Transaktionen, Spin-offs oder Wachstumsfinanzierungsrunden.",
+            prompt: "Create an Executive Pitchbook section for the Board regarding a strategic acquisition for {BANK_NAME}. Detail strategic rationale, valuation comps, and integration roadmap.",
+            prompt_en: "Create an Executive Pitchbook section for the Board regarding a strategic acquisition for {BANK_NAME}. Detail strategic rationale, valuation comps, and integration roadmap.",
+            prompt_de: "Erstelle ein Executive Pitchbook für den Vorstand bezüglich einer strategischen Übernahme für {BANK_NAME}. Zeige strategische Rationale und Integrations-Roadmap."
           },
           {
             id: "iba-cuj-4",
             name: "IPO Readiness & Equity Story Drafting",
-            desc: "Formuliert die Equity Story und analysiert Bewertungs-Multiples vergleichbarer börsennotierter FinTechs.",
-            prompt: "Bewerte die IPO-Readiness des Instituts. Formuliere die Core Equity Story für institutionelle Investoren und erstelle ein Peer-Trading-Comps-Sheet mit EV/Sales und KGV."
+            name_en: "IPO Readiness & Equity Story Drafting",
+            name_de: "IPO-Readiness & Equity Story Formulierung",
+            desc: "Formulates the equity story and benchmarks valuation multiples against publicly traded FinTech peers.",
+            desc_en: "Formulates the equity story and benchmarks valuation multiples against publicly traded FinTech peers.",
+            desc_de: "Formuliert die Equity Story und analysiert Bewertungs-Multiples vergleichbarer börsennotierter FinTechs.",
+            prompt: "Assess IPO readiness for {BANK_NAME}. Formulate the core equity story for institutional investors and generate a peer trading comps sheet with EV/Sales and P/E multiples.",
+            prompt_en: "Assess IPO readiness for {BANK_NAME}. Formulate the core equity story for institutional investors and generate a peer trading comps sheet with EV/Sales and P/E multiples.",
+            prompt_de: "Bewerte die IPO-Readiness von {BANK_NAME}. Formuliere die Core Equity Story für institutionelle Investoren und erstelle ein Peer-Trading-Comps-Sheet mit EV/Sales und KGV."
           }
         ]
       },
@@ -1378,32 +1740,62 @@
       COMPLIANCE_MGR: {
         code: "COMPLIANCE_MGR",
         title: "Compliance Manager & KYC / AML Analyst",
+        title_en: "Compliance Manager & KYC / AML Analyst",
+        title_de: "Compliance Manager & KYC / AML Analyst",
         heroCUJ: "Reduce Alert Fatigue by screening and applying contextual reasoning to clear and prioritize alerts.",
-        desc: "Führt Sorgfaltspflichtprüfungen (Due Diligence) durch, bewertet Risikoprofile und minimiert Fehlalarme durch kontextuelle KI-Prüfungen.",
+        heroCUJ_en: "Reduce Alert Fatigue by screening and applying contextual reasoning to clear and prioritize alerts.",
+        heroCUJ_de: "Reduziert Alert Fatigue durch kontextuelles KI-Reasoning zur Filterung und Priorisierung von Verdachtsmeldungen.",
+        desc: "Conducts due diligence checks, evaluates risk profiles, and minimizes false positives with contextual AI reasoning.",
+        desc_en: "Conducts due diligence checks, evaluates risk profiles, and minimizes false positives with contextual AI reasoning.",
+        desc_de: "Führt Sorgfaltspflichtprüfungen (Due Diligence) durch, bewertet Risikoprofile und minimiert Fehlalarme durch kontextuelle KI-Prüfungen.",
         cujList: [
           {
             id: "cmp-cuj-1",
             name: "Contextual AML Alert Clearing (Reduce Alert Fatigue)",
-            desc: "Analysiert Transaktionsmuster im Kontext von Kundenhistorie, Geografie und Vermögensherkunft zur Entlastung des First-Line-Teams.",
-            prompt: "Führe eine kontextuelle Untersuchung für Transaktions-Alerts durch. Wende KI-Reasoning an, um unbegründete Geldwäsche-Verdachtsmeldungen (False Positives) automatisiert auszufiltern und echte Risiken zu priorisieren."
+            name_en: "Contextual AML Alert Clearing (Reduce Alert Fatigue)",
+            name_de: "Kontextuelles AML Alert Clearing (Alert Fatigue Abbau)",
+            desc: "Analyzes transaction patterns in the context of customer history, geography, and source of funds to relieve first-line teams.",
+            desc_en: "Analyzes transaction patterns in the context of customer history, geography, and source of funds to relieve first-line teams.",
+            desc_de: "Analysiert Transaktionsmuster im Kontext von Kundenhistorie, Geografie und Vermögensherkunft zur Entlastung des First-Line-Teams.",
+            prompt: "Perform a contextual AML alert triage on transaction monitoring queues for {BANK_NAME}. Apply AI reasoning to eliminate recurring false positives and prioritize genuine risks.",
+            prompt_en: "Perform a contextual AML alert triage on transaction monitoring queues for {BANK_NAME}. Apply AI reasoning to eliminate recurring false positives and prioritize genuine risks.",
+            prompt_de: "Führe eine kontextuelle Untersuchung für Transaktions-Alerts für {BANK_NAME} durch. Wende KI-Reasoning an, um unbegründete Geldwäsche-Verdachtsmeldungen (False Positives) automatisiert auszufiltern und echte Risiken zu priorisieren."
           },
           {
             id: "cmp-cuj-2",
             name: "PEP, Sanctions & Negative News Deep Screening",
-            desc: "Gleicht Kunden- und UBO-Listen in Echtzeit gegen OFAC-, EU- und UN-Sanktionslisten sowie Medienberichte ab.",
-            prompt: "Prüfe Kundenkonten auf Übereinstimmungen mit internationalen Sanktionslisten (EU, OFAC, UK HMT) und analysiere adverse Medienberichte bezüglich politisch exponierter Personen (PEP)."
+            name_en: "PEP, Sanctions & Negative News Deep Screening",
+            name_de: "PEP-, Sanktions- & Negative News Deep Screening",
+            desc: "Matches customer and UBO lists in real time against OFAC, EU, and UN sanctions lists and global media sources.",
+            desc_en: "Matches customer and UBO lists in real time against OFAC, EU, and UN sanctions lists and global media sources.",
+            desc_de: "Gleicht Kunden- und UBO-Listen in Echtzeit gegen OFAC-, EU- und UN-Sanktionslisten sowie Medienberichte ab.",
+            prompt: "Screen high-value corporate accounts at {BANK_NAME} against OFAC, EU, and UK sanctions registers, analyzing ultimate beneficial owners (UBO) and adverse media for PEP exposure.",
+            prompt_en: "Screen high-value corporate accounts at {BANK_NAME} against OFAC, EU, and UK sanctions registers, analyzing ultimate beneficial owners (UBO) and adverse media for PEP exposure.",
+            prompt_de: "Prüfe Kundenkonten bei {BANK_NAME} auf Übereinstimmungen mit internationalen Sanktionslisten (EU, OFAC, UK HMT) und analysiere adverse Medienberichte bezüglich politisch exponierter Personen (PEP)."
           },
           {
             id: "cmp-cuj-3",
             name: "Crypto Travel Rule & VASP Verification (MiCA)",
-            desc: "Verifiziert Gegenpartei-Identitäten bei unhosted Krypto-Wallets gemäß MiCA und EU-Geldtransferverordnung.",
-            prompt: "Überprüfe Krypto-Transaktionen über €1.000 auf Konformität mit der EU Travel Rule. Validiere VASP-Identitäten und unhosted Wallet-Risikoscores."
+            name_en: "Crypto Travel Rule & VASP Verification (MiCA)",
+            name_de: "Krypto Travel Rule & VASP-Prüfung (MiCA)",
+            desc: "Verifies counterparty identities for unhosted crypto wallets in accordance with MiCA and the EU Transfer of Funds Regulation.",
+            desc_en: "Verifies counterparty identities for unhosted crypto wallets in accordance with MiCA and the EU Transfer of Funds Regulation.",
+            desc_de: "Verifiziert Gegenpartei-Identitäten bei unhosted Krypto-Wallets gemäß MiCA und EU-Geldtransferverordnung.",
+            prompt: "Validate crypto asset transfers exceeding €1,000 for {BANK_NAME} under the EU MiCA Regulation and FATF Travel Rule. Verify counterparty VASP identities and unhosted wallet risk scores.",
+            prompt_en: "Validate crypto asset transfers exceeding €1,000 for {BANK_NAME} under the EU MiCA Regulation and FATF Travel Rule. Verify counterparty VASP identities and unhosted wallet risk scores.",
+            prompt_de: "Überprüfe Krypto-Transaktionen über €1.000 für {BANK_NAME} auf Konformität mit der EU Travel Rule. Validiere VASP-Identitäten und unhosted Wallet-Risikoscores."
           },
           {
             id: "cmp-cuj-4",
-            name: "Regulatory Audit Trail Dossier (BaFin / FCA / EZB)",
-            desc: "Generiert manipulationssichere Dokumentationen für behördliche Sonderprüfungen.",
-            prompt: "Erstelle ein vollständiges Audit-Dossier zur Vorlage bei der zuständigen Aufsichtsbehörde. Dokumentiere Entscheidungsgründe, Prüfpfade und getroffene risikominimierende Maßnahmen."
+            name: "Regulatory Audit Trail Dossier (BaFin / FCA / ECB)",
+            name_en: "Regulatory Audit Trail Dossier (BaFin / FCA / ECB)",
+            name_de: "Regulatorisches Audit-Trail-Dossier (BaFin / FCA / EZB)",
+            desc: "Generates tamper-evident documentation for regulatory audits (MaRisk, DORA).",
+            desc_en: "Generates tamper-evident documentation for regulatory audits (MaRisk, DORA).",
+            desc_de: "Generiert manipulationssichere Dokumentationen für behördliche Sonderprüfungen.",
+            prompt: "Produce an immutable compliance audit dossier for supervisory review (BaFin / ECB / FCA) covering all algorithmic decisions and credit approvals executed for {BANK_NAME} over the past 30 days.",
+            prompt_en: "Produce an immutable compliance audit dossier for supervisory review (BaFin / ECB / FCA) covering all algorithmic decisions and credit approvals executed for {BANK_NAME} over the past 30 days.",
+            prompt_de: "Erstelle ein vollständiges Audit-Dossier zur Vorlage bei der zuständigen Aufsichtsbehörde für {BANK_NAME}. Dokumentiere Entscheidungsgründe, Prüfpfade und getroffene risikominimierende Maßnahmen."
           }
         ]
       }
@@ -1449,6 +1841,7 @@
     // Application Initialization
     window.addEventListener('DOMContentLoaded', () => {
       checkServerHealth();
+      switchLanguage('en');
       changeBank('n26');
       renderPipelineUI();
     });
@@ -1465,6 +1858,89 @@
         .catch(err => {
           console.log('Backend health check:', err);
         });
+    }
+
+    // Language Switcher Functionality (EN / DE)
+    function switchLanguage(lang) {
+      if (lang !== 'en' && lang !== 'de') lang = 'en';
+      currentLang = lang;
+      document.documentElement.lang = lang;
+
+      // Update Language Switcher Buttons Style
+      const btnEn = document.getElementById('langBtnEn');
+      const btnDe = document.getElementById('langBtnDe');
+      if (btnEn && btnDe) {
+        if (lang === 'en') {
+          btnEn.className = "px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition bank-btn-primary shadow-sm";
+          btnDe.className = "px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition text-[var(--bank-text-muted)] hover:text-white";
+        } else {
+          btnDe.className = "px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition bank-btn-primary shadow-sm";
+          btnEn.className = "px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition text-[var(--bank-text-muted)] hover:text-white";
+        }
+      }
+
+      applyLanguage(lang);
+    }
+
+    function applyLanguage(lang) {
+      const t = I18N[lang] || I18N.en;
+
+      // Update static header, labels, buttons
+      const textMappings = {
+        stepBtn1Text: t.step1Btn,
+        stepBtn2Text: t.step2Btn,
+        headerStep1Title: t.headerStep1Title,
+        headerStep1Desc: t.headerStep1Desc,
+        headerStep1Badges: t.headerStep1Badges,
+        labelLicenseTitle: t.labelLicenseTitle,
+        labelAssetsTitle: t.labelAssetsTitle,
+        labelFocusTitle: t.labelFocusTitle,
+        'pcard-sub-PORTFOLIO_MANAGER': t.sub_PORTFOLIO_MANAGER,
+        'pcard-sub-RESEARCH_ANALYST': t.sub_RESEARCH_ANALYST,
+        'pcard-sub-QUANT_TRADER': t.sub_QUANT_TRADER,
+        'pcard-sub-BUSINESS_LINE_MGR': t.sub_BUSINESS_LINE_MGR,
+        'pcard-sub-IB_ANALYST': t.sub_IB_ANALYST,
+        'pcard-sub-COMPLIANCE_MGR': t.sub_COMPLIANCE_MGR,
+        pipelineSectionTitle: t.pipelineSectionTitle,
+        pipelineOrderHint: t.pipelineOrderHint,
+        pipelineReorderTip: t.pipelineReorderTip,
+        pipelineClearBtnText: t.pipelineClearBtnText,
+        pipelineContextChainLabel: t.pipelineContextChainLabel,
+        pipelineVarTokenLabel: t.pipelineVarTokenLabel,
+        tokenStressBtn: t.tokenStressBtn,
+        tokenRegBtn: t.tokenRegBtn,
+        pipelineExecutionHint: t.pipelineExecutionHint,
+        availableCujHeader: t.availableCujHeader,
+        briefInputTitle: t.briefInputTitle,
+        briefInputHint: t.briefInputHint,
+        btnTriggerText: t.btnTriggerText,
+        step2HeaderTitle: t.step2HeaderTitle,
+        btnDownloadPdfText: t.btnDownloadPdfText,
+        btnExportModelText: t.btnExportModelText,
+        btnBackToStep1Text: t.btnBackToStep1Text,
+        pipelineResultsHeader: t.pipelineResultsHeader,
+        pipelineResultsSubhint: t.pipelineResultsSubhint,
+        tabLabelReport: t.tabLabelReport,
+        tabLabelModel: t.tabLabelModel,
+        tabLabelCharts: t.tabLabelCharts,
+        tabLabelTrust: t.tabLabelTrust,
+        optPresetDefault: t.optPresetDefault,
+        optPresetMa: t.optPresetMa,
+        optPresetEarnings: t.optPresetEarnings,
+        optPresetMica: t.optPresetMica,
+        optPresetAudit: t.optPresetAudit
+      };
+
+      for (const [id, val] of Object.entries(textMappings)) {
+        const el = document.getElementById(id);
+        if (el) el.innerText = val;
+      }
+
+      const descEl = document.getElementById('pipelineSectionDesc');
+      if (descEl) descEl.innerHTML = t.pipelineSectionDesc;
+
+      // Re-trigger bank updates and views to apply translated descriptions & prompts
+      changeBank(activeBankKey);
     }
 
     // Transform Full Page Design to Selected Bank's Official Identity
@@ -1528,16 +2004,16 @@
       badge.style.color = bank.primaryText;
 
       document.getElementById('bankTitle').innerText = bank.title;
-      document.getElementById('bankDesc').innerText = bank.desc;
-      document.getElementById('statLicense').innerText = bank.license;
-      document.getElementById('statAssets').innerText = bank.assets;
-      document.getElementById('statFocus').innerText = bank.focus;
+      document.getElementById('bankDesc').innerText = (currentLang === 'de' && bank.desc_de) ? bank.desc_de : (bank.desc_en || bank.desc);
+      document.getElementById('statLicense').innerText = (currentLang === 'de' && bank.license_de) ? bank.license_de : (bank.license_en || bank.license);
+      document.getElementById('statAssets').innerText = (currentLang === 'de' && bank.assets_de) ? bank.assets_de : (bank.assets_en || bank.assets);
+      document.getElementById('statFocus').innerText = (currentLang === 'de' && bank.focus_de) ? bank.focus_de : (bank.focus_en || bank.focus);
 
       // 6. Update Digital Identity & Connectors
       document.getElementById('digitalIdEmail').innerText = `agent-fin-research@${bank.emailDomain}`;
       document.getElementById('labelLocalGazette').innerText = bank.localGazette;
       document.getElementById('browserPreviewUrl').innerText = bank.browserPreviewUrl;
-      document.getElementById('browserPreviewAction').innerText = bank.browserPreviewAction;
+      document.getElementById('browserPreviewAction').innerText = (currentLang === 'de' && bank.browserPreviewAction_de) ? bank.browserPreviewAction_de : (bank.browserPreviewAction_en || bank.browserPreviewAction);
       document.getElementById('trustSqlSnippet').innerText = `SELECT capital_tier1, rwa, lcr FROM ${bank.sqlTable} WHERE report_date = '2025-12-31'`;
 
       // Peer Multiple in Tab 3
@@ -1571,11 +2047,12 @@
       const bank = BANKS[activeBankKey];
       const persona = PERSONAS[activePersonaKey];
       if (!persona) return;
+      const t = I18N[currentLang] || I18N.en;
 
       document.getElementById('activePersonaBadge').innerText = persona.code;
-      document.getElementById('activePersonaTitle').innerText = persona.title;
-      document.getElementById('activePersonaHeroCUJ').innerText = `Hero CUJ: ${persona.heroCUJ}`;
-      document.getElementById('activePersonaDescription').innerText = persona.desc;
+      document.getElementById('activePersonaTitle').innerText = (currentLang === 'de' && persona.title_de) ? persona.title_de : (persona.title_en || persona.title);
+      document.getElementById('activePersonaHeroCUJ').innerText = `Hero CUJ: ${(currentLang === 'de' && persona.heroCUJ_de) ? persona.heroCUJ_de : (persona.heroCUJ_en || persona.heroCUJ)}`;
+      document.getElementById('activePersonaDescription').innerText = (currentLang === 'de' && persona.desc_de) ? persona.desc_de : (persona.desc_en || persona.desc);
 
       // Render Fachfunktionen with Drag & Drop and Quick-Add Buttons
       const container = document.getElementById('fachfunktionenList');
@@ -1583,6 +2060,9 @@
 
       persona.cujList.forEach((cuj, index) => {
         const isSelected = index === activeCujIndex;
+        const cujName = (currentLang === 'de' && cuj.name_de) ? cuj.name_de : (cuj.name_en || cuj.name);
+        const cujDesc = (currentLang === 'de' && cuj.desc_de) ? cuj.desc_de : (cuj.desc_en || cuj.desc);
+
         const card = document.createElement('div');
         card.draggable = true;
         card.ondragstart = (e) => handleCardDragStart(e, activePersonaKey, index);
@@ -1602,20 +2082,20 @@
             <span class="text-[10px] font-mono text-[var(--bank-text-muted)] font-semibold">CUJ 0${index + 1}</span>
             <div class="flex items-center space-x-1">
               <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bank-surface bank-accent-text border bank-border">1P FRA</span>
-              <span class="text-xs text-[var(--bank-text-muted)] group-hover:text-white transition font-mono" title="Mit der Maus auf die horizontale Pipeline ziehen">⠿</span>
+              <span class="text-xs text-[var(--bank-text-muted)] group-hover:text-white transition font-mono" title="${t.dragHint}">⠿</span>
             </div>
           </div>
-          <div class="font-bold text-xs text-white leading-snug">${cuj.name}</div>
-          <div class="text-[11px] text-[var(--bank-text-muted)] mt-1.5 leading-relaxed line-clamp-2">${cuj.desc}</div>
+          <div class="font-bold text-xs text-white leading-snug">${cujName}</div>
+          <div class="text-[11px] text-[var(--bank-text-muted)] mt-1.5 leading-relaxed line-clamp-2">${cujDesc}</div>
           
           <!-- Card Footer with Drag Hint & 1-Click In-Pipeline Button -->
           <div class="flex items-center justify-between pt-2.5 mt-2 border-t border-[var(--bank-border)]/60">
             <span class="text-[9px] font-mono text-[var(--bank-text-muted)] flex items-center space-x-1">
               <span>⠿</span>
-              <span>Ziehbar</span>
+              <span>${t.dragHint}</span>
             </span>
             <button type="button" onclick="event.stopPropagation(); addStepToPipeline('${activePersonaKey}', ${index});" class="px-2.5 py-1 text-[10px] font-bold rounded-lg border bank-border bank-surface hover:border-[var(--bank-accent)] text-[var(--bank-accent)] hover:text-white transition flex items-center space-x-1 shadow-sm">
-              <span>+ In Pipeline</span>
+              <span>${t.addToPipe}</span>
             </button>
           </div>
         `;
@@ -1625,7 +2105,8 @@
       // Update text in single prompt area with bank injected
       const activeCuj = persona.cujList[activeCujIndex];
       if (activeCuj) {
-        const contextualPrompt = activeCuj.prompt.replace(/das ausgewählte Institut|das Institut/g, bank.name);
+        const promptTemplate = (currentLang === 'de' && activeCuj.prompt_de) ? activeCuj.prompt_de : (activeCuj.prompt_en || activeCuj.prompt);
+        const contextualPrompt = promptTemplate.replace(/\{BANK_NAME\}|das ausgewählte Institut|das Institut/g, bank.name);
         document.getElementById('queryInput').value = contextualPrompt;
       }
     }
@@ -1692,16 +2173,19 @@
       if (!cuj) return;
       const bank = BANKS[activeBankKey];
 
-      const contextualPrompt = cuj.prompt.replace(/das ausgewählte Institut|das Institut/g, bank.name);
+      const cujName = (currentLang === 'de' && cuj.name_de) ? cuj.name_de : (cuj.name_en || cuj.name);
+      const cujDesc = (currentLang === 'de' && cuj.desc_de) ? cuj.desc_de : (cuj.desc_en || cuj.desc);
+      const promptTemplate = (currentLang === 'de' && cuj.prompt_de) ? cuj.prompt_de : (cuj.prompt_en || cuj.prompt);
+      const contextualPrompt = promptTemplate.replace(/\{BANK_NAME\}|das ausgewählte Institut|das Institut/g, bank.name);
 
       const step = {
         id: 'step_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
         personaKey: personaKey,
-        personaTitle: persona.title,
+        personaTitle: (currentLang === 'de' && persona.title_de) ? persona.title_de : (persona.title_en || persona.title),
         personaCode: persona.code,
         cujId: cuj.id,
-        cujName: cuj.name,
-        cujDesc: cuj.desc,
+        cujName: cujName,
+        cujDesc: cujDesc,
         prompt: contextualPrompt,
         status: 'pending', // 'pending' | 'running' | 'completed' | 'error'
         result: null
@@ -1789,12 +2273,13 @@
       const editorArea = document.getElementById('pipelineEditorArea');
       const btnExecText = document.getElementById('btnPipelineExecuteText');
       const bank = BANKS[activeBankKey];
+      const t = I18N[currentLang] || I18N.en;
 
       if (badge) {
-        badge.innerText = `${count} Fachfunktion${count === 1 ? '' : 'en'} gewählt`;
+        badge.innerText = `${count} ${count === 1 ? t.functionSelected : t.functionsSelected}`;
       }
       if (btnExecText) {
-        btnExecText.innerText = `🚀 Pipeline in Serie ausführen (${count} Schritt${count === 1 ? '' : 'e'})`;
+        btnExecText.innerText = `${t.executePipelinePrefix} (${count} ${count === 1 ? t.stepInSeries : t.stepsInSeries})`;
       }
 
       if (count === 0) {
@@ -1806,9 +2291,9 @@
                 📥
               </div>
               <div>
-                <div class="font-bold text-xs text-white">Pipeline ist noch leer: Fachfunktionen per Drag &amp; Drop hier ablegen</div>
+                <div class="font-bold text-xs text-white">${t.emptyDropTitle}</div>
                 <div class="text-[11px] text-[var(--bank-text-muted)]">
-                  Ziehen Sie mit der Maus Fachfunktionen auf diese Leiste oder klicken Sie bei einer Fachfunktion auf „+ In Pipeline“.
+                  ${t.emptyDropDesc}
                 </div>
               </div>
             </div>
@@ -1816,13 +2301,13 @@
             <div class="flex items-center space-x-1.5 flex-wrap gap-1 text-[10px] font-mono">
               <span class="text-[var(--bank-text-muted)] hidden lg:inline">Presets:</span>
               <button onclick="loadPreset('ma_diligence')" class="px-2.5 py-1 rounded-lg border bank-border bank-surface hover:border-[var(--bank-accent)] text-white transition">
-                🏛️ M&amp;A Suite
+                ${t.optPresetMa}
               </button>
               <button onclick="loadPreset('earnings_wrap')" class="px-2.5 py-1 rounded-lg border bank-border bank-surface hover:border-[var(--bank-accent)] text-white transition">
-                📈 Earnings Wrap
+                ${t.optPresetEarnings}
               </button>
               <button onclick="loadPreset('mica_compliance')" class="px-2.5 py-1 rounded-lg border bank-border bank-surface hover:border-[var(--bank-accent)] text-white transition">
-                🛡️ MiCA Audit
+                ${t.optPresetMica}
               </button>
             </div>
           </div>
@@ -1839,13 +2324,13 @@
         const stepNum = idx + 1;
         
         // Step Status Icon
-        let statusBadge = `<span class="text-[10px] font-mono text-[var(--bank-text-muted)]">⏱️ Bereit</span>`;
+        let statusBadge = `<span class="text-[10px] font-mono text-[var(--bank-text-muted)]">⏱️ ${t.ready}</span>`;
         if (step.status === 'running') {
-          statusBadge = `<span class="text-[10px] font-mono text-yellow-400 flex items-center space-x-1"><span class="animate-spin text-xs">⟳</span><span>Läuft...</span></span>`;
+          statusBadge = `<span class="text-[10px] font-mono text-yellow-400 flex items-center space-x-1"><span class="animate-spin text-xs">⟳</span><span>${t.running}</span></span>`;
         } else if (step.status === 'completed') {
-          statusBadge = `<span class="text-[10px] font-mono text-emerald-400 font-bold flex items-center space-x-0.5"><span>✓</span><span>Erledigt</span></span>`;
+          statusBadge = `<span class="text-[10px] font-mono text-emerald-400 font-bold flex items-center space-x-0.5"><span>✓</span><span>${t.completed}</span></span>`;
         } else if (step.status === 'error') {
-          statusBadge = `<span class="text-[10px] font-mono text-red-400 font-bold">⚠️ Fehler</span>`;
+          statusBadge = `<span class="text-[10px] font-mono text-red-400 font-bold">⚠️ ${t.error}</span>`;
         }
 
         const stepCard = document.createElement('div');
@@ -1876,11 +2361,11 @@
           <!-- Step Reordering & Action Buttons -->
           <div class="flex items-center justify-between pt-2 mt-2 border-t border-[var(--bank-border)]/60 text-[10px] font-mono">
             <div class="flex items-center space-x-1">
-              <button type="button" onclick="event.stopPropagation(); movePipelineStep(${idx}, -1);" ${idx === 0 ? 'disabled' : ''} class="w-5 h-5 rounded border bank-border hover:border-white disabled:opacity-30 disabled:hover:border-transparent flex items-center justify-center transition" title="Nach links verschieben">◀</button>
-              <button type="button" onclick="event.stopPropagation(); movePipelineStep(${idx}, 1);" ${idx === pipelineSteps.length - 1 ? 'disabled' : ''} class="w-5 h-5 rounded border bank-border hover:border-white disabled:opacity-30 disabled:hover:border-transparent flex items-center justify-center transition" title="Nach rechts verschieben">▶</button>
-              <button type="button" onclick="event.stopPropagation(); duplicatePipelineStep(${idx});" class="w-5 h-5 rounded border bank-border hover:border-white flex items-center justify-center transition" title="Schritt duplizieren">📋</button>
+              <button type="button" onclick="event.stopPropagation(); movePipelineStep(${idx}, -1);" ${idx === 0 ? 'disabled' : ''} class="w-5 h-5 rounded border bank-border hover:border-white disabled:opacity-30 disabled:hover:border-transparent flex items-center justify-center transition" title="Move Left">◀</button>
+              <button type="button" onclick="event.stopPropagation(); movePipelineStep(${idx}, 1);" ${idx === pipelineSteps.length - 1 ? 'disabled' : ''} class="w-5 h-5 rounded border bank-border hover:border-white disabled:opacity-30 disabled:hover:border-transparent flex items-center justify-center transition" title="Move Right">▶</button>
+              <button type="button" onclick="event.stopPropagation(); duplicatePipelineStep(${idx});" class="w-5 h-5 rounded border bank-border hover:border-white flex items-center justify-center transition" title="Duplicate Step">📋</button>
             </div>
-            <button type="button" onclick="event.stopPropagation(); removePipelineStep(${idx});" class="w-5 h-5 rounded border border-red-900/60 bg-red-950/40 text-red-300 hover:bg-red-800 hover:text-white flex items-center justify-center transition" title="Entfernen">✕</button>
+            <button type="button" onclick="event.stopPropagation(); removePipelineStep(${idx});" class="w-5 h-5 rounded border border-red-900/60 bg-red-950/40 text-red-300 hover:bg-red-800 hover:text-white flex items-center justify-center transition" title="Remove">✕</button>
           </div>
         `;
         dropZone.appendChild(stepCard);
@@ -1897,7 +2382,7 @@
       // Update Step Prompt Inspector Panel
       const currentStep = pipelineSteps[activePipelineIndex] || pipelineSteps[0];
       if (currentStep) {
-        document.getElementById('editorStepTitle').innerText = `Prompt für Schritt ${activePipelineIndex + 1} anpassen: ${currentStep.cujName}`;
+        document.getElementById('editorStepTitle').innerText = `${t.editorStepTitle}${activePipelineIndex + 1}: ${currentStep.cujName}`;
         document.getElementById('editorStepPersonaBadge').innerText = currentStep.personaCode;
         document.getElementById('pipelineStepPromptInput').value = currentStep.prompt;
 
@@ -1927,8 +2412,9 @@
     // =========================================================================
 
     async function triggerPipelineExecution() {
+      const t = I18N[currentLang] || I18N.en;
       if (pipelineSteps.length === 0) {
-        alert("Bitte fügen Sie mindestens eine Fachfunktion zur Pipeline hinzu.");
+        alert(t.emptyPipelineAlert);
         return;
       }
       if (isPipelineRunning) return;
@@ -1960,13 +2446,13 @@
 
         const stepNum = i + 1;
         const pct = Math.round((i / totalSteps) * 100);
-        progressLabel.innerText = `Führe Schritt ${stepNum} von ${totalSteps} aus: [${step.personaCode}] ${step.cujName}...`;
+        progressLabel.innerText = `${t.executingStep} ${stepNum} ${t.of} ${totalSteps}: [${step.personaCode}] ${step.cujName}...`;
         progressBar.style.width = `${Math.max(8, pct)}%`;
         progressPercent.innerText = `${pct}%`;
 
         // Resolve variable tokens in prompt
         let queryToSend = step.prompt.replace(/\{BANK_NAME\}/g, bank.name);
-        queryToSend = queryToSend.replace(/\{VORHERIGES_ERGEBNIS\}/g, cumulativeContext ? cumulativeContext.substring(0, 400) : "Kein Vorstufen-Ergebnis vorhanden.");
+        queryToSend = queryToSend.replace(/\{PREVIOUS_RESULT\}|\{VORHERIGES_ERGEBNIS\}/g, cumulativeContext ? cumulativeContext.substring(0, 400) : (currentLang === 'de' ? "Kein Vorstufen-Ergebnis vorhanden." : "No prior stage context available."));
 
         try {
           const resp = await fetch('/api/run_agent', {
@@ -1986,7 +2472,7 @@
             step.result = data.live_data;
             step.status = 'completed';
             const ans = data.live_data.answer || "";
-            const summary = `Schritt ${stepNum} (${step.personaCode} - ${step.cujName}): ${ans.substring(0, 350)}...`;
+            const summary = `${t.stepPrefix} ${stepNum} (${step.personaCode} - ${step.cujName}): ${ans.substring(0, 350)}...`;
             if (cumulativeContext) {
               cumulativeContext += "\n\n" + summary;
             } else {
@@ -2005,7 +2491,7 @@
 
       progressBar.style.width = `100%`;
       progressPercent.innerText = `100%`;
-      progressLabel.innerText = `Alle ${totalSteps} Fachfunktionen erfolgreich in Serie ausgeführt!`;
+      progressLabel.innerText = t.pipelineDone.replace('{count}', totalSteps);
 
       setTimeout(() => {
         btn.disabled = false;
@@ -2050,11 +2536,12 @@
       const query = document.getElementById('queryInput').value;
       const persona = PERSONAS[activePersonaKey];
       const cuj = persona.cujList[activeCujIndex];
+      const t = I18N[currentLang] || I18N.en;
 
       btn.disabled = true;
       btn.innerHTML = `
         <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-        <span>Wird ausgeführt...</span>
+        <span>${t.running}</span>
       `;
       monitor.classList.remove('hidden');
       monitor.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2094,7 +2581,7 @@
         btn.disabled = false;
         btn.innerHTML = `
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          <span>Fachfunktion Ausführen</span>
+          <span id="btnTriggerText">${t.btnTriggerText}</span>
         `;
 
         window.lastLiveResult = liveResult;
@@ -2133,6 +2620,7 @@
       const navContainer = document.getElementById('pipelineResultsNavigator');
       const pillsContainer = document.getElementById('pipelineResultStepPills');
       const stepCountBadge = document.getElementById('pipelineResultStepCountBadge');
+      const t = I18N[currentLang] || I18N.en;
 
       const liveSection = document.getElementById('liveOutputSection');
       const liveContent = document.getElementById('liveOutputContent');
@@ -2144,7 +2632,7 @@
       // Check if Multi-Stage Pipeline was executed
       if (window.pipelineExecutedSteps && window.pipelineExecutedSteps.length > 0) {
         navContainer.classList.remove('hidden');
-        stepCountBadge.innerText = `${window.pipelineExecutedSteps.length} Schritte in Serie`;
+        stepCountBadge.innerText = `${window.pipelineExecutedSteps.length} ${window.pipelineExecutedSteps.length === 1 ? t.stepInSeries : t.stepsInSeries}`;
         pillsContainer.innerHTML = '';
 
         // Pill 1: Consolidated Master Dossier
@@ -2156,7 +2644,7 @@
             ? 'bank-btn-primary shadow-md border-transparent' 
             : 'bank-surface border-[var(--bank-border)] text-[var(--bank-text-muted)] hover:text-white'
         }`;
-        masterPill.innerHTML = `<span>⭐</span><span>Konsolidiertes Master-Dossier</span>`;
+        masterPill.innerHTML = `<span>⭐</span><span>${t.masterDossierPill}</span>`;
         pillsContainer.appendChild(masterPill);
 
         // Step-specific pills
@@ -2175,14 +2663,14 @@
 
         if (activeResultStepIndex === -1) {
           // Consolidated Master View
-          document.getElementById('resultSubtitle').innerText = `${bank.name} • Sequentiell verkettetes Master-Dossier (${window.pipelineExecutedSteps.length} Fachfunktionen)`;
+          document.getElementById('resultSubtitle').innerText = `${bank.name} • ${t.masterDossierPill} (${window.pipelineExecutedSteps.length} ${t.functionsSelected})`;
           memoMetaBadge.innerText = `${bank.tag} • MASTER PIPELINE SYNTHESIS`;
-          memoHeadline.innerText = `Konsolidiertes Multi-Stage Dossier: ${bank.name}`;
+          memoHeadline.innerText = `${t.masterDossierPill}: ${bank.name}`;
 
           // Assemble cumulative synthesized text
-          let combinedText = `## Master-Synthese über ${window.pipelineExecutedSteps.length} verkettete Fachfunktionen\n\n`;
+          let combinedText = `## Master Synthesis across ${window.pipelineExecutedSteps.length} Sequential Functions\n\n`;
           window.pipelineExecutedSteps.forEach((s, idx) => {
-            combinedText += `### Schritt ${idx + 1}: ${s.cujName} (${s.personaCode})\n`;
+            combinedText += `### ${t.stepPrefix} ${idx + 1}: ${s.cujName} (${s.personaCode})\n`;
             if (s.result && s.result.answer) {
               combinedText += s.result.answer + "\n\n---\n\n";
             }
@@ -2194,12 +2682,12 @@
           } else {
             liveContent.innerText = combinedText;
           }
-          liveStats.innerText = `${window.pipelineExecutedSteps.length} Schritte • 1P Boq Agent (finance_research) Live`;
+          liveStats.innerText = `${window.pipelineExecutedSteps.length} ${t.stepsInSeries} • 1P Boq Agent (finance_research) Live`;
         } else {
           // Discrete Single Step in Pipeline
           const s = window.pipelineExecutedSteps[activeResultStepIndex];
-          document.getElementById('resultSubtitle').innerText = `${bank.name} • Schritt ${activeResultStepIndex + 1} von ${window.pipelineExecutedSteps.length} • ${s.personaTitle}`;
-          memoMetaBadge.innerText = `${bank.tag} • ${s.personaCode} (Schritt 0${activeResultStepIndex + 1})`;
+          document.getElementById('resultSubtitle').innerText = `${bank.name} • ${t.stepPrefix} ${activeResultStepIndex + 1} ${t.of} ${window.pipelineExecutedSteps.length} • ${s.personaTitle}`;
+          memoMetaBadge.innerText = `${bank.tag} • ${s.personaCode} (${t.stepPrefix} 0${activeResultStepIndex + 1})`;
           memoHeadline.innerText = `${bank.name}: ${s.cujName}`;
 
           if (s.result && s.result.answer) {
@@ -2219,10 +2707,12 @@
         navContainer.classList.add('hidden');
         const persona = PERSONAS[activePersonaKey];
         const cuj = persona.cujList[activeCujIndex];
+        const personaTitle = (currentLang === 'de' && persona.title_de) ? persona.title_de : (persona.title_en || persona.title);
+        const cujName = (currentLang === 'de' && cuj.name_de) ? cuj.name_de : (cuj.name_en || cuj.name);
 
-        document.getElementById('resultSubtitle').innerText = `${bank.name} • Ausgeführt als: ${persona.title} • Fachfunktion: ${cuj.name}`;
+        document.getElementById('resultSubtitle').innerText = `${bank.name} • ${personaTitle} • ${cujName}`;
         memoMetaBadge.innerText = `${bank.tag} • ${persona.code}`;
-        memoHeadline.innerText = `${bank.name}: ${cuj.name}`;
+        memoHeadline.innerText = `${bank.name}: ${cujName}`;
 
         if (window.lastLiveResult && window.lastLiveResult.answer) {
           liveSection.classList.remove('hidden');
@@ -2238,47 +2728,91 @@
       }
 
       // Populate Structured Institutional Metrics Content
-      memoContent.innerHTML = `
-        <div class="space-y-4">
-          <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
-            <h4 class="text-xs font-bold text-[var(--bank-accent)] uppercase tracking-wider font-mono">1. Executive Summary &amp; Strategische Synthese</h4>
-            <p class="text-gray-300">
-              Die automatisierte Untersuchung von <strong>${bank.name}</strong> unter Anwendung der Fachfunktionen ergab ein hochgradig stabiles operatives Fundament mit überdurchschnittlicher Ertragsdynamik im europäischen Bankenvergleich. Durch die Kombination von Einlagensicherung, skalierbarer Cloud-Infrastruktur und wachsendem Zinsüberschuss übertrifft die Rendite auf das regulatorische Eigenkapital (RoE) den Branchenschnitt um 420 Basispunkte.
-            </p>
-          </div>
+      if (currentLang === 'de') {
+        memoContent.innerHTML = `
+          <div class="space-y-4">
+            <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
+              <h4 class="text-xs font-bold text-[var(--bank-accent)] uppercase tracking-wider font-mono">1. Executive Summary &amp; Strategische Synthese</h4>
+              <p class="text-gray-300">
+                Die automatisierte Untersuchung von <strong>${bank.name}</strong> unter Anwendung der Fachfunktionen ergab ein hochgradig stabiles operatives Fundament mit überdurchschnittlicher Ertragsdynamik im europäischen Bankenvergleich. Durch die Kombination von Einlagensicherung, skalierbarer Cloud-Infrastruktur und wachsendem Zinsüberschuss übertrifft die Rendite auf das regulatorische Eigenkapital (RoE) den Branchenschnitt um 420 Basispunkte.
+              </p>
+            </div>
 
-          <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
-            <h4 class="text-xs font-bold text-white uppercase tracking-wider font-mono">2. Fundamentale Finanzkennzahlen &amp; Bilanzanalyse (${bank.name})</h4>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-[11px] pt-1">
-              <div class="p-2.5 rounded bg-black/40 border border-gray-800">
-                <div class="text-[var(--bank-text-muted)]">Net Interest Margin (NIM):</div>
-                <div class="text-emerald-400 font-bold text-sm">3.42% (+65 bps)</div>
-              </div>
-              <div class="p-2.5 rounded bg-black/40 border border-gray-800">
-                <div class="text-[var(--bank-text-muted)]">Cost-Income Ratio (CIR):</div>
-                <div class="text-white font-bold text-sm">54.8% (Ziel: &lt;50%)</div>
-              </div>
-              <div class="p-2.5 rounded bg-black/40 border border-gray-800">
-                <div class="text-[var(--bank-text-muted)]">Common Equity Tier 1:</div>
-                <div class="text-emerald-400 font-bold text-sm">16.8% (${bank.license})</div>
-              </div>
-              <div class="p-2.5 rounded bg-black/40 border border-gray-800">
-                <div class="text-[var(--bank-text-muted)]">Liquidity Coverage Ratio:</div>
-                <div class="text-white font-bold text-sm">215% (Min: 100%)</div>
+            <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
+              <h4 class="text-xs font-bold text-white uppercase tracking-wider font-mono">2. Fundamentale Finanzkennzahlen &amp; Bilanzanalyse (${bank.name})</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-[11px] pt-1">
+                <div class="p-2.5 rounded bg-black/40 border border-gray-800">
+                  <div class="text-[var(--bank-text-muted)]">Net Interest Margin (NIM):</div>
+                  <div class="text-emerald-400 font-bold text-sm">3.42% (+65 bps)</div>
+                </div>
+                <div class="p-2.5 rounded bg-black/40 border border-gray-800">
+                  <div class="text-[var(--bank-text-muted)]">Cost-Income Ratio (CIR):</div>
+                  <div class="text-white font-bold text-sm">54.8% (Ziel: &lt;50%)</div>
+                </div>
+                <div class="p-2.5 rounded bg-black/40 border border-gray-800">
+                  <div class="text-[var(--bank-text-muted)]">Common Equity Tier 1:</div>
+                  <div class="text-emerald-400 font-bold text-sm">16.8% (${bank.license})</div>
+                </div>
+                <div class="p-2.5 rounded bg-black/40 border border-gray-800">
+                  <div class="text-[var(--bank-text-muted)]">Liquidity Coverage Ratio:</div>
+                  <div class="text-white font-bold text-sm">215% (Min: 100%)</div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
-            <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-wider font-mono">3. Spezifische Audit- &amp; Fach-Erkenntnisse</h4>
-            <ul class="list-disc list-inside space-y-1 text-gray-300">
-              <li><strong>Datenquellen-Verifikation:</strong> Geschäftsberichte, ${bank.localGazette} Offenlegungen und IFRS 9 Risikovorsorgen wurden lückenlos mit Primärdokumenten abgeglichen.</li>
-              <li><strong>Regulatorische Schutzmechanismen:</strong> MaRisk-, MiCA- und MiFID-II-Auflagen sind vollständig erfüllt. Es liegen keine aufsichtsrechtlichen Begrenzungen des Wachstums vor.</li>
-              <li><strong>Entscheidungs-Empfehlung:</strong> Freigabe der beantragten Transaktions- bzw. Risikoallokation mit Vorstands-Sign-off.</li>
-            </ul>
+            <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
+              <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-wider font-mono">3. Spezifische Audit- &amp; Fach-Erkenntnisse</h4>
+              <ul class="list-disc list-inside space-y-1 text-gray-300">
+                <li><strong>Datenquellen-Verifikation:</strong> Geschäftsberichte, ${bank.localGazette} Offenlegungen und IFRS 9 Risikovorsorgen wurden lückenlos mit Primärdokumenten abgeglichen.</li>
+                <li><strong>Regulatorische Schutzmechanismen:</strong> MaRisk-, MiCA- und MiFID-II-Auflagen sind vollständig erfüllt. Es liegen keine aufsichtsrechtlichen Begrenzungen des Wachstums vor.</li>
+                <li><strong>Entscheidungs-Empfehlung:</strong> Freigabe der beantragten Transaktions- bzw. Risikoallokation mit Vorstands-Sign-off.</li>
+              </ul>
+            </div>
           </div>
-        </div>
-      `;
+        `;
+      } else {
+        memoContent.innerHTML = `
+          <div class="space-y-4">
+            <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
+              <h4 class="text-xs font-bold text-[var(--bank-accent)] uppercase tracking-wider font-mono">1. Executive Summary &amp; Strategic Synthesis</h4>
+              <p class="text-gray-300">
+                Automated investigation of <strong>${bank.name}</strong> applying the sequential specialist functions demonstrates a resilient operational foundation with superior earnings momentum across the European banking sector. Benefiting from deposit stickiness, scalable cloud banking infrastructure, and expanding net interest income, Return on Equity (RoE) outperforms the peer median by 420 basis points.
+              </p>
+            </div>
+
+            <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
+              <h4 class="text-xs font-bold text-white uppercase tracking-wider font-mono">2. Fundamental Financial Metrics &amp; Balance Sheet Analysis (${bank.name})</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-[11px] pt-1">
+                <div class="p-2.5 rounded bg-black/40 border border-gray-800">
+                  <div class="text-[var(--bank-text-muted)]">Net Interest Margin (NIM):</div>
+                  <div class="text-emerald-400 font-bold text-sm">3.42% (+65 bps)</div>
+                </div>
+                <div class="p-2.5 rounded bg-black/40 border border-gray-800">
+                  <div class="text-[var(--bank-text-muted)]">Cost-Income Ratio (CIR):</div>
+                  <div class="text-white font-bold text-sm">54.8% (Target: &lt;50%)</div>
+                </div>
+                <div class="p-2.5 rounded bg-black/40 border border-gray-800">
+                  <div class="text-[var(--bank-text-muted)]">Common Equity Tier 1:</div>
+                  <div class="text-emerald-400 font-bold text-sm">16.8% (${bank.license})</div>
+                </div>
+                <div class="p-2.5 rounded bg-black/40 border border-gray-800">
+                  <div class="text-[var(--bank-text-muted)]">Liquidity Coverage Ratio:</div>
+                  <div class="text-white font-bold text-sm">215% (Min: 100%)</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 border bank-surface-higher bank-border bank-radius space-y-2">
+              <h4 class="text-xs font-bold text-yellow-400 uppercase tracking-wider font-mono">3. Supervisory Audit &amp; Specialist Findings</h4>
+              <ul class="list-disc list-inside space-y-1 text-gray-300">
+                <li><strong>Data Lineage Verification:</strong> Financial statements, ${bank.localGazette} disclosures, and IFRS 9 provisions reconciled against immutable primary filings.</li>
+                <li><strong>Regulatory Governance:</strong> Full compliance with MaRisk, MiCA, and MiFID-II standards confirmed. No supervisory growth restrictions detected.</li>
+                <li><strong>Investment Committee Recommendation:</strong> Unconditional sign-off for capital allocation and strategic mandate execution.</li>
+              </ul>
+            </div>
+          </div>
+        `;
+      }
 
       // Update Chart Bar Color to Bank Primary
       document.getElementById('chartBar26').style.backgroundColor = bank.primary;
@@ -2308,24 +2842,50 @@
       const ev = (3.42 * mult).toFixed(2);
       const share = (48.20 * mult).toFixed(2);
 
-      document.getElementById('valRevenue').innerText = `€${rev} Mio.`;
-      document.getElementById('valEbitda').innerText = `€${ebitda} Mio.`;
-      document.getElementById('valEv').innerText = `€${ev} Mrd.`;
-      document.getElementById('valPerShare').innerText = `Impliziert: €${share} / Aktie`;
+      const unitMio = currentLang === 'de' ? 'Mio.' : 'M';
+      const unitBrd = currentLang === 'de' ? 'Mrd.' : 'B';
+      const perShare = currentLang === 'de' ? `Impliziert: €${share} / Aktie` : `Implied: €${share} / Share`;
+
+      document.getElementById('valRevenue').innerText = `€${rev} ${unitMio}`;
+      document.getElementById('valEbitda').innerText = `€${ebitda} ${unitMio}`;
+      document.getElementById('valEv').innerText = `€${ev} ${unitBrd}`;
+      document.getElementById('valPerShare').innerText = perShare;
 
       updateModelSpreadsheet(mult);
     }
 
     function updateModelSpreadsheet(mult = 1.0) {
       const tbody = document.getElementById('modelSpreadsheetBody');
+      const isDe = currentLang === 'de';
       const rows = [
-        { name: "Zinsüberschuss (NII)", y23: "115.0", y24: "185.0", y25: "245.0", y26: (320.0 * mult).toFixed(1), y27: (395.0 * mult).toFixed(1) },
-        { name: "Provisionsüberschuss (Fee)", y23: "65.0", y24: "85.0", y25: "95.0", y26: (115.0 * mult).toFixed(1), y27: (140.0 * mult).toFixed(1) },
-        { name: "Gesamterträge", y23: "180.0", y24: "270.0", y25: "340.0", y26: (435.0 * mult).toFixed(1), y27: (535.0 * mult).toFixed(1) },
-        { name: "Verwaltungsaufwand", y23: "-195.0", y24: "-220.0", y25: "-235.0", y26: (-260.0 * (mult > 1 ? 1.08 : mult)).toFixed(1), y27: "-285.0" },
-        { name: "Risikovorsorge Kredite", y23: "-12.0", y24: "-18.0", y25: "-22.0", y26: (-25.0 * mult).toFixed(1), y27: "-28.0" },
-        { name: "Operatives EBITDA", y23: "-27.0", y24: "32.0", y25: "83.0", y26: (98.4 * mult).toFixed(1), y27: (152.0 * mult).toFixed(1) },
-        { name: "Free Cash Flow (FCF)", y23: "-45.0", y24: "18.5", y25: "62.0", y26: (78.0 * mult).toFixed(1), y27: (124.0 * mult).toFixed(1) }
+        { 
+          name: isDe ? "Zinsüberschuss (NII)" : "Net Interest Income (NII)", 
+          y23: "115.0", y24: "185.0", y25: "245.0", y26: (320.0 * mult).toFixed(1), y27: (395.0 * mult).toFixed(1) 
+        },
+        { 
+          name: isDe ? "Provisionsüberschuss (Fee)" : "Net Fee & Commission Income", 
+          y23: "65.0", y24: "85.0", y25: "95.0", y26: (115.0 * mult).toFixed(1), y27: (140.0 * mult).toFixed(1) 
+        },
+        { 
+          name: isDe ? "Gesamterträge" : "Total Net Operating Income", 
+          y23: "180.0", y24: "270.0", y25: "340.0", y26: (435.0 * mult).toFixed(1), y27: (535.0 * mult).toFixed(1) 
+        },
+        { 
+          name: isDe ? "Verwaltungsaufwand (OpEx)" : "Operating Expenses (OpEx)", 
+          y23: "-195.0", y24: "-220.0", y25: "-235.0", y26: (-260.0 * (mult > 1 ? 1.08 : mult)).toFixed(1), y27: "-285.0" 
+        },
+        { 
+          name: isDe ? "Risikovorsorge Kredite" : "Loan Loss Provisions (LLP)", 
+          y23: "-12.0", y24: "-18.0", y25: "-22.0", y26: (-25.0 * mult).toFixed(1), y27: "-28.0" 
+        },
+        { 
+          name: isDe ? "Operatives EBITDA" : "Operating EBITDA", 
+          y23: "-27.0", y24: "32.0", y25: "83.0", y26: (98.4 * mult).toFixed(1), y27: (152.0 * mult).toFixed(1) 
+        },
+        { 
+          name: isDe ? "Free Cash Flow (FCF)" : "Free Cash Flow (FCF)", 
+          y23: "-45.0", y24: "18.5", y25: "62.0", y26: (78.0 * mult).toFixed(1), y27: (124.0 * mult).toFixed(1) 
+        }
       ];
 
       tbody.innerHTML = '';
@@ -2354,12 +2914,17 @@
 
     // Excel CSV Download
     function exportExcelCsv() {
-      let csv = "Kennzahl;2023A;2024A;2025E;2026E;2027E\n";
-      csv += "Zinsüberschuss;115.0;185.0;245.0;320.0;395.0\n";
-      csv += "Provisionsüberschuss;65.0;85.0;95.0;115.0;140.0\n";
-      csv += "Gesamterträge;180.0;270.0;340.0;435.0;535.0\n";
-      csv += "Operatives EBITDA;-27.0;32.0;83.0;98.4;152.0\n";
-      csv += "Free Cash Flow;-45.0;18.5;62.0;78.0;124.0\n";
+      const isDe = currentLang === 'de';
+      let csv = isDe 
+        ? "Kennzahl;2023A;2024A;2025E;2026E;2027E\n"
+        : "Metric,2023A,2024A,2025E,2026E,2027E\n";
+      const sep = isDe ? ";" : ",";
+      
+      csv += `${isDe ? "Zinsüberschuss" : "Net Interest Income"}${sep}115.0${sep}185.0${sep}245.0${sep}320.0${sep}395.0\n`;
+      csv += `${isDe ? "Provisionsüberschuss" : "Fee Income"}${sep}65.0${sep}85.0${sep}95.0${sep}115.0${sep}140.0\n`;
+      csv += `${isDe ? "Gesamterträge" : "Total Net Revenues"}${sep}180.0${sep}270.0${sep}340.0${sep}435.0${sep}535.0\n`;
+      csv += `${isDe ? "Operatives EBITDA" : "Operating EBITDA"}${sep}-27.0${sep}32.0${sep}83.0${sep}98.4${sep}152.0\n`;
+      csv += `${isDe ? "Free Cash Flow" : "Free Cash Flow"}${sep}-45.0${sep}18.5${sep}62.0${sep}78.0${sep}124.0\n`;
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);

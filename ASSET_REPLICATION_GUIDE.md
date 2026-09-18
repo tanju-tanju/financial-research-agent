@@ -13,8 +13,11 @@ This repository provides an end-to-end, executive-ready asset package:
 | Asset | File Location | Purpose | Reusability |
 | :--- | :--- | :--- | :--- |
 | **Multi-Bank Canvas** | `index.html` | High-fidelity interactive UI with real-time brand switching across 6 banks. | 100% Config-driven via JS dictionary. |
+| **Sequential Pipeline** | `index.html` & `server.py` | Drag-and-drop sequential chaining of 1 to $N$ specialist functions. | Plug-and-play workflow pipeline. |
 | **Resilient Backend** | `server.py` | Connects to Vertex AI / Discovery Engine 1P agent with zero-stall offline fallback. | Plug-and-play Python stdlib server. |
 | **Agent Definitions** | `agent_registry/` | Declarative JSON cards for Google Cloud Agent Builder registration. | Importable into any GCP project. |
+| **Data Room Catalog** | `data/` & `data/README.md` | 8 synthetic institutional financial datasets in JSONL format. | Immediate BigQuery ingestion. |
+| **BigQuery Schemas** | `sql/` & `sql/README.md` | DDL schemas, authorized security views, and loading automation. | Ready-to-run GoogleSQL scripts. |
 | **Executive Slides** | `docs/assets/slides/` | High-resolution slides from the institutional persona pitch deck. | Ready for customer slide decks. |
 | **Diagnostics & Tests** | `tests/` | CLI scripts to test streamAssist latency, discover agents, and verify tokens. | Reusable verification toolkit. |
 | **Cloud Run Deployer** | `deploy.sh` & `Dockerfile` | 1-click serverless deployment with pre-warmed instance configuration. | Deploys anywhere in 2 minutes. |
@@ -26,7 +29,7 @@ This repository provides an end-to-end, executive-ready asset package:
 To add a new bank (e.g., **UBS**, **Santander**, **BNP Paribas**, or **Sparkasse**), you only need to add a single configuration block to the `BANKS` object in `index.html`.
 
 ### Step 1: Define Brand Configuration
-Open `index.html` around line 1100 and insert your bank definition into the `BANKS` dictionary:
+Open `index.html` around line 1030 and insert your bank definition into the `BANKS` dictionary:
 
 ```javascript
 // Example: Adding UBS Group AG
@@ -35,14 +38,14 @@ ubs: {
   name: "UBS Group AG",
   badge: "GLOBAL WEALTH MANAGER",
   title: "UBS Global Wealth Management & Investment Bank",
-  desc: "Führender globaler Vermögensverwalter mit Präsenz in allen wichtigen Finanzzentren. Spezialisiert auf Ultra-High-Net-Worth Mandate, institutionelles Asset Management und globale M&A-Beratung.",
-  license: "FINMA / EZB Systemrelevant",
-  assets: "CHF 5.5 Bio. AuM",
+  desc: "Leading global wealth manager with active presence in all major financial centers. Specialized in ultra-high-net-worth mandates, institutional asset management, and global M&A advisory.",
+  license: "FINMA / ECB Systemic SIFI",
+  assets: "CHF 5.5T AuM",
   focus: "Global Wealth & IBD",
   emailDomain: "ubs.com",
-  localGazette: "Schweizerisches Handelsamtsblatt (SHAB)",
+  localGazette: "Swiss Official Gazette of Commerce (SOGC)",
   browserPreviewUrl: "https://internal.ubs.net/portal/wealth/mandates",
-  browserPreviewAction: "Vermögensallokation & Risikobudget abfragen",
+  browserPreviewAction: "Status 200 OK • Extract UBS AG Wealth Allocation & Risk Budget",
   sqlTable: "ubs_internal_core.wealth_portfolios",
   primary: "#E60000",          // UBS Red
   primaryHover: "#B80000",
@@ -64,7 +67,7 @@ ubs: {
 ```
 
 ### Step 2: Add the Selector Button
-In `index.html` inside the `<header>` bank pills section (around line 200), add the trigger pill:
+In `index.html` inside the `<header>` bank pills section, add the trigger pill:
 
 ```html
 <button onclick="changeBank('ubs')" id="bankPill-ubs" class="bank-pill px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition whitespace-nowrap border border-[var(--bank-border)]">
@@ -84,7 +87,7 @@ In `index.html` inside the `<header>` bank pills section (around line 200), add 
 
 The platform comes pre-configured with 6 financial personas and 24 CUJs:
 
-1. **Portfolio Manager (Buy Side):** M&A Due Diligence, Target Screening, Valuation Comps, Covenant Stresstest.
+1. **Portfolio Manager (Buy Side):** M&A Due Diligence, Target Screening, Valuation Comps, Covenant Stress Test.
 2. **Research Analyst (Sell Side):** Earnings Scramble, Consensus Variance, Equity Research Note, Target Price Revisions.
 3. **Sales & Quant Trader:** Pre-Market Briefing, Alpha Signal Backtesting, Block Order Flow, Hedging Strategies.
 4. **Business Line Manager:** Net Interest Margin (NIM) Sensitivity, Competitor Benchmarking, Deposit Beta, Branch Efficiency.
@@ -95,23 +98,72 @@ The platform comes pre-configured with 6 financial personas and 24 CUJs:
 If your customer is focused specifically on **Commercial Real Estate (CRE)** or **SME Credit Underwriting**, edit the `PERSONAS` dictionary in `index.html`:
 
 ```javascript
-// Example: Modifying CUJ 1 for CRE Focus
+// Example: Modifying CUJ 1 for Commercial Real Estate Focus
 {
   id: "cre-cuj-1",
-  name: "CRE Debt Service Coverage Ratio (DSCR) & LTV Stresstest",
-  desc: "Berechnet den Zinsdeckungsgrad gewerblicher Immobilienportfolios unter Annahme eines 150-Bps-Zinsschocks.",
-  prompt: "Führe eine Sensitivitätsanalyse für das gewerbliche Immobilienportfolio durch. Simuliere einen Leerstandsanstieg von +8% und Zinsanstieg um 150 Basispunkte. Ermittle die Auswirkungen auf DSCR und LTV."
+  name: "CRE Debt Service Coverage Ratio (DSCR) & LTV Stress Test",
+  desc: "Calculates interest and debt coverage for commercial real estate portfolios under a 150 bps rate shock.",
+  prompt: "Perform a sensitivity stress test on the commercial real estate portfolio. Simulate an 8% increase in vacancy rates and a 150 bps rise in debt refinancing costs. Compute resulting impact on DSCR and LTV."
 }
 ```
 
 ---
 
-## 4. Connecting Customer Data Stores & Vertex AI Agents
+## 4. Replicating the Multi-Stage Sequential Workflow Pipeline
+
+The platform includes a built-in sequential workflow engine that chains 1 to $N$ specialist functions in series.
+
+### How it works:
+1. **Mouse Drag & Drop Lane:** Analysts drag any hero CUJ card onto the horizontal sequence shelf, or click `+ In Pipeline`.
+2. **Step Reordering & Duplication:** Steps can be shifted left/right, duplicated, or removed.
+3. **Step Prompt Inspector:** Custom prompt overrides for individual steps with variable tokens:
+   * `{BANK_NAME}`: Resolves to the selected bank.
+   * `{VORHERIGES_ERGEBNIS}`: Forwards intermediate findings from Step $i-1$.
+   * `+Zins-Stresstest`: Injects ECB +200 bps monetary shock parameters.
+   * `+Regulatorik`: Injects BaFin, ECB SSM, and MiCA regulatory criteria.
+4. **Context Propagation:** Step $i$ results are automatically forwarded to Step $i+1$ as structured background context.
+
+### Customizing Pipeline Presets
+To add or modify preset pipeline chains for a specific client meeting, edit `loadPreset()` in `index.html`:
+
+```javascript
+// Example: Adding a Private Equity Buyout Preset
+if (presetKey === "pe_buyout") {
+  pipelineSteps = [
+    {
+      id: "step-pe-1",
+      persona: "IB_ANALYST",
+      cujId: "ib-cuj-1",
+      title: "Data Room Extraction",
+      prompt: "Extract historical financial statements and EBITDA adjustments for target entity..."
+    },
+    {
+      id: "step-pe-2",
+      persona: "IB_ANALYST",
+      cujId: "ib-cuj-2",
+      title: "LBO Returns Model",
+      prompt: "Using figures from Step 1, construct a 5-year LBO model with 4.5x senior leverage..."
+    },
+    {
+      id: "step-pe-3",
+      persona: "PORTFOLIO_MANAGER",
+      cujId: "pm-cuj-1",
+      title: "Investment Committee Memo",
+      prompt: "Synthesize findings into an Investment Committee memo with return sensitivities..."
+    }
+  ];
+  renderPipelineLane();
+}
+```
+
+---
+
+## 5. Connecting Customer Data Stores & Vertex AI Agents
 
 The backend (`server.py`) talks directly to the Google Cloud Discovery Engine / Vertex AI Agent Builder endpoint:
 
 ```
-POST https://discoveryengine.googleapis.com/v1alpha/projects/{PROJECT_NUM}/locations/global/collections/default_collection/engines/{ENGINE_ID}/assistants/default_assistant:streamAssist
+POST https://discoveryengine.googleapis.com/v1alpha/projects/{PROJECT_NUM}/locations/global/collections/default_collection/engines/{ENGINE_ID}/servingConfigs/default_search:streamAssist
 ```
 
 ### To point this to a customer's dedicated Vertex AI Agent:
@@ -122,7 +174,7 @@ export PROJECT_ID="customer-fsi-prod"
 export PROJECT_NUM="123456789012"
 export ENGINE_ID="fsi-research-engine"
 export AGENT_ID="finance_research"
-export PORT="8080"
+export PORT="8085"
 
 python3 server.py
 ```
@@ -134,35 +186,31 @@ To enable the agent to query real customer balance sheets:
    * Create a Vertex AI Search Data Store pointing to that GCS bucket.
    * Attach the Data Store as a tool to the `finance_research` agent in Agent Builder.
 2. **Structured Tables (Balance Sheets, Loan Books, Market Comps):**
-   * In BigQuery, create tables `bank_internal_core.firmenkredite` and `market_external_enrichment.capital_markets_multiples`.
+   * In BigQuery, create tables using `sql/02_bank_internal_core_ddl.sql` and `sql/03_market_external_enrichment_ddl.sql`.
    * Configure the BigQuery NL2SQL extension in Agent Builder.
 
 ---
 
-## 5. Live Executive Demonstration Playbook
+## 6. Live Executive Demonstration Playbook
 
 ### The 60-Second Hook (How to open the meeting)
 1. **Start with the Bank Switcher:**  
    *"Notice how the cockpit instantly adopts N26's brand, license, and balance sheet metrics. With one click, we switch to Deutsche Bank or Revolut. This is a single, sovereign agentic architecture that adapts to any institutional mandate."*
-2. **Select the Persona (e.g., Portfolio Manager):**  
-   *"We select our Portfolio Manager. Instead of spending 3 days digging through SEC filings, internal risk memos, and consensus estimates, our analyst triggers the 'Due Diligence Investment Memo' with one click."*
-3. **Trigger the Brief:**  
-   Click **"Research-Auftrag an 1P Agenten absenden"**.
-4. **Narrate during generation (Latency Masking):**  
-   *"While the agent works, look at the step trace. The 1P Financial Research Agent is executing a multi-hop reasoning plan: First, it accesses the confidential Data Room. Second, it executes SQL against external capital market multiples. Third, it validates Basel III capital buffers."*
-5. **Show the Deliverables:**  
-   * **Tab 1:** Board-ready Executive Memorandum with verifiable citations.
-   * **Tab 2:** Interactive DCF & Financial Model spreadsheet with live Base/Bull/Stress scenario toggles.
-   * **Tab 3:** Peer Multiples matrix benchmarked against European peers.
-   * **Tab 4:** BaFin / ECB audit trail.
-6. **The Climax:**  
-   Click **"PDF Dossier herunterladen"** to show instant export for the investment committee.
+2. **Demonstrate the Sequential Pipeline:**  
+   *"In institutional workflows, research isn't a single prompt. We drag three specialist functions onto our workflow shelf: M&A Diligence ➔ Valuation Comps ➔ Compliance Screening. We click 'Run Pipeline in Series'."*
+3. **Narrate during generation (Latency Masking):**  
+   *"While the agent works, look at the step trace. The 1P Financial Research Agent executes a multi-hop reasoning plan: First, querying confidential BigQuery credit records. Second, computing deterministic DSCR math without hallucinations. Third, verifying sanctions registers."*
+4. **Show the Deliverables:**  
+   * **Consolidated Master Dossier:** Unified multi-stage executive brief.
+   * **Interactive Step Navigator:** Discrete drill-downs into each specialist step.
+   * **Interactive Financial Models:** Live sensitivity scenario toggles.
+   * **Export:** Click **"Download PDF Dossier"** for immediate executive distribution.
 
 ---
 
-## 6. Resilience & Offline Fallback Strategy
+## 7. Resilience & Offline Fallback Strategy
 
-Executive presentations often suffer from hotel Wi-Fi packet drops or expired Google OAuth tokens.
+Executive presentations often suffer from conference Wi-Fi drops or expired Google OAuth tokens.
 
 This asset is engineered with **Automatic Zero-Stall Fallback**:
 * When `server.py` detects that `gcloud auth print-access-token` has expired or the Google Cloud API returns an error, it **automatically and silently switches to high-fidelity synthetic generation**.
@@ -171,7 +219,7 @@ This asset is engineered with **Automatic Zero-Stall Fallback**:
 
 ---
 
-## 7. Multi-Tenant Deployment via Cloud Run
+## 8. Multi-Tenant Deployment via Cloud Run
 
 To spin up an isolated demo instance for a specific customer:
 

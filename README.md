@@ -20,6 +20,21 @@ Unlike generic conversational bots, this platform is deeply specialized for the 
 * **Google Cloud 1P Engine:** Integrates with Google's First-Party Boq Agent (`finance_research`) on Vertex AI Agent Builder and Discovery Engine via streaming assist protocols (`streamAssist`).
 * **High-Resilience Demo Engine:** Built-in offline fallback and latency masking to guarantee flawless executive demonstrations without cold-start delays or credential timeouts.
 
+
+---
+
+## Comprehensive Documentation Suite
+
+| Document | Purpose |
+| :--- | :--- |
+| 📐 [**System Architecture (`docs/ARCHITECTURE.md`)**](docs/ARCHITECTURE.md) | In-depth technical architecture: multi-bank simulation, streamAssist RPC, dual-tier BigQuery, deterministic math, and WORM audit vault. |
+| 🔌 [**REST API Reference (`docs/API_REFERENCE.md`)**](docs/API_REFERENCE.md) | Complete OpenAPI / REST documentation for all endpoints (`/api/status`, `/api/banks`, `/api/personas`, `/api/run_agent`, `/api/run_pipeline`). |
+| 🎯 [**24 Hero CUJ Catalog (`docs/CUJ_CATALOG.md`)**](docs/CUJ_CATALOG.md) | Exhaustive breakdown of all 24 Customer Use Journeys across 6 Personas with prompts, SQL queries, and deliverable specs. |
+| 🧪 [**Evaluation & Benchmark Guide (`docs/EVALUATION_GUIDE.md`)**](docs/EVALUATION_GUIDE.md) | 10 golden benchmark test cases, quantitative scoring rubrics, and automated validation runner. |
+| 📊 [**Data Room Catalog (`data/README.md`)**](data/README.md) | Data dictionary and schemas for all 8 synthetic institutional JSONL datasets. |
+| 🗄️ [**BigQuery DDL & Views (`sql/README.md`)**](sql/README.md) | Provisioning automation, DDL schemas for core & market tiers, and authorized security views. |
+| 🚀 [**Field Enablement Blueprint (`ASSET_REPLICATION_GUIDE.md`)**](ASSET_REPLICATION_GUIDE.md) | 15-minute white-labeling and field enablement playbook for Google Cloud Customer Engineers. |
+
 ---
 
 ## Multi-Bank Simulation Engine
@@ -79,23 +94,23 @@ Each simulation dynamically updates:
 
 ---
 
-## Multi-Stage Sequential Workflow Pipeline (In Serie schalten per Drag & Drop)
+## Multi-Stage Sequential Workflow Pipeline (Drag & Drop Series Chaining)
 
-The platform enables users to combine **1 to N Fachfunktionen in series** into an automated research pipeline:
-* **Mouse Drag & Drop Lane:** Drag any Fachfunktion card directly onto the horizontal sequence shelf with the mouse, or use the accessible 1-click `+ In Pipeline` button.
-* **Multi-Instance Chaining:** Combine identical or different Fachfunktionen across all 6 Personas arbitrarily (e.g., Step 1: IB Analyst M&A Diligence ➔ Step 2: Portfolio Manager Comps ➔ Step 3: Compliance Manager PEP Screening).
+The platform enables analysts to combine **1 to N specialist functions in series** into an automated, multi-step research pipeline:
+* **Mouse Drag & Drop Lane:** Drag any hero CUJ card directly onto the horizontal sequence shelf with the mouse, or use the accessible 1-click `+ In Pipeline` button.
+* **Arbitrary Multi-Instance Chaining:** Combine identical or different specialist functions across all 6 Personas (e.g., Step 1: IB Analyst M&A Diligence ➔ Step 2: Portfolio Manager Valuation Comps ➔ Step 3: Compliance Manager PEP Screening).
 * **Step Prompt Inspector & Token Insertion:** Edit the research prompt for each individual step before execution. Quick-insert dynamic variable tokens:
-  * `{BANK_NAME}`: Resolves to the selected bank institution.
-  * `{VORHERIGES_ERGEBNIS}`: Forwards intermediate findings from previous steps.
+  * `{BANK_NAME}`: Resolves dynamically to the active bank institution.
+  * `{PREVIOUS_RESULT}` / `{VORHERIGES_ERGEBNIS}`: Forwards intermediate findings from previous steps.
   * `+Zins-Stresstest`: Injects +200 bps ECB rate shock parameters.
   * `+Regulatorik`: Injects BaFin, ECB SSM, and MiCA regulatory criteria.
-* **Context Chaining:** Intermediate outputs from Step $i$ are automatically propagated to Step $i+1$ as structured context.
+* **Context Chaining:** Intermediate analytical outputs from Step $i$ are automatically propagated to Step $i+1$ as structured context.
 * **Pre-Configured Enterprise Presets:**
   * 🏛️ **M&A Due Diligence Suite** (3 steps)
   * 📈 **Earnings Scramble & NIM Wrap** (3 steps)
   * 🛡️ **MiCA Crypto & AML Compliance Audit** (3 steps)
   * 🌐 **360° Institutional Bank Audit** (4 steps)
-* **Execution & Step-by-Step Inspection:** Triggered explicitly via **"🚀 Pipeline in Serie ausführen"**. Real-time progress bar and status indicators update live (`⏱️` ➔ `🔄` ➔ `✅`). Step 2 ("Ergebnisse & Artifacts") provides an interactive step navigator to inspect both the **Consolidated Master Dossier** and discrete step-by-step findings.
+* **Execution & Step-by-Step Inspection:** Triggered explicitly via **"🚀 Execute Pipeline in Series"**. Real-time progress bar and status indicators update live (`⏱️` ➔ `🔄` ➔ `✅`). The Results & Artifacts panel provides an interactive step navigator to inspect both the **Consolidated Master Dossier** and discrete step-by-step findings.
 
 ---
 
@@ -187,7 +202,7 @@ The script automatically:
 
 ```
 financial-research-agent/
-├── index.html                   # Multi-Bank Simulation Canvas (1,700+ lines)
+├── index.html                   # Multi-Bank Simulation Canvas (2,300+ lines)
 ├── server.py                    # Enterprise HTTP Backend (Live + Fallback)
 ├── Dockerfile                   # Hardened Container Definition
 ├── docker-compose.yml           # Container Orchestration
@@ -197,6 +212,34 @@ financial-research-agent/
 ├── README.md                    # English Master Documentation
 ├── README_DE.md                 # German Master Documentation
 ├── ASSET_REPLICATION_GUIDE.md   # Field Enablement Guide for CE & Sales
+├── docs/                        # Comprehensive Technical Documentation
+│   ├── ARCHITECTURE.md          # Technical Architecture & Dual-Tier Data Room Spec
+│   ├── API_REFERENCE.md         # Full REST API Reference & Payload Schemas
+│   ├── CUJ_CATALOG.md           # 24 Hero Institutional Workflows across 6 Personas
+│   ├── EVALUATION_GUIDE.md      # 10 Golden Benchmark Test Cases & Scoring Rubrics
+│   ├── ASSET_REPLICATION_GUIDE.md # Synchronized Field Enablement Playbook
+│   └── assets/
+│       └── slides/              # Executive Pitch Deck Slides (slide_1, slide_3, etc.)
+├── data/                        # Synthetic Institutional Data Room Datasets
+│   ├── README.md                # Data Dictionary & Schema Documentation
+│   ├── firmenkredite.jsonl      # Commercial Credit Facilities
+│   ├── finanzhistorie.jsonl     # LTM Financial Statements & Cash Flows
+│   ├── kredit_covenants.jsonl   # Contractual Loan Covenants (DSCR, Leverage)
+│   ├── ma_deal_pipeline.jsonl   # Confidential M&A Transaction Pipeline
+│   ├── capital_markets_multiples.jsonl # Listed Peer Multiples (EV/EBITDA, P/E)
+│   ├── private_wealth_portfolios.jsonl # HNWI Client Asset Holdings & MiFID II
+│   ├── regulatory_compliance_watchlists.jsonl # Sanctions, PEP & UBO Watchlists
+│   ├── macro_transport_benchmarks.jsonl # ECB Rates, Euribor & Fuel Inflation
+│   └── audit_log.jsonl          # WORM Tamper-Evident SHA-256 Audit Trail
+├── sql/                         # BigQuery DDL Schemas & Provisioning Scripts
+│   ├── README.md                # Provisioning & Security Architecture Guide
+│   ├── 01_provision_datasets.sh # Automated BigQuery Dataset Creator
+│   ├── 02_bank_internal_core_ddl.sql # Internal Core Banking Tables DDL
+│   ├── 03_market_external_enrichment_ddl.sql # Market Intelligence Tables DDL
+│   ├── 04_authorized_views.sql  # Role-Based Authorized Security Views
+│   ├── 05_load_synthetic_data.sh# JSONL Bulk Ingestion Script (bq load)
+│   ├── generate_personas_jsonl.py # Persona Catalog Generator Script
+│   └── personas.jsonl           # Persona Catalog in JSON Lines Format
 ├── subagents/                   # Autonomous Banking Subagents Swarm
 │   ├── financial_research.py    # NL2SQL, Peer Multiples, Balance Sheet Analysis
 │   ├── compliance_screener.py   # Sanctions, PEP, MiCA & DORA Verification
@@ -208,26 +251,16 @@ financial-research-agent/
 │   ├── deterministic_math.py    # Zero-hallucination Arithmetic Runtime
 │   ├── audit_vault.py           # WORM Append-Only Ledger & SHA-256 Chaining
 │   └── observability_service.py # Distributed Tracing & Catalog Inspector
-├── data/                        # Synthetic Institutional Data Room Datasets
-│   ├── firmenkredite.jsonl
-│   ├── finanzhistorie.jsonl
-│   ├── ma_deal_pipeline.jsonl
-│   ├── capital_markets_multiples.jsonl
-│   └── private_wealth_depots.jsonl
-├── sql/                         # BigQuery DDL Schemas & Authorized Views
-│   └── 02_bank_internal_core_ddl.sql
 ├── agent_registry/              # Google Cloud Agent Cards
 │   ├── finance_research_card.json
 │   ├── n26_supervisor_card.json
 │   ├── financial-research-card.json
 │   └── financial-compliance-screener-card.json
-├── docs/
-│   └── assets/
-│       └── slides/              # Executive Pitch Deck Slides (slide_1, slide_3, etc.)
 └── tests/
     ├── inspect_agents.py        # Discovers registered Discovery Engine agents
     ├── test_direct_fra.py       # Validates 1P Boq Agent streamAssist endpoint
-    └── test_server_logic.py     # End-to-end integration test
+    ├── test_server_logic.py     # End-to-end integration test
+    └── test_html_validation.py  # Frontend layout & brand integrity test
 ```
 
 ---
