@@ -226,7 +226,7 @@
 
       </div>
 
-      <!-- Step Navigation (Specialist Functions vs Results) -->
+      <!-- Step Navigation (Specialist Functions vs Results vs Trailer) -->
       <div class="flex items-center space-x-1 p-1 rounded-xl border bank-surface-higher bank-border">
         <button id="stepBtn1" onclick="switchStep(1)" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 bank-btn-primary shadow-sm transition">
           <span class="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-bold">1</span>
@@ -235,6 +235,9 @@
         <button id="stepBtn2" onclick="switchStep(2)" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 text-[var(--bank-text-muted)] hover:text-white transition">
           <span class="w-4 h-4 rounded-full bg-gray-700 text-[10px] flex items-center justify-center font-bold">2</span>
           <span id="stepBtn2Text">Results & Artifacts</span>
+        </button>
+        <button id="stepBtnTrailer" onclick="switchStep(3)" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 text-purple-400 hover:text-white transition">
+          <span id="stepBtnTrailerText">🎬 Video Trailer</span>
         </button>
       </div>
 
@@ -1032,6 +1035,131 @@
 
     </div>
 
+    <!-- ========================================================================= -->
+    <!-- STEP 3: OFFICIAL PRODUCT TRAILER & VIDEO SHOWCASE                        -->
+    <!-- ========================================================================= -->
+    <div id="containerStep3" class="hidden space-y-6">
+      
+      <!-- Trailer Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[var(--bank-border)] pb-3 gap-3">
+        <div>
+          <h2 class="text-base font-google font-bold text-white flex items-center space-x-2">
+            <span class="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs">🎬</span>
+            <span id="trailerHeaderTitle">Official Video Trailer: Financial Research Agent in Gemini Enterprise</span>
+          </h2>
+          <p id="trailerHeaderDesc" class="text-xs text-[var(--bank-text-muted)]">1080p Full HD cinematic product overview with AI narration & interactive chapter navigation.</p>
+        </div>
+
+        <div class="flex items-center space-x-2 no-print">
+          <a href="/trailer.mp4" download="Financial_Research_Agent_Trailer.mp4" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow flex items-center space-x-1.5 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span id="trailerDownloadText">Download MP4 (1080p, 2.2 MB)</span>
+          </a>
+          <button id="trailerBackBtn" onclick="switchStep(1)" class="px-3.5 py-1.5 rounded-lg bank-surface-higher border bank-border text-white text-xs font-semibold hover:border-gcloud-accent transition">
+            ← Back to App
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Video Player Card -->
+      <div class="p-6 border shadow-2xl bank-surface-elevated bank-border bank-radius space-y-5">
+        
+        <!-- 16:9 Video Container -->
+        <div class="relative w-full aspect-video rounded-2xl overflow-hidden border border-[var(--bank-border)] bg-black shadow-inner">
+          <video id="trailerVideoPlayer" controls poster="/trailer_thumb.jpg" class="w-full h-full object-contain">
+            <source src="/trailer.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <!-- Interactive Chapter Navigation & Timeline -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span id="trailerChaptersTitle" class="text-white font-bold">Interactive Chapter Markers:</span>
+            <span id="trailerChaptersMeta" class="text-[var(--bank-text-muted)]">Total Runtime: 1:11 min • 1080p @ 25fps • High-Fidelity Audio</span>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+            <button onclick="seekTrailer(0)" class="p-2.5 rounded-xl border bank-surface-higher bank-border hover:border-purple-400 text-left transition space-y-1">
+              <div class="text-[10px] font-mono text-red-400 font-bold">⏱️ 0:00</div>
+              <div id="ch1_title" class="text-[11px] font-bold text-white truncate">1. The Paradox</div>
+              <div id="ch1_desc" class="text-[10px] text-[var(--bank-text-muted)] truncate">Productivity Gap</div>
+            </button>
+
+            <button onclick="seekTrailer(11)" class="p-2.5 rounded-xl border bank-surface-higher bank-border hover:border-purple-400 text-left transition space-y-1">
+              <div class="text-[10px] font-mono text-blue-400 font-bold">⏱️ 0:11</div>
+              <div id="ch2_title" class="text-[11px] font-bold text-white truncate">2. The Solution</div>
+              <div id="ch2_desc" class="text-[10px] text-[var(--bank-text-muted)] truncate">1P Agent & 3 Pillars</div>
+            </button>
+
+            <button onclick="seekTrailer(21)" class="p-2.5 rounded-xl border bank-surface-higher bank-border hover:border-purple-400 text-left transition space-y-1">
+              <div class="text-[10px] font-mono text-emerald-400 font-bold">⏱️ 0:21</div>
+              <div id="ch3_title" class="text-[11px] font-bold text-white truncate">3. Multi-Bank</div>
+              <div id="ch3_desc" class="text-[10px] text-[var(--bank-text-muted)] truncate">N26 to Bunq</div>
+            </button>
+
+            <button onclick="seekTrailer(34)" class="p-2.5 rounded-xl border bank-surface-higher bank-border hover:border-purple-400 text-left transition space-y-1">
+              <div class="text-[10px] font-mono text-purple-400 font-bold">⏱️ 0:34</div>
+              <div id="ch4_title" class="text-[11px] font-bold text-white truncate">4. 6 Personas</div>
+              <div id="ch4_desc" class="text-[10px] text-[var(--bank-text-muted)] truncate">24 Hero CUJs</div>
+            </button>
+
+            <button onclick="seekTrailer(46)" class="p-2.5 rounded-xl border bank-surface-higher bank-border hover:border-purple-400 text-left transition space-y-1">
+              <div class="text-[10px] font-mono text-yellow-400 font-bold">⏱️ 0:46</div>
+              <div id="ch5_title" class="text-[11px] font-bold text-white truncate">5. DeepMind Harness</div>
+              <div id="ch5_desc" class="text-[10px] text-[var(--bank-text-muted)] truncate">Always-On Runtime</div>
+            </button>
+
+            <button onclick="seekTrailer(58)" class="p-2.5 rounded-xl border bank-surface-higher bank-border hover:border-purple-400 text-left transition space-y-1">
+              <div class="text-[10px] font-mono text-emerald-400 font-bold">⏱️ 0:58</div>
+              <div id="ch6_title" class="text-[11px] font-bold text-white truncate">6. Deliverables</div>
+              <div id="ch6_desc" class="text-[10px] text-[var(--bank-text-muted)] truncate">Memo, DCF & Trust</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Voiceover Script / Storyboard Accordion -->
+        <div class="p-4 rounded-xl border bank-surface-higher bank-border space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <span class="text-xs">🎙️</span>
+              <span id="trailerScriptTitle" class="text-xs font-bold text-white">Voiceover Script & Storyboard (German Voiceover • de-DE-KillianNeural)</span>
+            </div>
+            <span id="trailerAudioSync" class="text-[10px] font-mono text-emerald-400">Audio Sync: 100% Locked</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-gray-300">
+            <div class="p-3 rounded-lg bg-black/40 border border-gray-800 space-y-1">
+              <span id="sc1_title" class="text-[10px] font-mono text-red-400 font-bold">Scene 1: The Paradox</span>
+              <p id="sc1_text" class="text-[11px] text-gray-400">“The productivity paradox in banking is real: Generic LLMs fail at complex financial formulas, fragmented data silos, and strict regulatory compliance.”</p>
+            </div>
+            <div class="p-3 rounded-lg bg-black/40 border border-gray-800 space-y-1">
+              <span id="sc2_title" class="text-[10px] font-mono text-blue-400 font-bold">Scene 2: The 1P Agent</span>
+              <p id="sc2_text" class="text-[11px] text-gray-400">“Introducing the Financial Research Agent in Gemini Enterprise: An institutional financial intelligence engine built on Google DeepMind technology.”</p>
+            </div>
+            <div class="p-3 rounded-lg bg-black/40 border border-gray-800 space-y-1">
+              <span id="sc3_title" class="text-[10px] font-mono text-emerald-400 font-bold">Scene 3: Multi-Bank Architecture</span>
+              <p id="sc3_text" class="text-[11px] text-gray-400">“Engineered for Europe's leading institutions: From N26 and Revolut to Trade Republic, Deutsche Bank, Monzo, and Bunq. Each bank in its distinct brand identity.”</p>
+            </div>
+            <div class="p-3 rounded-lg bg-black/40 border border-gray-800 space-y-1">
+              <span id="sc4_title" class="text-[10px] font-mono text-purple-400 font-bold">Scene 4: 6 Institutional Personas</span>
+              <p id="sc4_text" class="text-[11px] text-gray-400">“Six specialized personas trigger 24 hero use cases with a single click: From 15-minute earnings scramble notes to M&A virtual data rooms and AML alert clearing.”</p>
+            </div>
+            <div class="p-3 rounded-lg bg-black/40 border border-gray-800 space-y-1">
+              <span id="sc5_title" class="text-[10px] font-mono text-yellow-400 font-bold">Scene 5: DeepMind Harness</span>
+              <p id="sc5_text" class="text-[11px] text-gray-400">“Behind the scenes, the DeepMind multi-agent harness operates continuously: An iterative feedback loop of Base Analyst, Critique, and Refine agents ensuring absolute mathematical precision.”</p>
+            </div>
+            <div class="p-3 rounded-lg bg-black/40 border border-gray-800 space-y-1">
+              <span id="sc6_title" class="text-[10px] font-mono text-emerald-400 font-bold">Scene 6: Deliverables & Call-to-Action</span>
+              <p id="sc6_text" class="text-[11px] text-gray-400">“Board-ready investment memos, interactive DCF financial models, and immutable audit trails with cryptographic verification seals. The Financial Research Agent. Live now.”</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
   </main>
 
   <!-- Application Logic -->
@@ -1106,7 +1234,40 @@
         emptyPipelineAlert: "Please add at least one specialist function to the pipeline.",
         executingStep: "Executing Step",
         of: "of",
-        pipelineDone: "All {count} specialist functions executed successfully in series!"
+        pipelineDone: "All {count} specialist functions executed successfully in series!",
+        stepBtnTrailerText: "🎬 Video Trailer",
+        trailerHeaderTitle: "Official Video Trailer: Financial Research Agent in Gemini Enterprise",
+        trailerHeaderDesc: "1080p Full HD cinematic product overview with AI narration & interactive chapter navigation.",
+        trailerDownloadText: "Download MP4 (1080p, 2.2 MB)",
+        trailerBackBtn: "← Back to App",
+        trailerChaptersTitle: "Interactive Chapter Markers:",
+        trailerChaptersMeta: "Total Runtime: 1:11 min • 1080p @ 25fps • High-Fidelity Audio",
+        ch1_title: "1. The Paradox",
+        ch1_desc: "Productivity Gap",
+        ch2_title: "2. The Solution",
+        ch2_desc: "1P Agent & 3 Pillars",
+        ch3_title: "3. Multi-Bank",
+        ch3_desc: "N26 to Bunq",
+        ch4_title: "4. 6 Personas",
+        ch4_desc: "24 Hero CUJs",
+        ch5_title: "5. DeepMind Harness",
+        ch5_desc: "Always-On Runtime",
+        ch6_title: "6. Deliverables",
+        ch6_desc: "Memo, DCF & Trust",
+        trailerScriptTitle: "Voiceover Script & Storyboard (German Voiceover • de-DE-KillianNeural)",
+        trailerAudioSync: "Audio Sync: 100% Locked",
+        sc1_title: "Scene 1: The Paradox",
+        sc1_text: "“The productivity paradox in banking is real: Generic LLMs fail at complex financial formulas, fragmented data silos, and strict regulatory compliance.”",
+        sc2_title: "Scene 2: The 1P Agent",
+        sc2_text: "“Introducing the Financial Research Agent in Gemini Enterprise: An institutional financial intelligence engine built on Google DeepMind technology.”",
+        sc3_title: "Scene 3: Multi-Bank Architecture",
+        sc3_text: "“Engineered for Europe's leading institutions: From N26 and Revolut to Trade Republic, Deutsche Bank, Monzo, and Bunq. Each bank in its distinct brand identity.”",
+        sc4_title: "Scene 4: 6 Institutional Personas",
+        sc4_text: "“Six specialized personas trigger 24 hero use cases with a single click: From 15-minute earnings scramble notes to M&A virtual data rooms and AML alert clearing.”",
+        sc5_title: "Scene 5: DeepMind Harness",
+        sc5_text: "“Behind the scenes, the DeepMind multi-agent harness operates continuously: An iterative feedback loop of Base Analyst, Critique, and Refine agents ensuring absolute mathematical precision.”",
+        sc6_title: "Scene 6: Deliverables & Call-to-Action",
+        sc6_text: "“Board-ready investment memos, interactive DCF financial models, and immutable audit trails with cryptographic verification seals. The Financial Research Agent. Live now.”"
       },
       de: {
         step1Btn: "Fachfunktionen",
@@ -1173,7 +1334,40 @@
         emptyPipelineAlert: "Bitte fügen Sie mindestens eine Fachfunktion zur Pipeline hinzu.",
         executingStep: "Führe Schritt",
         of: "von",
-        pipelineDone: "Alle {count} Fachfunktionen erfolgreich in Serie ausgeführt!"
+        pipelineDone: "Alle {count} Fachfunktionen erfolgreich in Serie ausgeführt!",
+        stepBtnTrailerText: "🎬 Video-Trailer",
+        trailerHeaderTitle: "Offizieller Video-Trailer: Financial Research Agent in Gemini Enterprise",
+        trailerHeaderDesc: "1080p Full HD Cinematic Produktfilm mit deutscher KI-Stimme & interaktiven Kapitelsprüngen.",
+        trailerDownloadText: "Download MP4 (1080p, 2.2 MB)",
+        trailerBackBtn: "← Zurück zur App",
+        trailerChaptersTitle: "Kapitel-Sprungmarken (Interaktive Navigation):",
+        trailerChaptersMeta: "Gesamtlänge: 1:11 min • 1080p @ 25fps • German Audio",
+        ch1_title: "1. Das Paradoxon",
+        ch1_desc: "Productivity Gap",
+        ch2_title: "2. Die Lösung",
+        ch2_desc: "1P Agent & 3 Säulen",
+        ch3_title: "3. Multi-Banken",
+        ch3_desc: "N26 bis Bunq",
+        ch4_title: "4. 6 Fach-Personas",
+        ch4_desc: "24 Hero CUJs",
+        ch5_title: "5. DeepMind Harness",
+        ch5_desc: "Always-On Runtime",
+        ch6_title: "6. Deliverables",
+        ch6_desc: "Memo, DCF & Trust",
+        trailerScriptTitle: "Vollständiges Voiceover-Skript (Deutsche Vertonung • de-DE-KillianNeural)",
+        trailerAudioSync: "Audio Sync: 100% Locked",
+        sc1_title: "Szene 1: Das Paradoxon",
+        sc1_text: "„Das Produktivitätsparadoxon im Bankensektor ist real: Generische Sprachmodelle scheitern an komplexen Finanzformeln, fragmentierten Daten und strengen Regularien.“",
+        sc2_title: "Szene 2: Der 1P Agent",
+        sc2_text: "„Hier ist der Financial Research Agent in Gemini Enterprise: Eine intelligente Finanz-Engine für institutionelles Banking, entwickelt mit Google DeepMind Technologie.“",
+        sc3_title: "Szene 3: Multi-Bank Architektur",
+        sc3_text: "„Maßgeschneidert für führende europäische Institute: Von N26 und Revolut über Trade Republic und Deutsche Bank bis hin zu Monzo und Bunq. Jede Bank in ihrer eigenen Identität.“",
+        sc4_title: "Szene 4: 6 Fach-Personas",
+        sc4_text: "„Sechs spezialisierte Fach-Personas lösen per Knopfdruck 24 Hero Use Cases aus: Ob 15-Minuten Flash Notes im Earnings Scramble, M&A Datenraum Audits oder Alert-Clearing gegen Geldwäsche.“",
+        sc5_title: "Szene 5: DeepMind Harness",
+        sc5_text: "„Im Hintergrund arbeitet das DeepMind Multi-Agenten-Harness: Ein iterativer Feedback-Loop aus Base Analyst, Critique und Refine Agent stellt höchste mathematische Präzision sicher, rund um die Uhr.“",
+        sc6_title: "Szene 6: Ergebnisse & Call-to-Action",
+        sc6_text: "„Vorstandstaugliche Investment Memos, interaktive DCF-Finanzmodelle und manipulationssichere Audit-Pfade mit kryptographischem Siegel. Der Financial Research Agent. Jetzt live.“"
       }
     };
 
@@ -1928,7 +2122,40 @@
         optPresetMa: t.optPresetMa,
         optPresetEarnings: t.optPresetEarnings,
         optPresetMica: t.optPresetMica,
-        optPresetAudit: t.optPresetAudit
+        optPresetAudit: t.optPresetAudit,
+        stepBtnTrailerText: t.stepBtnTrailerText,
+        trailerHeaderTitle: t.trailerHeaderTitle,
+        trailerHeaderDesc: t.trailerHeaderDesc,
+        trailerDownloadText: t.trailerDownloadText,
+        trailerBackBtn: t.trailerBackBtn,
+        trailerChaptersTitle: t.trailerChaptersTitle,
+        trailerChaptersMeta: t.trailerChaptersMeta,
+        ch1_title: t.ch1_title,
+        ch1_desc: t.ch1_desc,
+        ch2_title: t.ch2_title,
+        ch2_desc: t.ch2_desc,
+        ch3_title: t.ch3_title,
+        ch3_desc: t.ch3_desc,
+        ch4_title: t.ch4_title,
+        ch4_desc: t.ch4_desc,
+        ch5_title: t.ch5_title,
+        ch5_desc: t.ch5_desc,
+        ch6_title: t.ch6_title,
+        ch6_desc: t.ch6_desc,
+        trailerScriptTitle: t.trailerScriptTitle,
+        trailerAudioSync: t.trailerAudioSync,
+        sc1_title: t.sc1_title,
+        sc1_text: t.sc1_text,
+        sc2_title: t.sc2_title,
+        sc2_text: t.sc2_text,
+        sc3_title: t.sc3_title,
+        sc3_text: t.sc3_text,
+        sc4_title: t.sc4_title,
+        sc4_text: t.sc4_text,
+        sc5_title: t.sc5_title,
+        sc5_text: t.sc5_text,
+        sc6_title: t.sc6_title,
+        sc6_text: t.sc6_text
       };
 
       for (const [id, val] of Object.entries(textMappings)) {
@@ -2510,20 +2737,48 @@
     function switchStep(step) {
       const s1 = document.getElementById('containerStep1');
       const s2 = document.getElementById('containerStep2');
+      const s3 = document.getElementById('containerStep3');
       const b1 = document.getElementById('stepBtn1');
       const b2 = document.getElementById('stepBtn2');
+      const b3 = document.getElementById('stepBtnTrailer');
+
+      // Hide all containers
+      s1.classList.add('hidden');
+      s2.classList.add('hidden');
+      if (s3) s3.classList.add('hidden');
+
+      // Reset button styling
+      b1.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 text-[var(--bank-text-muted)] hover:text-white transition";
+      b2.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 text-[var(--bank-text-muted)] hover:text-white transition";
+      if (b3) b3.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 text-purple-400 hover:text-white transition";
+
+      // Pause video if moving away from trailer
+      const vid = document.getElementById('trailerVideoPlayer');
+      if (step !== 3 && vid && !vid.paused) {
+        vid.pause();
+      }
 
       if (step === 1) {
         s1.classList.remove('hidden');
-        s2.classList.add('hidden');
         b1.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 bank-btn-primary shadow-sm transition";
-        b2.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 text-[var(--bank-text-muted)] hover:text-white transition";
-      } else {
-        s1.classList.add('hidden');
+      } else if (step === 2) {
         s2.classList.remove('hidden');
-        b1.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 text-[var(--bank-text-muted)] hover:text-white transition";
         b2.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 bank-btn-primary shadow-sm transition";
         renderResults();
+      } else if (step === 3) {
+        if (s3) s3.classList.remove('hidden');
+        if (b3) b3.className = "px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 bg-purple-600 text-white shadow-sm transition";
+        if (vid && vid.paused) {
+          vid.play().catch(() => {});
+        }
+      }
+    }
+
+    function seekTrailer(seconds) {
+      const vid = document.getElementById('trailerVideoPlayer');
+      if (vid) {
+        vid.currentTime = seconds;
+        vid.play().catch(() => {});
       }
     }
 

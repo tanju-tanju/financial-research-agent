@@ -114,6 +114,20 @@ The platform enables analysts to combine **1 to N specialist functions in series
 
 ---
 
+## Official Product Video Trailer & Walkthrough
+
+The platform includes a cinematic 1080p Full HD video trailer (`trailer.mp4`, 1:11 min) with high-fidelity narration and interactive chapter markers directly accessible in the web cockpit under the **🎬 Video Trailer** tab:
+* **Scene 1 (0:00): The Paradox** — Explains the productivity gap of generic LLMs in regulated banking.
+* **Scene 2 (0:11): The 1P Solution** — Introducing the Google Cloud First-Party Financial Research Agent.
+* **Scene 3 (0:21): Multi-Bank Architecture** — Dynamic skinning and real-time adaptation across 6 European institutions.
+* **Scene 4 (0:34): 6 Institutional Personas** — 24 hero CUJs executed with one click.
+* **Scene 5 (0:46): DeepMind Multi-Agent Harness** — Iterative loop of Base Analyst, Critique, and Refine agents.
+* **Scene 6 (0:58): Board-Ready Deliverables** — Investment memos, interactive DCF financial models, and tamper-evident audit trails.
+
+Direct asset download: [`trailer.mp4`](trailer.mp4) (1080p, 2.2 MB) and poster [`trailer_thumb.jpg`](trailer_thumb.jpg).
+
+---
+
 ## Architectural Architecture
 
 The platform connects to Google Cloud's AI infrastructure:

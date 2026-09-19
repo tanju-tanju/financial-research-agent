@@ -23,7 +23,11 @@ def check_html():
         'btnPipelineExecute',
         'pipelineProgressBarContainer',
         'pipelineResultsNavigator',
-        'pipelineResultStepPills'
+        'pipelineResultStepPills',
+        'containerStep3',
+        'stepBtnTrailer',
+        'trailerVideoPlayer',
+        'trailerHeaderTitle'
     ]
     for rid in required_ids:
         if f'id="{rid}"' not in content:
